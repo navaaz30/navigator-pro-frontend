@@ -1,0 +1,13 @@
+<div class="card">
+
+  <h3>Quick Actions</h3>
+
+  <button *ngFor="let action of actions">
+
+    <mat-icon>{{ action.icon }}</mat-icon>
+
+    <span>{{ action.title }}</span>
+
+  </button>
+
+</div>

@@ -1,0 +1,445 @@
+<div class="page-header">
+  <div>
+    <h1>Attendance</h1>
+    <p class="subtitle">
+      Monitor and manage employee attendance records.
+    </p>
+  </div>
+</div>
+
+<div class="toolbar">
+
+  <input
+    type="text"
+    placeholder="Search by Employee Name or ID..."
+    [(ngModel)]="searchText">
+
+  <div class="filters">
+
+    <select [(ngModel)]="selectedStatus">
+      <option value="">All Status</option>
+      <option value="PRESENT">Present</option>
+      <option value="ABSENT">Absent</option>
+      <option value="LEAVE">Leave</option>
+      <option value="HALF_DAY">Half Day</option>
+    </select>
+
+    <button
+      class="add-btn"
+      (click)="openAttendanceForm()">
+
+      <mat-icon>add</mat-icon>
+      <span>Mark Attendance</span>
+
+    </button>
+
+  </div>
+
+</div>
+
+<div class="table-card">
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th>Employee ID</th>
+        <th>Employee</th>
+        <th>Date</th>
+        <th>Clock In</th>
+        <th>Clock Out</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let attendance of filteredAttendance">
+
+        <td>{{ attendance.employee?.employeeId }}</td>
+
+        <td>
+          {{ attendance.employee?.fullName }}
+        </td>
+
+        <td>
+          {{ attendance.date | date:'dd MMM yyyy' }}
+        </td>
+
+        <td>{{ attendance.clockIn | date:'hh:mm a' }}</td>
+
+        <td>{{ attendance.clockOut | date:'hh:mm a' }}</td>
+
+        <td>
+
+          <span
+            class="status"
+            [ngClass]="{
+              'present': attendance.status === 'PRESENT',
+              'absent': attendance.status === 'ABSENT',
+              'leave': attendance.status === 'LEAVE',
+              'half-day': attendance.status === 'HALF_DAY'
+            }">
+
+            {{ attendance.status }}
+
+          </span>
+
+        </td>
+
+        <td class="actions">
+
+          <button
+            class="view-btn"
+            (click)="viewAttendance(attendance)">
+
+            <mat-icon>visibility</mat-icon>
+            View
+
+          </button>
+
+          <button
+            class="edit-btn"
+            (click)="editAttendance(attendance)">
+
+            <mat-icon>edit</mat-icon>
+            Edit
+
+          </button>
+
+          <button
+            class="delete-btn"
+            (click)="deleteAttendance(attendance)">
+
+            <mat-icon>delete</mat-icon>
+            Delete
+
+          </button>
+
+        </td>
+
+      </tr>
+
+      <tr *ngIf="filteredAttendance.length === 0">
+
+        <td
+          colspan="7"
+          class="empty-state">
+
+          No attendance records found.
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+<!-- ==========================================
+     Attendance Form Modal
+========================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showForm">
+
+  <div class="modal">
+
+    <div class="modal-header">
+
+      <h2>
+
+        {{ isEditMode ? 'Edit Attendance' : 'Mark Attendance' }}
+
+      </h2>
+
+      <button
+        class="close-btn"
+        (click)="closeForm()">
+
+        <mat-icon>close</mat-icon>
+
+      </button>
+
+    </div>
+
+    <div
+      class="validation-error"
+      *ngIf="validationError">
+
+      {{ validationError }}
+
+    </div>
+
+    <div class="modal-body">
+
+      <label>Employee</label>
+
+      <select
+        [(ngModel)]="newAttendance.employee"
+        (change)="onEmployeeChange()">
+
+        <option value="">Select Employee</option>
+
+        <option
+          *ngFor="let emp of employees"
+          [value]="emp._id">
+
+          {{ emp.fullName }}
+
+        </option>
+
+      </select>
+
+      <label>Employee ID</label>
+
+      <input
+        type="text"
+        [value]="newAttendance.employeeId"
+        readonly>
+
+      <label>Email</label>
+
+      <input
+        type="email"
+        [value]="newAttendance.email"
+        readonly>
+
+      <label>Status</label>
+
+      <select
+        [(ngModel)]="newAttendance.status">
+
+        <option value="PRESENT">Present</option>
+        <option value="ABSENT">Absent</option>
+        <option value="LEAVE">Leave</option>
+        <option value="HALF_DAY">Half Day</option>
+
+      </select>
+
+      <div class="time-grid">
+
+        <div>
+
+          <label>Clock In</label>
+
+          <input
+            type="time"
+            [(ngModel)]="newAttendance.clockIn">
+
+        </div>
+
+        <div>
+
+          <label>Clock Out</label>
+
+          <input
+            type="time"
+            [(ngModel)]="newAttendance.clockOut">
+
+        </div>
+
+      </div>
+
+      <label>Date</label>
+
+      <input
+        type="date"
+        [(ngModel)]="newAttendance.date">
+
+      <label>Remarks</label>
+
+      <textarea
+        rows="3"
+        [(ngModel)]="newAttendance.remarks">
+      </textarea>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeForm()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="save-btn"
+        (click)="saveAttendance()">
+
+        {{ isEditMode ? 'Update Attendance' : 'Save Attendance' }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ==========================================
+     View Attendance Modal
+========================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showViewModal">
+
+  <div class="modal view-modal">
+
+    <div class="modal-header">
+
+      <h2>Attendance Details</h2>
+
+      <button
+        class="close-btn"
+        (click)="closeViewModal()">
+
+        <mat-icon>close</mat-icon>
+
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="detail-row">
+        <strong>Employee: </strong>
+        <span>{{ selectedAttendance?.employee?.fullName }}</span>
+      </div>
+
+      <div class="detail-row">
+        <strong>Employee ID:</strong>
+{{ selectedAttendance?.employee?.employeeId }}
+      </div>
+
+      <div class="detail-row">
+        <strong>Email:</strong>
+{{ selectedAttendance?.employee?.email }}
+      </div>
+
+      <div class="detail-row">
+        <strong>Date: </strong>
+        <span>{{ selectedAttendance?.date | date:'dd MMM yyyy' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <strong>Clock In: </strong>
+        <span>{{ selectedAttendance?.clockIn | date:'hh:mm a' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <strong>Clock Out: </strong>
+        <span>{{ selectedAttendance?.clockOut | date:'hh:mm a' }}</span>
+      </div>
+
+      <div class="detail-row">
+        <strong>Status: </strong>
+
+        <span
+          class="status"
+          [ngClass]="{
+            'present': selectedAttendance?.status === 'PRESENT',
+            'absent': selectedAttendance?.status === 'ABSENT',
+            'leave': selectedAttendance?.status === 'LEAVE',
+            'half-day': selectedAttendance?.status === 'HALF_DAY'
+          }">
+
+          {{ selectedAttendance?.status }}
+
+        </span>
+
+      </div>
+
+      <div
+        class="detail-row"
+        *ngIf="selectedAttendance?.remarks">
+
+        <strong>Remarks: </strong>
+
+        <span>{{ selectedAttendance?.remarks }}</span>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeViewModal()">
+
+        Close
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ==========================================
+     Delete Attendance Modal
+========================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showDeleteModal">
+
+  <div class="delete-modal">
+
+    <div class="delete-icon">
+
+      <mat-icon color="warn">warning</mat-icon>
+
+    </div>
+
+    <h2>Delete Attendance</h2>
+
+    <p>
+
+      Are you sure you want to delete attendance for
+
+      <strong>
+
+        {{ selectedAttendance?.employee?.fullName }}
+
+      </strong>
+
+      ?
+
+    </p>
+
+    <div class="delete-actions">
+
+      <button
+        class="cancel-btn"
+        (click)="cancelDelete()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="delete-confirm-btn"
+        (click)="confirmDelete()">
+
+        Delete
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

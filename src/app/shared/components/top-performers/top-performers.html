@@ -1,0 +1,31 @@
+<div class="card">
+
+  <div class="header">
+    <h3>Top Performers</h3>
+    <a href="#">View All →</a>
+  </div>
+
+  <div class="performer" *ngFor="let performer of performers">
+
+    <img [src]="performer.image" alt="{{ performer.name }}">
+
+    <div class="info">
+
+      <span class="name">{{ performer.name }}</span>
+
+      <div class="progress">
+
+        <div
+          class="fill"
+          [style.width.%]="performer.score">
+        </div>
+
+      </div>
+
+    </div>
+
+    <span class="score">{{ performer.score }}%</span>
+
+  </div>
+
+</div>

@@ -1,0 +1,46 @@
+.card{
+  background:white;
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  text-align:center;
+}
+
+.icon{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#e8f0fe;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 15px;
+}
+
+.icon mat-icon{
+    font-size:30px;
+    width:30px;
+    height:30px;
+    color:#1976d2;
+}
+
+h3{
+  margin:0;
+  font-size:16px;
+}
+
+h1{
+  margin-top:15px;
+  color:#1976d2;
+  font-size:30px;
+}
+
+.card{
+    transition:.25s ease;
+    cursor:pointer;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 12px 24px rgba(37,99,235,.15);
+}

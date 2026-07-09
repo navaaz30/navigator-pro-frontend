@@ -1,0 +1,47 @@
+<div class="card">
+
+  <div class="header">
+    <h3>Recent Activities</h3>
+    <a href="#">View All →</a>
+  </div>
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Activity</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let activity of activities">
+
+        <td>{{ activity.activity }}</td>
+
+        <td>{{ activity.employee }}</td>
+
+        <td>{{ activity.type }}</td>
+
+        <td>
+          <span
+            [ngClass]="activity.status === 'Completed' ? 'completed' : 'pending'">
+
+            {{ activity.status }}
+
+          </span>
+        </td>
+
+        <td>{{ activity.time }}</td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

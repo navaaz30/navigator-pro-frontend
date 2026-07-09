@@ -1,0 +1,61 @@
+<h1>Dashboard</h1>
+<p class="subtitle">Overview of today's field operations.</p>
+
+<div class="cards">
+
+  <app-stats-card
+    title="Total Employees"
+    [value]="stats.totalEmployees"
+    icon="groups">
+  </app-stats-card>
+
+  <app-stats-card
+    title="Present Today"
+    [value]="stats.presentToday"
+    icon="check_circle">
+  </app-stats-card>
+
+  <app-stats-card
+    title="Half Day"
+    [value]="stats.halfDayToday"
+    icon="schedule">
+  </app-stats-card>
+
+  <app-stats-card
+    title="On Leave"
+    [value]="stats.onLeaveToday"
+    icon="event_busy">
+  </app-stats-card>
+
+  <app-stats-card
+    title="Pending Leaves"
+    [value]="stats.pendingLeaves"
+    icon="pending_actions">
+  </app-stats-card>
+
+</div>
+
+
+<div class="charts-row">
+
+    <app-task-chart></app-task-chart>
+
+    <app-expense-chart></app-expense-chart>
+
+</div>
+
+<div class="activity-section">
+
+    <app-activity-table></app-activity-table>
+
+</div>
+
+<div class="info-row">
+
+    <app-top-performers></app-top-performers>
+
+    <app-todays-summary></app-todays-summary>
+
+    <app-quick-actions></app-quick-actions>
+
+</div>

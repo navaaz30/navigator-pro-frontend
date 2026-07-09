@@ -1,0 +1,65 @@
+.card{
+    background:#fff;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+h3{
+    margin:0 0 20px;
+    font-size:16px;
+    font-weight:700;
+}
+
+button{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    border:none;
+    outline:none;
+    cursor:pointer;
+
+    background:#f3f6fb;
+    padding:14px 16px;
+    margin-bottom:14px;
+
+    border-radius:10px;
+
+    font-size:16px;
+    font-weight:500;
+
+    transition:all .25s ease;
+}
+
+button:last-child{
+    margin-bottom:0;
+}
+
+button:hover{
+    background:#2563eb;
+    color:#fff;
+    transform:translateX(4px);
+}
+
+button mat-icon{
+    font-size:22px;
+    width:22px;
+    height:22px;
+    color:#1976d2;
+    transition:.25s;
+}
+
+button:hover mat-icon{
+    color:#fff;
+}
+
+button span{
+    flex:1;
+    text-align:left;
+}
+
+button{
+    cursor:pointer;
+}

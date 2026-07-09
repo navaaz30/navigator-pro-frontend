@@ -1,0 +1,488 @@
+<div class="page-header">
+
+    <div>
+
+        <h1>Leave Management</h1>
+
+        <p class="subtitle">
+            Review and approve employee leave requests.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     Toolbar
+========================================== -->
+
+<div class="toolbar">
+
+    <div class="toolbar-right">
+
+        <select [(ngModel)]="selectedStatus">
+
+            <option value="">All Requests</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+
+        </select>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     Leave Requests Table
+========================================== -->
+
+<div class="table-card">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Leave ID</th>
+
+<th>Employee</th>
+
+<th>Leave Type</th>
+
+<th>From</th>
+
+<th>To</th>
+
+<th>Days</th>
+
+<th>Status</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr *ngFor="let leave of filteredLeaves">
+
+<td>{{ leave.id }}</td>
+
+<td>{{ leave.employee }}</td>
+
+<td>{{ leave.leaveType }}</td>
+
+<td>{{ leave.fromDate }}</td>
+
+<td>{{ leave.toDate }}</td>
+
+<td>{{ leave.totalDays }}</td>
+
+<td>
+
+<span
+
+class="status"
+
+[ngClass]="{
+
+'pending': leave.status === 'Pending',
+
+'approved': leave.status === 'Approved',
+
+'rejected': leave.status === 'Rejected'
+
+}">
+
+{{ leave.status }}
+
+</span>
+
+</td>
+
+<td class="actions">
+
+<!-- View -->
+
+<button
+
+class="view-btn"
+
+(click)="viewLeave(leave)">
+
+<mat-icon>visibility</mat-icon>
+
+</button>
+
+<!-- Approve -->
+
+<button
+
+*ngIf="leave.status === 'Pending'"
+
+class="approve-btn"
+
+(click)="approveLeave(leave)">
+
+<mat-icon>check_circle</mat-icon>
+
+</button>
+
+<!-- Reject -->
+
+<button
+
+*ngIf="leave.status === 'Pending'"
+
+class="reject-btn"
+
+(click)="rejectLeave(leave)">
+
+<mat-icon>cancel</mat-icon>
+
+</button>
+
+</td>
+
+</tr>
+
+<tr *ngIf="filteredLeaves.length === 0">
+
+<td
+colspan="8"
+class="empty-state">
+
+No leave requests found.
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- ==========================================
+     View Leave Modal
+========================================== -->
+
+<div
+class="modal-overlay"
+*ngIf="showViewModal">
+
+<div class="modal">
+
+<div class="modal-header">
+
+<h2>
+
+Leave Details
+
+</h2>
+
+<button
+
+class="close-btn"
+
+(click)="closeViewModal()">
+
+<mat-icon>close</mat-icon>
+
+</button>
+
+</div>
+
+<div class="details">
+
+<p>
+
+<strong>Leave ID :</strong>
+
+{{ selectedLeave?.id }}
+
+</p>
+
+<p>
+
+<strong>Employee :</strong>
+
+{{ selectedLeave?.employee }}
+
+</p>
+
+<p>
+
+<strong>Department :</strong>
+
+{{ selectedLeave?.department }}
+
+</p>
+
+<p>
+
+<strong>Leave Type :</strong>
+
+{{ selectedLeave?.leaveType }}
+
+</p>
+
+<p>
+
+<strong>From Date :</strong>
+
+{{ selectedLeave?.fromDate }}
+
+</p>
+
+<p>
+
+<strong>To Date :</strong>
+
+{{ selectedLeave?.toDate }}
+
+</p>
+
+<p>
+
+<strong>Total Days :</strong>
+
+{{ selectedLeave?.totalDays }}
+
+</p>
+
+<p>
+
+<strong>Reason :</strong>
+
+{{ selectedLeave?.reason }}
+
+</p>
+
+<p>
+
+<strong>Applied On :</strong>
+
+{{ selectedLeave?.appliedDate }}
+
+</p>
+
+<p>
+
+<strong>Status :</strong>
+
+{{ selectedLeave?.status }}
+
+</p>
+
+</div>
+
+<div class="modal-footer">
+
+<button
+
+class="cancel-btn"
+
+(click)="closeViewModal()">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ==========================================
+     Approve Leave Modal
+========================================== -->
+
+<div
+class="modal-overlay"
+*ngIf="showApproveModal">
+
+<div class="approve-modal">
+
+<div class="approve-icon">
+
+<mat-icon>task_alt</mat-icon>
+
+</div>
+
+<h2>
+
+Approve Leave Request?
+
+</h2>
+
+<p>
+
+Are you sure you want to approve this leave request?
+
+</p>
+
+<div class="approve-details">
+
+<p>
+
+<strong>Employee :</strong>
+
+{{ selectedLeave?.employee }}
+
+</p>
+
+<p>
+
+<strong>Leave Type :</strong>
+
+{{ selectedLeave?.leaveType }}
+
+</p>
+
+<p>
+
+<strong>Duration :</strong>
+
+{{ selectedLeave?.totalDays }}
+
+Day(s)
+
+</p>
+
+</div>
+
+<div class="approve-actions">
+
+<button
+
+class="cancel-btn"
+
+(click)="cancelApprove()">
+
+Cancel
+
+</button>
+
+<button
+
+class="approve-confirm-btn"
+
+(click)="confirmApprove()">
+
+Approve
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ==========================================
+     Reject Leave Modal
+========================================== -->
+
+<div
+class="modal-overlay"
+*ngIf="showRejectModal">
+
+<div class="reject-modal">
+
+<div class="reject-icon">
+
+<mat-icon>highlight_off</mat-icon>
+
+</div>
+
+<h2>
+
+Reject Leave Request?
+
+</h2>
+
+<p>
+
+You are about to reject this leave request.
+
+</p>
+
+<div class="reject-details">
+
+<p>
+
+<strong>Employee :</strong>
+
+{{ selectedLeave?.employee }}
+
+</p>
+
+<p>
+
+<strong>Leave Type :</strong>
+
+{{ selectedLeave?.leaveType }}
+
+</p>
+
+<p>
+
+<strong>Duration :</strong>
+
+{{ selectedLeave?.totalDays }}
+
+Day(s)
+
+</p>
+
+</div>
+
+<label>
+
+Rejection Reason (Optional)
+
+</label>
+
+<textarea
+
+rows="4"
+
+placeholder="Enter reason..."
+
+[(ngModel)]="rejectReason">
+
+</textarea>
+
+<div class="reject-actions">
+
+<button
+
+class="cancel-btn"
+
+(click)="cancelReject()">
+
+Cancel
+
+</button>
+
+<button
+
+class="reject-confirm-btn"
+
+(click)="confirmReject()">
+
+Reject
+
+</button>
+
+</div>
+
+</div>
+
+</div>

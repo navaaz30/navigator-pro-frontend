@@ -1,0 +1,59 @@
+.card{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+h3{
+    margin:0 0 20px;
+    font-size:16px;
+    font-weight:700;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.performer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:16px;
+}
+
+.left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+img{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+}
+
+.progress{
+    width:90px;
+    height:6px;
+    background:#eee;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    background:#2e7d32;
+}
+
+.right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.header a{
+    cursor:pointer;
+}

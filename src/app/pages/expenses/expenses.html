@@ -1,0 +1,498 @@
+<div class="page-header">
+
+    <div>
+
+        <h1>Expenses</h1>
+
+        <p class="subtitle">
+            Review and approve expense claims submitted by field employees.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     Toolbar
+========================================== -->
+
+<div class="toolbar">
+
+    <div class="toolbar-right">
+
+        <select [(ngModel)]="selectedStatus">
+
+            <option value="">All Expenses</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+
+        </select>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     Expense Table
+========================================== -->
+
+<div class="table-card">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Expense ID</th>
+
+<th>Employee</th>
+
+<th>Category</th>
+
+<th>Amount</th>
+
+<th>Date</th>
+
+<th>Receipt</th>
+
+<th>Status</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr *ngFor="let expense of filteredExpenses">
+
+<td>{{ expense.id }}</td>
+
+<td>{{ expense.employee }}</td>
+
+<td>{{ expense.category }}</td>
+
+<td>₹{{ expense.amount }}</td>
+
+<td>{{ expense.date }}</td>
+
+<td>
+
+<button
+class="receipt-btn"
+(click)="viewReceipt(expense)">
+
+<mat-icon>description</mat-icon>
+
+View
+
+</button>
+
+</td>
+
+<td>
+
+<span
+
+class="status"
+
+[ngClass]="{
+
+'pending':expense.status==='Pending',
+
+'approved':expense.status==='Approved',
+
+'rejected':expense.status==='Rejected'
+
+}">
+
+{{ expense.status }}
+
+</span>
+
+</td>
+
+<td class="actions">
+
+<!-- View -->
+
+<button
+
+class="view-btn"
+
+(click)="viewExpense(expense)">
+
+<mat-icon>visibility</mat-icon>
+
+</button>
+
+<!-- Approve -->
+
+<button
+
+*ngIf="expense.status==='Pending'"
+
+class="approve-btn"
+
+(click)="approveExpense(expense)">
+
+<mat-icon>check_circle</mat-icon>
+
+</button>
+
+<!-- Reject -->
+
+<button
+
+*ngIf="expense.status==='Pending'"
+
+class="reject-btn"
+
+(click)="rejectExpense(expense)">
+
+<mat-icon>cancel</mat-icon>
+
+</button>
+
+</td>
+
+</tr>
+
+<tr *ngIf="filteredExpenses.length === 0">
+
+        <td
+          colspan="7"
+          class="empty-state">
+
+          No expenses found.
+
+        </td>
+
+      </tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- ==========================================
+     View Expense Modal
+========================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showReceiptModal">
+
+  <div class="modal">
+
+    <div class="modal-header">
+
+      <h2>Receipt</h2>
+
+      <button
+        class="close-btn"
+        (click)="closeReceiptModal()">
+
+        <mat-icon>close</mat-icon>
+
+      </button>
+
+    </div>
+
+    <div class="details">
+
+      <div class="receipt-box">
+
+        <div
+          class="receipt-preview"
+          *ngIf="selectedExpense">
+
+          <img
+            *ngIf="selectedExpense.receiptType === 'image'"
+            [src]="'assets/receipts/' + selectedExpense.receipt"
+            alt="Receipt">
+
+          <ng-container
+            *ngIf="selectedExpense.receiptType === 'pdf'">
+
+            <mat-icon>picture_as_pdf</mat-icon>
+
+            <span>{{ selectedExpense.receipt }}</span>
+
+          </ng-container>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeReceiptModal()">
+
+        Close
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div
+class="modal-overlay"
+*ngIf="showViewModal">
+
+<div class="modal">
+
+<div class="modal-header">
+
+<h2>
+
+Expense Details
+
+</h2>
+
+<button
+
+class="close-btn"
+
+(click)="closeViewModal()">
+
+<mat-icon>close</mat-icon>
+
+</button>
+
+</div>
+
+<div class="details">
+
+  <p>
+    <strong>Expense ID :</strong>
+    {{ selectedExpense?.id }}
+  </p>
+
+  <p>
+    <strong>Employee :</strong>
+    {{ selectedExpense?.employee }}
+  </p>
+
+  <p>
+    <strong>Department :</strong>
+    {{ selectedExpense?.department }}
+  </p>
+
+  <p>
+    <strong>Category :</strong>
+    {{ selectedExpense?.category }}
+  </p>
+
+  <p>
+    <strong>Amount :</strong>
+    ₹{{ selectedExpense?.amount }}
+  </p>
+
+  <p>
+    <strong>Date :</strong>
+    {{ selectedExpense?.date }}
+  </p>
+
+  <p>
+    <strong>From :</strong>
+    {{ selectedExpense?.from }}
+  </p>
+
+  <p>
+    <strong>To :</strong>
+    {{ selectedExpense?.to }}
+  </p>
+
+  <p>
+    <strong>Description :</strong>
+    {{ selectedExpense?.description }}
+  </p>
+
+  <p>
+    <strong>Status :</strong>
+    {{ selectedExpense?.status }}
+  </p>
+
+
+</div>
+
+<div class="modal-footer">
+
+<button
+
+class="cancel-btn"
+
+(click)="closeViewModal()">
+
+Close
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+<!-- ==========================================
+     Approve Expense Modal
+========================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showApproveModal">
+
+  <div class="approve-modal">
+
+    <div class="approve-icon">
+
+      <mat-icon>task_alt</mat-icon>
+
+    </div>
+
+    <h2>Approve Expense?</h2>
+
+    <p>
+
+      Are you sure you want to approve this expense claim?
+
+    </p>
+
+    <div class="approve-details">
+
+      <p>
+
+        <strong>Employee :</strong>
+
+        {{ selectedExpense?.employee }}
+
+      </p>
+
+      <p>
+
+        <strong>Amount :</strong>
+
+        ₹{{ selectedExpense?.amount }}
+
+      </p>
+
+    </div>
+
+    <div class="approve-actions">
+
+      <button
+        class="cancel-btn"
+        (click)="cancelApprove()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="approve-confirm-btn"
+        (click)="confirmApprove()">
+
+        Approve
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ==========================================
+     Reject Expense Modal
+========================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showRejectModal">
+
+  <div class="reject-modal">
+
+    <div class="reject-icon">
+
+      <mat-icon>highlight_off</mat-icon>
+
+    </div>
+
+    <h2>Reject Expense?</h2>
+
+    <p>
+
+      You are about to reject this expense claim.
+
+    </p>
+
+    <div class="reject-details">
+
+      <p>
+
+        <strong>Employee :</strong>
+
+        {{ selectedExpense?.employee }}
+
+      </p>
+
+      <p>
+
+        <strong>Amount :</strong>
+
+        ₹{{ selectedExpense?.amount }}
+
+      </p>
+
+    </div>
+
+    <label>
+
+      Rejection Reason (Optional)
+
+    </label>
+
+    <textarea
+
+      rows="4"
+
+      placeholder="Enter reason..."
+
+      [(ngModel)]="rejectReason">
+
+    </textarea>
+
+    <div class="reject-actions">
+
+      <button
+        class="cancel-btn"
+        (click)="cancelReject()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="reject-confirm-btn"
+        (click)="confirmReject()">
+
+        Reject
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

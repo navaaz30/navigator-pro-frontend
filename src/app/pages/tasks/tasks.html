@@ -1,0 +1,430 @@
+<div class="page-header">
+
+  <div>
+    <h1>Tasks</h1>
+    <p class="subtitle">
+      Track, assign and monitor technician tasks.
+    </p>
+  </div>
+
+</div>
+
+<div class="toolbar">
+
+  <input
+    type="text"
+    placeholder="Search by Task ID, Technician or Client..."
+    [(ngModel)]="searchText">
+
+  <div class="filters">
+
+    <select [(ngModel)]="selectedStatus">
+      <option value="">All Status</option>
+      <option value="Pending">Pending</option>
+      <option value="Ongoing">Ongoing</option>
+      <option value="Completed">Completed</option>
+      <option value="Overdue">Overdue</option>
+    </select>
+
+    <select [(ngModel)]="selectedPriority">
+      <option value="">All Priority</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+
+    <button
+      class="assign-btn"
+      (click)="assignTask()">
+
+      <mat-icon>add</mat-icon>
+
+      <span>Assign Task</span>
+
+    </button>
+
+  </div>
+
+</div>
+
+<div class="table-card">
+
+  <table>
+
+    <thead>
+
+      <tr>
+        <th>Task ID</th>
+        <th>Technician</th>
+        <th>Client</th>
+        <th>Status</th>
+        <th>Priority</th>
+        <th>Due Date</th>
+        <th>Actions</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+        *ngFor="let task of filteredTasks">
+
+        <td>{{ task.id }}</td>
+
+        <td>{{ task.technician }}</td>
+
+        <td>{{ task.client }}</td>
+
+        <td>
+
+          <span
+            class="status"
+            [ngClass]="{
+              'pending': task.status === 'Pending',
+              'ongoing': task.status === 'Ongoing',
+              'completed': task.status === 'Completed',
+              'overdue': task.status === 'Overdue'
+            }">
+
+            {{ task.status }}
+
+          </span>
+
+        </td>
+
+        <td>
+
+          <span
+            class="priority"
+            [ngClass]="{
+              'high': task.priority === 'High',
+              'medium': task.priority === 'Medium',
+              'low': task.priority === 'Low'
+            }">
+
+            {{ task.priority }}
+
+          </span>
+
+        </td>
+
+        <td>{{ task.dueDate }}</td>
+
+        <td class="actions">
+
+          <button
+            class="view-btn"
+            (click)="viewTask(task)">
+
+            <mat-icon>visibility</mat-icon>
+
+            View
+
+          </button>
+
+          <button
+            class="edit-btn"
+            (click)="editTask(task)">
+
+            <mat-icon>edit</mat-icon>
+
+            Edit
+
+          </button>
+
+          <button
+            class="delete-btn"
+            (click)="deleteTask(task)">
+
+            <mat-icon>delete</mat-icon>
+
+            Delete
+
+          </button>
+
+        </td>
+
+      </tr>
+
+      <tr *ngIf="filteredTasks.length === 0">
+
+        <td
+          colspan="7"
+          class="empty-state">
+
+          No tasks found.
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+
+<!-- ===========================
+     Assign / Edit Task Modal
+=========================== -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="showForm">
+
+  <div class="task-modal">
+    <div class="error-message" *ngIf="validationError">
+      {{ validationError }}
+    </div>
+    <div class="modal-header">
+
+      <h2>
+
+        {{ isEditMode ? 'Edit Task' : 'Assign New Task' }}
+
+      </h2>
+
+      <button
+        class="close-btn"
+        (click)="closeForm()">
+
+        ✕
+
+      </button>
+
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+
+        <label>Technician</label>
+
+        <input
+          type="text"
+          [(ngModel)]="newTask.technician"
+          placeholder="Enter technician name">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Client</label>
+
+        <input
+          type="text"
+          [(ngModel)]="newTask.client"
+          placeholder="Enter client name">
+
+      </div>
+
+      <div class="form-row">
+
+        <div class="form-group">
+
+          <label>Status</label>
+
+          <select [(ngModel)]="newTask.status">
+
+            <option value="Pending">Pending</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="Completed">Completed</option>
+            <option value="Overdue">Overdue</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Priority</label>
+
+          <select [(ngModel)]="newTask.priority">
+
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Due Date</label>
+
+        <input
+          type="date"
+          [(ngModel)]="newTask.dueDate">
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="cancel-btn"
+        (click)="closeForm()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="save-btn"
+        (click)="saveTask()">
+
+        {{ isEditMode ? 'Update Task' : 'Save Task' }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ===========================
+     View Task Modal
+=========================== -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="showViewModal && selectedTask">
+
+  <div class="view-modal">
+
+    <div class="modal-header">
+
+      <h2>
+
+        Task Details
+
+      </h2>
+
+      <button
+        class="close-btn"
+        (click)="closeView()">
+
+        ✕
+
+      </button>
+
+    </div>
+
+    <div class="view-content">
+
+      <div class="detail">
+
+        <span>Task ID</span>
+
+        <strong>{{ selectedTask.id }}</strong>
+
+      </div>
+
+      <div class="detail">
+
+        <span>Technician</span>
+
+        <strong>{{ selectedTask.technician }}</strong>
+
+      </div>
+
+      <div class="detail">
+
+        <span>Client</span>
+
+        <strong>{{ selectedTask.client }}</strong>
+
+      </div>
+
+      <div class="detail">
+
+        <span>Status</span>
+
+        <strong>{{ selectedTask.status }}</strong>
+
+      </div>
+
+      <div class="detail">
+
+        <span>Priority</span>
+
+        <strong>{{ selectedTask.priority }}</strong>
+
+      </div>
+
+      <div class="detail">
+
+        <span>Due Date</span>
+
+        <strong>{{ selectedTask.dueDate }}</strong>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button
+        class="save-btn"
+        (click)="closeView()">
+
+        Close
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div
+  class="modal-backdrop"
+  *ngIf="showDeleteModal">
+
+  <div class="delete-modal">
+
+    <h2>
+
+      Delete Task
+
+    </h2>
+
+    <p>
+
+      Are you sure you want to delete this task?
+
+      <strong>{{ taskToDelete?.id }}</strong>?
+
+    </p>
+
+    <div class="delete-actions">
+
+      <button
+        class="cancel-btn"
+        (click)="cancelDelete()">
+
+        Cancel
+
+      </button>
+
+      <button
+        class="delete-confirm-btn"
+        (click)="confirmDelete()">
+
+        Delete
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
