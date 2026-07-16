@@ -1,70 +1,108 @@
-/* ==========================================
-   Page Header
-========================================== */
+/* ==========================================================
+   INVENTORY PAGE
+========================================================== */
 
-.page-header{
-    margin-bottom:24px;
+:host {
+    display: block;
+    padding: 28px;
 }
 
-h1{
-    margin:0;
-    font-size:28px;
-    font-weight:700;
-    color:#111827;
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.page-header {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+
+    h1{
+        margin:0;
+        font-size:40px;
+        font-weight:700;
+        color:#1e293b;
+        line-height:1;
+    }
+
+    .subtitle{
+        margin-top:8px;
+        color:#64748b;
+        font-size:15px;
+    }
+
 }
 
-.subtitle{
-    margin-top:6px;
-    color:#64748b;
+/* ==========================================================
+   ADD BUTTON
+========================================================== */
+
+.add-btn{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    height:48px;
+
+    padding:0 22px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#2563eb;
+
+    color:#fff;
+
     font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:0 10px 24px rgba(37,99,235,.18);
+
 }
 
-/* ==========================================
-   Toolbar
-========================================== */
+.add-btn:hover{
+
+    background:#1d4ed8;
+
+    transform:translateY(-2px);
+
+}
+
+.add-btn mat-icon{
+
+    font-size:20px;
+
+}
+
+/* ==========================================================
+   TOOLBAR
+========================================================== */
 
 .toolbar{
+
     display:flex;
+
     align-items:center;
-    margin-bottom:20px;
+
+    justify-content:space-between;
+
+    gap:18px;
+
+    margin-bottom:24px;
+
 }
 
-.toolbar input{
-    width:420px;
-    max-width:100%;
+.search-box{
 
-    padding:12px 16px;
-
-    border:1px solid #d1d5db;
-
-    border-radius:10px;
-
-    font-size:14px;
-
-    outline:none;
-}
-
-.toolbar-right{
-    margin-left:auto;
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.toolbar-right select{
-    width:170px;
-    padding:11px 14px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-    font-size:14px;
-    outline:none;
-}
-
-.toolbar input:focus{
-    border-color:#2563eb;
-}
-
-.filters{
+    flex:1;
 
     display:flex;
 
@@ -72,227 +110,121 @@ h1{
 
     gap:12px;
 
-    flex-wrap:wrap;
+    height:52px;
+
+    padding:0 18px;
+
+    background:#fff;
+
+    border:1px solid #dbe3ef;
+
+    border-radius:14px;
+
+    transition:.25s;
+
 }
 
-/* ==========================================
-   Add Button
-========================================== */
+.search-box:hover{
 
-.add-btn{
+    border-color:#94a3b8;
 
-    display:flex;
+}
 
-    align-items:center;
+.search-box:focus-within{
 
-    justify-content:center;
+    border-color:#2563eb;
 
-    gap:8px;
+    box-shadow:0 0 0 4px rgba(37,99,235,.08);
 
-    background:#2563eb;
+}
 
-    color:white;
+.search-box mat-icon{
+
+    color:#94a3b8;
+
+    font-size:22px;
+
+}
+
+.search-box input{
+
+    flex:1;
 
     border:none;
 
-    border-radius:10px;
-
-    padding:12px 22px;
-
-    cursor:pointer;
-
-    font-size:14px;
-
-    font-weight:600;
-
-    transition:.25s;
-}
-
-.add-btn:hover{
-
-    background:#1d4ed8;
-}
-
-.add-btn mat-icon{
-
-    font-size:20px;
-
-    width:20px;
-
-    height:20px;
-}
-
-/* ==========================================
-   Table Card
-========================================== */
-
-.table-card{
-
-    background:white;
-
-    border-radius:18px;
-
-    overflow:hidden;
-
-    box-shadow:0 5px 18px rgba(0,0,0,.08);
-}
-
-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-}
-
-thead{
-
-    background:#f8fafc;
-}
-
-th{
-
-    text-align:left;
-
-    padding:18px;
+    outline:none;
 
     font-size:15px;
 
-    font-weight:700;
+    background:transparent;
 
-    color:#374151;
 }
 
-td{
+.search-box input::placeholder{
 
-    padding:18px;
+    color:#94a3b8;
 
-    font-size:14px;
-
-    color:#374151;
-
-    border-top:1px solid #f1f5f9;
 }
 
-tbody tr{
+.toolbar-right{
 
-    transition:.25s;
+    width:240px;
+
 }
 
-tbody tr:hover{
+.toolbar-right select{
 
-    background:#f8fbff;
-}
+    width:100%;
 
-/* ==========================================
-   Status Badges
-========================================== */
+    height:52px;
 
-.status{
+    padding:0 18px;
 
-    display:inline-block;
+    border:1px solid #dbe3ef;
 
-    padding:6px 14px;
+    border-radius:14px;
 
-    border-radius:30px;
+    background:#fff;
 
-    font-size:13px;
+    font-size:15px;
 
-    font-weight:600;
-}
-
-.in-stock{
-
-    background:#dcfce7;
-
-    color:#15803d;
-}
-
-.low-stock{
-
-    background:#fef3c7;
-
-    color:#b45309;
-}
-
-.out-stock{
-
-    background:#fee2e2;
-
-    color:#dc2626;
-}
-
-/* ==========================================
-   Action Buttons
-========================================== */
-
-.actions{
-
-    display:flex;
-
-    gap:10px;
-}
-
-.actions button{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    width:38px;
-
-    height:38px;
-
-    border:none;
-
-    border-radius:8px;
+    outline:none;
 
     cursor:pointer;
 
     transition:.25s;
+
 }
 
-.actions button:hover{
+.toolbar-right select:focus{
 
-    transform:translateY(-2px);
+    border-color:#2563eb;
 
-    box-shadow:0 6px 14px rgba(0,0,0,.12);
+    box-shadow:0 0 0 4px rgba(37,99,235,.08);
+
 }
 
-.actions button mat-icon{
+/* ==========================================================
+   TABLE CARD
+========================================================== */
 
-    font-size:20px;
+.table-card{
 
-    width:20px;
+    background:#fff;
 
-    height:20px;
+    border-radius:18px;
+
+    overflow-x:auto;
+
+    box-shadow:0 10px 30px rgba(15,23,42,.05);
+
+    border:1px solid #edf2f7;
+
 }
 
-.view-btn{
-
-    background:#dbeafe;
-
-    color:#2563eb;
-}
-
-.edit-btn{
-
-    background:#ede9fe;
-
-    color:#7c3aed;
-}
-
-.delete-btn{
-
-    background:#fee2e2;
-
-    color:#dc2626;
-}
-
-/* ==========================================
-   Modal Overlay
-========================================== */
+/* ==========================================================
+   MODAL OVERLAY
+========================================================== */
 
 .modal-overlay{
 
@@ -313,26 +245,35 @@ tbody tr:hover{
     animation:fadeIn .25s;
 }
 
-/* ==========================================
-   Modal
-========================================== */
+/* ==========================================================
+   MODAL
+========================================================== */
 
 .modal{
 
-    width:550px;
+    width:min(900px,92vw);
 
-    max-width:95%;
+    max-height:88vh;
 
-    background:white;
+    display:flex;
+
+    flex-direction:column;
+
+    background:#fff;
 
     border-radius:18px;
 
     overflow:hidden;
 
-    box-shadow:0 20px 40px rgba(0,0,0,.18);
+    box-shadow:0 25px 60px rgba(15,23,42,.25);
 
-    animation:popup .25s;
+    animation:modalAnimation .25s ease;
+
 }
+
+/* ==========================================================
+   HEADER
+========================================================== */
 
 .modal-header{
 
@@ -342,20 +283,24 @@ tbody tr:hover{
 
     align-items:center;
 
-    padding:20px 24px;
+    padding:22px 28px;
 
-    border-bottom:1px solid #e5e7eb;
+    border-bottom:1px solid #e2e8f0;
+
+    flex-shrink:0;
+
 }
 
 .modal-header h2{
 
     margin:0;
 
-    font-size:22px;
+    font-size:24px;
 
     font-weight:700;
 
-    color:#111827;
+    color:#1e293b;
+
 }
 
 .close-btn{
@@ -364,199 +309,573 @@ tbody tr:hover{
 
     background:none;
 
+    font-size:22px;
+
     cursor:pointer;
 
     color:#64748b;
-
-    display:flex;
-
-    align-items:center;
 }
 
 .close-btn:hover{
 
-    color:#dc2626;
+    color:#ef4444;
 }
 
-/* ==========================================
-   Modal Body
-========================================== */
+
+/* ==========================================================
+   BODY
+========================================================== */
 
 .modal-body{
 
-    padding:24px;
+    flex:1;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:28px;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:22px;
+
+}
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+.form-group{
 
     display:flex;
 
     flex-direction:column;
 
-    gap:16px;
 }
 
-.modal-body label{
+.full-width{
+
+    grid-column:1 / -1;
+
+}
+
+.form-group label{
 
     font-size:14px;
 
     font-weight:600;
 
-    color:#374151;
+    color:#334155;
+
+    margin-bottom:8px;
+
 }
 
-.modal-body input,
-.modal-body select{
+.form-group label span{
+
+    color:#ef4444;
+
+}
+
+.form-group input,
+.form-group textarea{
 
     width:100%;
 
-    padding:12px 14px;
+    border:1px solid #dbe3ef;
 
-    border:1px solid #d1d5db;
+    border-radius:12px;
 
-    border-radius:10px;
+    padding:13px 16px;
+
+    font-size:15px;
 
     outline:none;
 
-    font-size:14px;
+    transition:.25s;
+
+    background:#fff;
+
 }
 
-.modal-body input:focus,
-.modal-body select:focus{
+.form-group input:focus,
+.form-group textarea:focus{
 
     border-color:#2563eb;
+
+    box-shadow:0 0 0 4px rgba(37,99,235,.08);
+
 }
 
-/* ==========================================
-   Validation
-========================================== */
+.form-group textarea{
+
+    resize:vertical;
+
+    min-height:120px;
+
+    max-height:180px;
+
+}
+
+/* ==========================================================
+   VALIDATION
+========================================================== */
 
 .validation-error{
 
-    margin:20px 24px 0;
+    margin:18px 28px 0;
+
+    padding:14px 18px;
+
+    border-radius:12px;
 
     background:#fee2e2;
 
     color:#dc2626;
 
-    padding:12px;
-
-    border-radius:10px;
-
     font-size:14px;
 
-    font-weight:600;
+    font-weight:500;
+
 }
 
-/* ==========================================
-   Modal Footer
-========================================== */
+/* ==========================================================
+   FOOTER
+========================================================== */
 
 .modal-footer{
+
+    flex-shrink:0;
 
     display:flex;
 
     justify-content:flex-end;
 
-    gap:12px;
+    gap:14px;
 
-    padding:20px 24px;
+    padding:22px 28px;
 
-    border-top:1px solid #e5e7eb;
+    border-top:1px solid #e2e8f0;
+
+    background:#fff;
+
 }
 
 .cancel-btn{
 
-    background:#e5e7eb;
-
-    color:#374151;
+    padding:12px 24px;
 
     border:none;
 
-    border-radius:10px;
+    border-radius:12px;
 
-    padding:12px 22px;
+    background:#f1f5f9;
+
+    color:#334155;
 
     cursor:pointer;
 
     font-weight:600;
+
+    transition:.25s;
+
 }
 
 .cancel-btn:hover{
 
-    background:#d1d5db;
+    background:#e2e8f0;
+
 }
 
 .save-btn{
 
-    background:#2563eb;
-
-    color:white;
+    padding:12px 24px;
 
     border:none;
 
-    border-radius:10px;
+    border-radius:12px;
 
-    padding:12px 22px;
+    background:#2563eb;
+
+    color:#fff;
 
     cursor:pointer;
 
     font-weight:600;
+
+    transition:.25s;
+
 }
 
 .save-btn:hover{
 
     background:#1d4ed8;
+
 }
 
-/* ==========================================
-   View Details
-========================================== */
+/* ==========================================================
+   VIEW MODAL
+========================================================== */
 
-.details{
+.details-grid{
 
-    padding:24px;
+    display:grid;
+
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:20px;
+
 }
 
-.details p{
+.detail-item{
 
-    margin:12px 0;
+    display:flex;
 
-    padding-bottom:12px;
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.detail-item label{
+
+    font-size:12px;
+
+    color:#64748b;
+
+    text-transform:uppercase;
+
+    letter-spacing:.6px;
+
+    font-weight:700;
+
+}
+
+.detail-item span{
+
+    font-size:15px;
+
+    color:#1e293b;
+
+    font-weight:500;
+
+    word-break:break-word;
+
+}
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+table{
+
+    width:100%;
+
+    min-width:1250px;
+
+    border-collapse:collapse;
+
+}
+
+thead{
+
+    background:#f8fafc;
+
+    border-bottom:1px solid #e2e8f0;
+
+}
+
+thead th{
+
+    padding:18px 22px;
+
+    text-align:left;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#64748b;
+
+    white-space:nowrap;
+
+    text-transform:uppercase;
+
+    letter-spacing:.4px;
+
+}
+
+tbody td{
+
+    padding:18px 22px;
+
+    font-size:14px;
+
+    color:#334155;
 
     border-bottom:1px solid #f1f5f9;
 
-    color:#374151;
+    vertical-align:middle;
+
 }
 
-.details p:last-child{
+tbody tr{
 
-    border-bottom:none;
+    transition:.25s;
+
 }
 
-/* ==========================================
-   Delete Modal
-========================================== */
+tbody tr:hover{
+
+    background:#f8fbff;
+
+}
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.status{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:115px;
+
+    height:34px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+.in-stock{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+.low-stock{
+
+    background:#fef3c7;
+
+    color:#b45309;
+
+}
+
+.out-stock{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+}
+
+/* ==========================================================
+   ACTIONS
+========================================================== */
+
+.actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.actions button{
+
+    width:38px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    transition:.25s;
+
+}
+
+.actions button mat-icon{
+
+    font-size:19px;
+
+}
+
+.view-btn{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+}
+
+.view-btn:hover{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.edit-btn{
+
+    background:#fff7ed;
+
+    color:#ea580c;
+
+}
+
+.edit-btn:hover{
+
+    background:#ea580c;
+
+    color:white;
+
+}
+
+.delete-btn{
+
+    background:#fef2f2;
+
+    color:#dc2626;
+
+}
+
+.delete-btn:hover{
+
+    background:#dc2626;
+
+    color:white;
+
+}
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.empty-state{
+
+    text-align:center;
+
+    padding:70px 20px !important;
+
+}
+
+.empty-state mat-icon{
+
+    font-size:70px;
+
+    width:70px;
+
+    height:70px;
+
+    color:#cbd5e1;
+
+    margin-bottom:15px;
+
+}
+
+.empty-state h3{
+
+    margin:10px 0;
+
+    color:#334155;
+
+    font-size:22px;
+
+}
+
+.empty-state p{
+
+    margin:0;
+
+    color:#94a3b8;
+
+}
+
+/* ==========================================================
+   DELETE MODAL
+========================================================== */
 
 .delete-modal{
 
-    width:420px;
-
-    max-width:95%;
+    width:min(430px,92vw);
 
     background:white;
 
     border-radius:18px;
 
-    padding:30px;
+    padding:34px;
 
     text-align:center;
 
-    animation:popup .25s;
+    box-shadow:0 25px 60px rgba(15,23,42,.25);
+
+    animation:modalAnimation .25s ease;
+
+}
+
+.delete-icon{
+
+    width:78px;
+
+    height:78px;
+
+    margin:0 auto 20px;
+
+    border-radius:50%;
+
+    background:#fee2e2;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.delete-icon mat-icon{
+
+    font-size:40px;
+
+    width:40px;
+
+    height:40px;
+
+    color:#dc2626;
+
 }
 
 .delete-modal h2{
 
-    margin:0 0 12px;
+    margin-bottom:12px;
 
-    color:#111827;
+    color:#1e293b;
+
 }
 
 .delete-modal p{
@@ -565,7 +884,6 @@ tbody tr:hover{
 
     line-height:1.6;
 
-    margin-bottom:26px;
 }
 
 .delete-actions{
@@ -574,54 +892,143 @@ tbody tr:hover{
 
     justify-content:center;
 
-    gap:16px;
+    gap:12px;
+
+    margin-top:30px;
+
 }
 
 .delete-confirm-btn{
+
+    padding:12px 24px;
+
+    border:none;
+
+    border-radius:12px;
 
     background:#dc2626;
 
     color:white;
 
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 24px;
-
     cursor:pointer;
 
     font-weight:600;
+
+    transition:.25s;
+
 }
 
 .delete-confirm-btn:hover{
 
     background:#b91c1c;
+
 }
 
-/* ==========================================
-   Animations
-========================================== */
+/* ==========================================================
+   CUSTOM SCROLLBAR
+========================================================== */
 
-@keyframes popup{
+.modal-body::-webkit-scrollbar,
+.table-card::-webkit-scrollbar{
 
-    from{
+    width:8px;
 
-        opacity:0;
+    height:8px;
 
-        transform:translateY(-20px) scale(.95);
+}
+
+.modal-body::-webkit-scrollbar-thumb,
+.table-card::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover,
+.table-card::-webkit-scrollbar-thumb:hover{
+
+    background:#94a3b8;
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:992px){
+
+    .toolbar{
+
+        flex-direction:column;
+
+        align-items:stretch;
 
     }
 
-    to{
+    .toolbar-right{
 
-        opacity:1;
+        width:100%;
 
-        transform:translateY(0) scale(1);
+    }
+
+    .page-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:20px;
 
     }
 
 }
+
+@media(max-width:768px){
+
+    :host{
+
+        padding:18px;
+
+    }
+
+    .modal{
+
+        width:95vw;
+
+    }
+
+    .modal-body{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .details-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .modal-footer{
+
+        flex-direction:column-reverse;
+
+    }
+
+    .cancel-btn,
+    .save-btn{
+
+        width:100%;
+
+    }
+
+}
+
+/* ==========================================================
+   ANIMATIONS
+========================================================== */
 
 @keyframes fadeIn{
 
@@ -639,75 +1046,50 @@ tbody tr:hover{
 
 }
 
-/* ==========================================
-   Responsive
-========================================== */
+@keyframes modalAnimation{
 
-@media(max-width:768px){
+    from{
 
-    .toolbar{
+        opacity:0;
 
-        flex-direction:column;
+        transform:translateY(20px) scale(.98);
 
-        align-items:stretch;
     }
 
-    .toolbar input{
+    to{
 
-        width:100%;
-    }
+        opacity:1;
 
-    .filters{
+        transform:translateY(0) scale(1);
 
-        width:100%;
-    }
-
-    .filters select,
-    .add-btn{
-
-        width:100%;
-    }
-
-    .table-card{
-
-        overflow-x:auto;
-    }
-
-    table{
-
-        min-width:900px;
-    }
-
-    .modal{
-
-        width:95%;
-    }
-
-    .modal-footer{
-
-        flex-direction:column;
-    }
-
-    .modal-footer button{
-
-        width:100%;
-    }
-
-    .delete-actions{
-
-        flex-direction:column;
-    }
-
-    .delete-actions button{
-
-        width:100%;
     }
 
 }
-.empty-state{
-    text-align:center;
-    padding:40px;
-    font-size:15px;
-    font-weight:600;
-    color:#94a3b8;
+
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 28px;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+
+    box-sizing: border-box;
+}
+
+.form-group{
+    width:100%;
+    min-width:0;
+}
+
+.form-group input,
+.form-group textarea{
+
+    width:100%;
+
+    box-sizing:border-box;
+
 }

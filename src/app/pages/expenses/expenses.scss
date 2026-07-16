@@ -1,258 +1,349 @@
-/* ==========================================
-   Page Header
-========================================== */
+/* ==========================================================
+   EXPENSES PAGE
+========================================================== */
 
-.page-header{
-    margin-bottom:24px;
+:host {
+  display: block;
+  width: 100%;
 }
 
-h1{
-    margin:0;
-    font-size:28px;
-    font-weight:700;
-    color:#111827;
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .subtitle {
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 15px;
+  }
 }
 
-.subtitle{
-    margin-top:6px;
-    color:#64748b;
-    font-size:15px;
+/* ==========================================================
+   TOOLBAR
+========================================================== */
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 22px;
 }
 
-/* ==========================================
-   Toolbar
-========================================== */
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 
-.toolbar{
+  select {
+    width: 170px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #dbe3ef;
+    background: #fff;
+    padding: 0 14px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: .2s;
 
-    display:flex;
-
-    justify-content:flex-end;
-
-    align-items:center;
-
-    margin-bottom:24px;
+    &:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+    }
+  }
 }
 
-.toolbar select{
+/* ==========================================================
+   TABLE CARD
+========================================================== */
 
-    padding:12px 16px;
-
-    border:1px solid #d1d5db;
-
-    border-radius:10px;
-
-    background:white;
-
-    font-size:14px;
-
-    outline:none;
-
-    cursor:pointer;
+.table-card {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(15,23,42,.06);
+  border: 1px solid #edf2f7;
 }
 
-.toolbar select:focus{
+/* ==========================================================
+   TABLE
+========================================================== */
 
-    border-color:#2563eb;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* ==========================================
-   Table
-========================================== */
+thead {
+  background: #fafbfd;
 
-.table-card{
-
-    background:white;
-
-    border-radius:18px;
-
-    overflow:hidden;
-
-    box-shadow:0 5px 18px rgba(0,0,0,.08);
+  th {
+    padding: 18px 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+    white-space: nowrap;
+    border-bottom: 1px solid #e8edf5;
+  }
 }
 
-table{
+tbody {
 
-    width:100%;
+  tr {
+    transition: .2s;
 
-    border-collapse:collapse;
+    &:hover {
+      background: #f8fbff;
+    }
+  }
+
+  td {
+    padding: 18px 16px;
+    font-size: 14px;
+    color: #374151;
+    border-bottom: 1px solid #eef2f7;
+    vertical-align: middle;
+  }
 }
 
-thead{
+/* ==========================================================
+   EMPLOYEE COLUMN
+========================================================== */
 
-    background:#f8fafc;
+.employee-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  strong {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.3;
+  }
+
+  small {
+    font-size: 12px;
+    color: #94a3b8;
+  }
 }
 
-th{
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
 
-    text-align:left;
-
-    padding:18px;
-
-    font-size:15px;
-
-    font-weight:700;
-
-    color:#374151;
+.empty-state {
+  text-align: center;
+  padding: 50px 20px !important;
+  color: #94a3b8;
+  font-size: 15px;
 }
 
-td{
+/* ==========================================================
+   ACTIONS COLUMN
+========================================================== */
 
-    padding:18px;
-
-    border-top:1px solid #f1f5f9;
-
-    font-size:14px;
-
-    color:#374151;
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-tbody tr{
+/* ==========================================================
+   STATUS BADGES
+========================================================== */
 
-    transition:.25s;
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
 }
 
-tbody tr:hover{
-
-    background:#f8fbff;
+.status.pending {
+  color: #b45309;
+  background: #fef3c7;
 }
 
-/* ==========================================
-   Receipt Button
-========================================== */
-
-.receipt-btn{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    background:#eff6ff;
-
-    color:#2563eb;
-
-    border:none;
-
-    border-radius:8px;
-
-    padding:8px 14px;
-
-    cursor:pointer;
-
-    font-size:13px;
-
-    font-weight:600;
-
-    transition:.25s;
+.status.approved {
+  color: #15803d;
+  background: #dcfce7;
 }
 
-.receipt-btn:hover{
-
-    background:#dbeafe;
+.status.rejected {
+  color: #dc2626;
+  background: #fee2e2;
 }
 
-/* ==========================================
-   Status
-========================================== */
+/* ==========================================================
+   RECEIPT BUTTON
+========================================================== */
 
-.status{
+.receipt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 
-    display:inline-block;
+  padding: 10px 16px;
 
-    padding:6px 14px;
+  border: none;
+  border-radius: 10px;
 
-    border-radius:30px;
+  background: #eef4ff;
+  color: #2563eb;
 
-    font-size:13px;
+  font-size: 13px;
+  font-weight: 600;
 
-    font-weight:600;
+  cursor: pointer;
+
+  transition: .25s;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover:not(:disabled) {
+    background: #dbeafe;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+    background: #f5f5f5;
+    color: #94a3b8;
+  }
 }
 
-.pending{
+/* ==========================================================
+   COMMON ACTION BUTTON
+========================================================== */
 
-    background:#FEF3C7;
+.actions button {
+  width: 42px;
+  height: 42px;
 
-    color:#B45309;
+  border: none;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: .25s;
+
+  mat-icon {
+    font-size: 21px;
+    width: 21px;
+    height: 21px;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
-.approved{
+/* ==========================================================
+   VIEW BUTTON
+========================================================== */
 
-    background:#DCFCE7;
+.view-btn {
+  background: #eef4ff;
+  color: #2563eb;
 
-    color:#15803D;
+  &:hover {
+    background: #dbeafe;
+  }
 }
 
-.rejected{
+/* ==========================================================
+   APPROVE BUTTON
+========================================================== */
 
-    background:#FEE2E2;
+.approve-btn {
+  background: #dcfce7;
+  color: #16a34a;
 
-    color:#DC2626;
+  &:hover {
+    background: #bbf7d0;
+  }
 }
 
-/* ==========================================
-   Action Buttons
-========================================== */
+/* ==========================================================
+   REJECT BUTTON
+========================================================== */
 
-.actions{
+.reject-btn {
+  background: #fee2e2;
+  color: #dc2626;
 
-    display:flex;
-
-    gap:10px;
+  &:hover {
+    background: #fecaca;
+  }
 }
 
-.actions button{
+/* ==========================================================
+   DELETE BUTTON
+========================================================== */
 
-    width:38px;
+.delete-btn {
+  background: #fff1f2;
+  color: #dc2626;
 
-    height:38px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    border:none;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    transition:.25s;
+  &:hover {
+    background: #ffe4e6;
+  }
 }
 
-.actions button:hover{
+/* ==========================================================
+   BUTTON ACTIVE EFFECT
+========================================================== */
 
-    transform:translateY(-2px);
-
-    box-shadow:0 6px 14px rgba(0,0,0,.12);
+.actions button:active,
+.receipt-btn:active {
+  transform: scale(.96);
 }
 
-.view-btn{
+/* ==========================================================
+   TABLE RESPONSIVE
+========================================================== */
 
-    background:#dbeafe;
-
-    color:#2563eb;
+.table-card {
+  overflow-x: auto;
 }
 
-.approve-btn{
-
-    background:#dcfce7;
-
-    color:#16a34a;
+table {
+  min-width: 1050px;
 }
 
-.reject-btn{
-
-    background:#fee2e2;
-
-    color:#dc2626;
-}
-/* ==========================================
-   Modal Overlay
-========================================== */
+/* ==========================================================
+   MODAL OVERLAY
+========================================================== */
 
 .modal-overlay{
 
@@ -273,71 +364,70 @@ tbody tr:hover{
     animation:fadeIn .25s;
 }
 
-/* ==========================================
-   Main Modal
-========================================== */
+/* ==========================================================
+   COMMON MODAL
+========================================================== */
 
-.modal{
+.modal,
+.receipt-modal {
+  width: 900px;
+  max-width: 95vw;
 
-    width:700px;
-    max-width:90%;
+  max-height: 88vh;
 
-    background:white;
+  background: #fff;
 
-    border-radius:16px;
+  border-radius: 18px;
 
-    display:flex;
-    flex-direction:column;
+  overflow: hidden;
 
-    max-height:90vh;
+  display: flex;
+  flex-direction: column;
 
-    overflow:hidden;
+  box-shadow: 0 30px 70px rgba(0,0,0,.18);
 }
 
-.modal-footer{
+/* ==========================================================
+   MODAL HEADER
+========================================================== */
 
-    display:flex;
+.modal-header {
 
-    justify-content:flex-end;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    gap:12px;
+  padding: 22px 28px;
 
-    padding:20px 24px;
+  border-bottom: 1px solid #edf2f7;
 
-    border-top:1px solid #e5e7eb;
+  flex-shrink: 0;
 
-    background:white;
-
-    flex-shrink:0;
-}
-
-.modal-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    padding:20px 24px;
-
-    border-bottom:1px solid #e5e7eb;
-}
-
-.modal-header h2{
+  h2{
 
     margin:0;
 
-    font-size:22px;
+    font-size:30px;
 
-    color:#111827;
+    font-weight:700;
+
+    color:#1f2937;
+
+  }
+
 }
+
+/* ==========================================================
+   CLOSE BUTTON
+========================================================== */
 
 .close-btn{
 
     border:none;
 
     background:none;
+
+    font-size:22px;
 
     cursor:pointer;
 
@@ -346,291 +436,626 @@ tbody tr:hover{
 
 .close-btn:hover{
 
-    color:#dc2626;
+    color:#ef4444;
 }
 
-/* ==========================================
-   Details
-========================================== */
+/* ==========================================================
+   MODAL BODY
+========================================================== */
 
-.details{
-
-    padding:24px;
-}
-
-.details{
-
-    padding:24px;
-
-    flex:1;
-
-    overflow-y:auto;
-}
-
-.details p:last-child{
-
-    border-bottom:none;
-}
-
-/* ==========================================
-   Footer
-========================================== */
-
-.modal-footer{
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    gap:12px;
-
-    padding:20px 24px;
-
-    border-top:1px solid #e5e7eb;
-}
-
-.cancel-btn{
-
-    background:#e5e7eb;
-
-    color:#374151;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 22px;
-
-    cursor:pointer;
-
-    font-weight:600;
-
-    transition:.25s;
-}
-
-.cancel-btn:hover{
-
-    background:#d1d5db;
-}
-
-/* ==========================================
-   Approve Modal
-========================================== */
-
-.approve-modal{
-
-    width:430px;
-
-    max-width:95%;
-
-    background:white;
-
-    border-radius:18px;
+.modal-body{
 
     padding:30px;
 
-    text-align:center;
+    overflow-y:auto;
 
-    animation:popup .25s;
+    flex:1;
+
 }
 
-.approve-icon{
+/* ==========================================================
+   DETAILS GRID
+========================================================== */
 
-    margin-bottom:16px;
+.details-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:24px 40px;
+
 }
 
-.approve-icon mat-icon{
+.detail-item{
 
-    font-size:60px;
+    display:flex;
 
-    width:60px;
+    flex-direction:column;
 
-    height:60px;
+    gap:8px;
 
-    color:#16a34a;
 }
 
-.approve-details{
+.detail-item.full-width{
 
-    margin:24px 0;
+    grid-column:1/-1;
 
-    text-align:left;
-
-    background:#f8fafc;
-
-    padding:16px;
-
-    border-radius:10px;
 }
 
-.approve-actions{
+.detail-item label{
+
+    font-size:13px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+    color:#64748b;
+
+    font-weight:700;
+
+}
+
+.detail-item span{
+
+    font-size:16px;
+
+    color:#1f2937;
+
+    font-weight:600;
+
+    line-height:1.6;
+
+    word-break:break-word;
+
+}
+
+/* ==========================================================
+   RECEIPT MODAL
+========================================================== */
+
+.receipt-body{
 
     display:flex;
 
     justify-content:center;
 
-    gap:16px;
+    align-items:center;
+
+    min-height:420px;
+
+}
+
+.receipt-image{
+
+    max-width:100%;
+
+    max-height:65vh;
+
+    border-radius:14px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.08);
+
+}
+
+/* ==========================================================
+   EMPTY RECEIPT
+========================================================== */
+
+.empty-receipt{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:18px;
+
+    color:#94a3b8;
+
+    padding:60px;
+
+    mat-icon{
+
+        font-size:70px;
+
+        width:70px;
+
+        height:70px;
+
+    }
+
+    p{
+
+        margin:0;
+
+        font-size:15px;
+
+    }
+
+}
+
+/* ==========================================================
+   MODAL FOOTER
+========================================================== */
+
+.modal-footer{
+
+    padding:18px 28px;
+
+    border-top:1px solid #edf2f7;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:14px;
+
+    flex-shrink:0;
+
+}
+
+/* ==========================================================
+   CLOSE / CANCEL BUTTON
+========================================================== */
+
+.cancel-btn{
+
+    padding:12px 26px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#eef2f7;
+
+    color:#374151;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.cancel-btn:hover{
+
+    background:#dbe4ee;
+
+}
+
+/* ==========================================================
+   PART 4
+   APPROVE / REJECT MODALS
+   RESPONSIVE
+========================================================== */
+
+/* ==========================================================
+   CONFIRM MODAL
+========================================================== */
+
+.confirm-modal{
+
+    width:460px;
+    max-width:95vw;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    box-shadow:0 25px 60px rgba(15,23,42,.18);
+
+    animation:modalPop .25s ease;
+
+}
+
+.confirm-icon{
+
+    width:72px;
+    height:72px;
+
+    margin:0 auto 18px;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+}
+
+.confirm-icon mat-icon{
+
+    width:36px;
+    height:36px;
+    font-size:36px;
+
+}
+
+.confirm-icon.approve{
+
+    background:#dcfce7;
+
+}
+
+.confirm-icon.approve mat-icon{
+
+    color:#16a34a;
+
+}
+
+.confirm-icon.reject{
+
+    background:#fee2e2;
+
+}
+
+.confirm-icon.reject mat-icon{
+
+    color:#dc2626;
+
+}
+
+/* ==========================================================
+   TITLE
+========================================================== */
+
+.confirm-modal h2{
+
+    margin:0;
+
+    text-align:center;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#1f2937;
+
+}
+
+.confirm-modal p{
+
+    margin:12px 0 24px;
+
+    text-align:center;
+
+    color:#64748b;
+
+    font-size:14px;
+
+    line-height:1.6;
+
+}
+
+/* ==========================================================
+   DETAILS BOX
+========================================================== */
+
+.confirm-details{
+
+    border:1px solid #e5e7eb;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    margin-bottom:20px;
+
+}
+
+.confirm-details div{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 18px;
+
+    border-bottom:1px solid #edf2f7;
+
+}
+
+.confirm-details div:last-child{
+
+    border-bottom:none;
+
+}
+
+.confirm-details strong{
+
+    font-size:13px;
+
+    color:#64748b;
+
+}
+
+.confirm-details span{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#1f2937;
+
+}
+
+/* ==========================================================
+   REJECT TEXTAREA
+========================================================== */
+
+textarea{
+
+    width:100%;
+
+    min-height:120px;
+
+    resize:vertical;
+
+    border:1px solid #dbe3ef;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    font-size:14px;
+
+    font-family:inherit;
+
+    box-sizing:border-box;
+
+    transition:.25s;
+
+}
+
+textarea:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+
+}
+
+/* ==========================================================
+   ACTION BUTTONS
+========================================================== */
+
+.approve-confirm-btn,
+.reject-confirm-btn{
+
+    padding:12px 24px;
+
+    border:none;
+
+    border-radius:10px;
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
 }
 
 .approve-confirm-btn{
 
     background:#16a34a;
 
-    color:white;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 24px;
-
-    cursor:pointer;
-
-    font-weight:600;
 }
 
 .approve-confirm-btn:hover{
 
     background:#15803d;
-}
 
-/* ==========================================
-   Reject Modal
-========================================== */
-
-.reject-modal{
-
-    width:470px;
-
-    max-width:95%;
-
-    background:white;
-
-    border-radius:18px;
-
-    padding:30px;
-
-    animation:popup .25s;
-}
-
-.reject-icon{
-
-    text-align:center;
-
-    margin-bottom:16px;
-}
-
-.reject-icon mat-icon{
-
-    font-size:60px;
-
-    width:60px;
-
-    height:60px;
-
-    color:#dc2626;
-}
-
-.reject-modal h2{
-
-    text-align:center;
-
-    margin-bottom:10px;
-}
-
-.reject-modal p{
-
-    color:#64748b;
-}
-
-.reject-details{
-
-    background:#f8fafc;
-
-    padding:16px;
-
-    border-radius:10px;
-
-    margin:20px 0;
-}
-
-.reject-modal label{
-
-    display:block;
-
-    margin-bottom:8px;
-
-    font-weight:600;
-
-    color:#374151;
-}
-
-.reject-modal textarea{
-
-    width:100%;
-
-    padding:12px;
-
-    border:1px solid #d1d5db;
-
-    border-radius:10px;
-
-    resize:none;
-
-    outline:none;
-
-    font-size:14px;
-
-    margin-bottom:24px;
-}
-
-.reject-modal textarea:focus{
-
-    border-color:#2563eb;
-}
-
-.reject-actions{
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    gap:12px;
 }
 
 .reject-confirm-btn{
 
     background:#dc2626;
 
-    color:white;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 24px;
-
-    cursor:pointer;
-
-    font-weight:600;
 }
 
 .reject-confirm-btn:hover{
 
     background:#b91c1c;
+
 }
 
-/* ==========================================
-   Animations
-========================================== */
+/* ==========================================================
+   CUSTOM SCROLLBAR
+========================================================== */
 
-@keyframes popup{
+.table-card::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar{
+
+    width:8px;
+    height:8px;
+
+}
+
+.table-card::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+
+}
+
+.table-card::-webkit-scrollbar-track,
+.modal-body::-webkit-scrollbar-track{
+
+    background:#f8fafc;
+
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:992px){
+
+    .page-header{
+
+        flex-direction:column;
+
+        gap:12px;
+
+    }
+
+    .toolbar{
+
+        justify-content:flex-start;
+
+    }
+
+    .toolbar-right{
+
+        width:100%;
+
+    }
+
+    .toolbar select{
+
+        width:100%;
+
+    }
+
+    .details-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .detail-item.full-width{
+
+        grid-column:auto;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .table-card{
+
+        overflow-x:auto;
+
+    }
+
+    table{
+
+        min-width:980px;
+
+    }
+
+    .modal,
+    .receipt-modal{
+
+        width:95vw;
+
+        max-height:92vh;
+
+    }
+
+    .confirm-modal{
+
+        width:95vw;
+
+        padding:24px;
+
+    }
+
+    .modal-header{
+
+        padding:18px 20px;
+
+    }
+
+    .modal-body{
+
+        padding:20px;
+
+    }
+
+    .modal-footer{
+
+        padding:18px 20px;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .page-header h1{
+
+        font-size:26px;
+
+    }
+
+    .subtitle{
+
+        font-size:14px;
+
+    }
+
+    .confirm-details div{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:4px;
+
+    }
+
+    .modal-footer{
+
+        flex-direction:column;
+
+    }
+
+    .cancel-btn,
+    .approve-confirm-btn,
+    .reject-confirm-btn{
+
+        width:100%;
+
+    }
+
+}
+
+/* ==========================================================
+   ANIMATION
+========================================================== */
+
+@keyframes modalPop{
 
     from{
 
         opacity:0;
 
-        transform:translateY(-20px) scale(.95);
+        transform:translateY(18px) scale(.97);
 
     }
 
@@ -642,147 +1067,4 @@ tbody tr:hover{
 
     }
 
-}
-
-@keyframes fadeIn{
-
-    from{
-
-        opacity:0;
-
-    }
-
-    to{
-
-        opacity:1;
-
-    }
-
-}
-
-/* ==========================================
-   Responsive
-========================================== */
-
-@media(max-width:768px){
-
-    .toolbar{
-
-        justify-content:stretch;
-    }
-
-    .toolbar select{
-
-        width:100%;
-    }
-
-    .table-card{
-
-        overflow-x:auto;
-    }
-
-    table{
-
-        min-width:950px;
-    }
-
-    .modal{
-
-        width:95%;
-    }
-
-    .approve-modal,
-    .reject-modal{
-
-        width:95%;
-    }
-
-    .approve-actions,
-    .reject-actions{
-
-        flex-direction:column;
-    }
-
-    .approve-actions button,
-    .reject-actions button{
-
-        width:100%;
-    }
-
-}
-
-.empty-state{
-    text-align:center;
-    padding:40px;
-    font-size:15px;
-    font-weight:600;
-    color:#94a3b8;
-}
-
-/* ==========================================
-   Receipt Preview
-========================================== */
-
-.receipt-box{
-
-    margin-top:20px;
-}
-
-.receipt-box strong{
-
-    display:block;
-
-    margin-bottom:12px;
-
-    color:#374151;
-}
-
-.receipt-preview{
-
-    border:2px dashed #d1d5db;
-
-    border-radius:12px;
-
-    padding:18px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    flex-direction:column;
-
-    gap:10px;
-
-    background:#f8fafc;
-}
-
-.receipt-preview img{
-
-    width:100%;
-
-    max-width:320px;
-
-    border-radius:8px;
-
-    border:1px solid #e5e7eb;
-}
-
-.receipt-preview mat-icon{
-
-    font-size:60px;
-
-    width:60px;
-
-    height:60px;
-
-    color:#dc2626;
-}
-
-.receipt-preview span{
-
-    font-weight:600;
-
-    color:#374151;
 }

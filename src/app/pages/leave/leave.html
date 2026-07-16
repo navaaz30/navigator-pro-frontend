@@ -22,14 +22,47 @@
 
         <select [(ngModel)]="selectedStatus">
 
-            <option value="">All Requests</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Rejected">Rejected</option>
+    <option value="ALL">
+        All Requests
+    </option>
 
-        </select>
+    <option value="PENDING">
+        Pending
+    </option>
+
+    <option value="APPROVED">
+        Approved
+    </option>
+
+    <option value="REJECTED">
+        Rejected
+    </option>
+
+</select>
+
+        <select [(ngModel)]="selectedManager">
+
+    <option value="ALL">
+
+        All Managers
+
+    </option>
+
+    <option
+    *ngFor="let manager of managers"
+    [value]="manager.fullName">
+
+    {{ manager.fullName }}
+
+</option>
+
+</select>
+
+
 
     </div>
+
+
 
 </div>
 
@@ -69,15 +102,15 @@
 
 <tr *ngFor="let leave of filteredLeaves">
 
-<td>{{ leave.id }}</td>
+<td>{{ leave.leaveId }}</td>
 
-<td>{{ leave.employee }}</td>
+<td>{{ leave.employee?.fullName }}</td>
 
 <td>{{ leave.leaveType }}</td>
 
-<td>{{ leave.fromDate }}</td>
+<td>{{ leave.startDate | date:'dd MMM yyyy' }}</td>
 
-<td>{{ leave.toDate }}</td>
+<td>{{ leave.endDate | date:'dd MMM yyyy' }}</td>
 
 <td>{{ leave.totalDays }}</td>
 
@@ -89,12 +122,9 @@ class="status"
 
 [ngClass]="{
 
-'pending': leave.status === 'Pending',
-
-'approved': leave.status === 'Approved',
-
-'rejected': leave.status === 'Rejected'
-
+'pending': leave.status === 'PENDING',
+'approved': leave.status === 'APPROVED',
+'rejected': leave.status === 'REJECTED'
 }">
 
 {{ leave.status }}
@@ -121,7 +151,7 @@ class="view-btn"
 
 <button
 
-*ngIf="leave.status === 'Pending'"
+*ngIf="leave.status === 'PENDING'"
 
 class="approve-btn"
 
@@ -203,7 +233,7 @@ class="close-btn"
 
 <strong>Leave ID :</strong>
 
-{{ selectedLeave?.id }}
+{{ selectedLeave.leaveId }}
 
 </p>
 
@@ -211,7 +241,7 @@ class="close-btn"
 
 <strong>Employee :</strong>
 
-{{ selectedLeave?.employee }}
+{{ selectedLeave?.employee?.fullName }}
 
 </p>
 
@@ -219,7 +249,15 @@ class="close-btn"
 
 <strong>Department :</strong>
 
-{{ selectedLeave?.department }}
+{{ selectedLeave?.employee?.department }}
+
+</p>
+
+<p>
+
+    <strong>Assigned Manager :</strong>
+
+    {{ selectedLeave?.assignedManager?.fullName || '-' }}
 
 </p>
 
@@ -235,7 +273,7 @@ class="close-btn"
 
 <strong>From Date :</strong>
 
-{{ selectedLeave?.fromDate }}
+{{ selectedLeave?.startDate | date:'dd MMM yyyy' }}
 
 </p>
 
@@ -243,7 +281,7 @@ class="close-btn"
 
 <strong>To Date :</strong>
 
-{{ selectedLeave?.toDate }}
+{{ selectedLeave?.endDate | date:'dd MMM yyyy' }}
 
 </p>
 
@@ -267,7 +305,7 @@ class="close-btn"
 
 <strong>Applied On :</strong>
 
-{{ selectedLeave?.appliedDate }}
+{{ selectedLeave?.createdAt | date:'dd MMM yyyy' }}
 
 </p>
 
@@ -333,7 +371,7 @@ Are you sure you want to approve this leave request?
 
 <strong>Employee :</strong>
 
-{{ selectedLeave?.employee }}
+{{ selectedLeave?.employee?.fullName }}
 
 </p>
 
@@ -419,7 +457,7 @@ You are about to reject this leave request.
 
 <strong>Employee :</strong>
 
-{{ selectedLeave?.employee }}
+{{ selectedLeave?.employee?.fullName }}
 
 </p>
 

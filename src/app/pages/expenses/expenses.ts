@@ -1,22 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectorRef } from '@angular/core';
 
-interface Expense {
-  id: string;
-  employee: string;
-  department: string;
-  category: string;
-  amount: number;
-  date: string;
-  from: string;
-  to: string;
-  description: string;
-  receipt: string;
-  receiptType: 'image' | 'pdf';
-  status: 'Pending' | 'Approved' | 'Rejected';
-}
+import {
+  ExpenseService,
+  Expense
+} from '../../services/expense.service';
+
 @Component({
   selector: 'app-expenses',
   standalone: true,
@@ -28,10 +20,29 @@ interface Expense {
   templateUrl: './expenses.html',
   styleUrl: './expenses.scss'
 })
-export class Expenses {
+export class Expenses implements OnInit {
+
+  constructor(
+  private expenseService: ExpenseService,
+  private cdr: ChangeDetectorRef
+) {}
 
   // ==========================================
-  // Filter
+  // Loading
+  // ==========================================
+
+  loading = false;
+
+  // ==========================================
+  // Expense Data
+  // ==========================================
+
+  expenses: Expense[] = [];
+
+  selectedExpense: Expense | null = null;
+
+  // ==========================================
+  // Filters
   // ==========================================
 
   selectedStatus = '';
@@ -42,104 +53,59 @@ export class Expenses {
 
   showViewModal = false;
 
+  showReceiptModal = false;
+
   showApproveModal = false;
 
   showRejectModal = false;
 
-  showReceiptModal = false;
-
   rejectReason = '';
 
-  // ==========================================
-  // Selected Expense
-  // ==========================================
+  showDeleteModal = false;
 
-  selectedExpense: Expense | null = null;
+expenseToDelete: Expense | null = null;
 
   // ==========================================
-  // Dummy Data
+  // Lifecycle
   // ==========================================
 
-  expenses: Expense[] = [
+  ngOnInit(): void {
 
-  {
-    id: 'EXP-101',
-    employee: 'Abhishek Singh',
-    department: 'Electrical',
-    category: 'Travel',
-    amount: 2450,
-    date: '30 Jun 2026',
-    from: 'Chennai',
-    to: 'Bangalore',
-    description: 'Travel expense for client visit.',
-    receipt: 'travel_receipt.pdf',
-    receiptType: 'pdf',
-    status: 'Pending'
-  },
+    this.loadExpenses();
 
-  {
-    id: 'EXP-102',
-    employee: 'Rohit Sharma',
-    department: 'Civil',
-    category: 'Fuel',
-    amount: 820,
-    date: '29 Jun 2026',
-    from: 'Delhi',
-    to: 'Noida',
-    description: 'Fuel reimbursement.',
-    receipt: 'fuel_receipt.jpg',
-    receiptType: 'image',
-    status: 'Approved'
-  },
-
-  {
-    id: 'EXP-103',
-    employee: 'Sanjeev Kumar',
-    department: 'Electrical',
-    category: 'Food',
-    amount: 650,
-    date: '28 Jun 2026',
-    from: 'Mumbai',
-    to: 'Mumbai',
-    description: 'Client meeting lunch.',
-    receipt: 'food_bill.jpg',
-    receiptType: 'image',
-    status: 'Pending'
-  },
-
-  {
-    id: 'EXP-104',
-    employee: 'Pankaj Mehta',
-    department: 'Mechanical',
-    category: 'Accommodation',
-    amount: 5200,
-    date: '27 Jun 2026',
-    from: 'Hyderabad',
-    to: 'Pune',
-    description: 'Hotel stay during site visit.',
-    receipt: 'hotel_invoice.pdf',
-    receiptType: 'pdf',
-    status: 'Rejected'
-  },
-
-  {
-    id: 'EXP-105',
-    employee: 'Deepak Verma',
-    department: 'Safety',
-    category: 'Equipment',
-    amount: 1800,
-    date: '26 Jun 2026',
-    from: 'Kolkata',
-    to: 'Kolkata',
-    description: 'Purchased safety equipment.',
-    receipt: 'equipment_bill.pdf',
-    receiptType: 'pdf',
-    status: 'Approved'
   }
 
+  // ==========================================
+  // Load Expenses
+  // ==========================================
 
+  loadExpenses(): void {
 
-  ];
+    this.loading = true;
+
+    this.expenseService.getAllExpenses().subscribe({
+
+      next: (response: any) => {
+
+  this.expenses = [...(response.data || [])];
+
+  this.loading = false;
+
+  this.cdr.detectChanges();
+
+},
+
+      error: (err) => {
+
+        console.error('Failed to load expenses', err);
+
+        this.loading = false;
+
+      }
+
+    });
+
+  }
 
   // ==========================================
   // Filtered Expenses
@@ -147,24 +113,28 @@ export class Expenses {
 
   get filteredExpenses(): Expense[] {
 
-    return this.expenses.filter(expense => {
+  console.log('========== FILTERED GETTER ==========');
+  console.log('selectedStatus:', this.selectedStatus);
+  console.log('expenses length:', this.expenses.length);
+  console.log(this.expenses);
 
-      return this.selectedStatus === '' ||
-
-      expense.status === this.selectedStatus;
-
-    });
-
+  if (!this.selectedStatus) {
+    return this.expenses;
   }
-    // ==========================================
+
+  return this.expenses.filter(expense =>
+    expense.status === this.selectedStatus
+  );
+
+}
+
+  // ==========================================
   // View Expense
   // ==========================================
 
   viewExpense(expense: Expense): void {
 
-    this.selectedExpense = {
-      ...expense
-    };
+    this.selectedExpense = expense;
 
     this.showViewModal = true;
 
@@ -179,6 +149,26 @@ export class Expenses {
   }
 
   // ==========================================
+  // Receipt Modal
+  // ==========================================
+
+  viewReceipt(expense: Expense): void {
+
+    this.selectedExpense = expense;
+
+    this.showReceiptModal = true;
+
+  }
+
+  closeReceiptModal(): void {
+
+    this.showReceiptModal = false;
+
+    this.selectedExpense = null;
+
+  }
+
+    // ==========================================
   // Approve Expense
   // ==========================================
 
@@ -187,6 +177,47 @@ export class Expenses {
     this.selectedExpense = expense;
 
     this.showApproveModal = true;
+
+  }
+
+  cancelApprove(): void {
+
+    this.showApproveModal = false;
+
+    this.selectedExpense = null;
+
+  }
+
+  confirmApprove(): void {
+
+    if (!this.selectedExpense?._id) {
+      return;
+    }
+
+    this.expenseService
+      .approveExpense(
+        this.selectedExpense._id,
+        'Approved'
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.showApproveModal = false;
+
+          this.selectedExpense = null;
+
+          this.loadExpenses();
+
+        },
+
+        error: (err) => {
+
+          console.error('Approve failed', err);
+
+        }
+
+      });
 
   }
 
@@ -204,22 +235,6 @@ export class Expenses {
 
   }
 
-  // ==========================================
-  // Cancel Approve
-  // ==========================================
-
-  cancelApprove(): void {
-
-    this.showApproveModal = false;
-
-    this.selectedExpense = null;
-
-  }
-
-  // ==========================================
-  // Cancel Reject
-  // ==========================================
-
   cancelReject(): void {
 
     this.showRejectModal = false;
@@ -229,80 +244,180 @@ export class Expenses {
     this.rejectReason = '';
 
   }
-    // ==========================================
-  // Confirm Approve
-  // ==========================================
-
-  confirmApprove(): void {
-
-    if (!this.selectedExpense) return;
-
-    const index = this.expenses.findIndex(
-      expense => expense.id === this.selectedExpense!.id
-    );
-
-    if (index !== -1) {
-
-      this.expenses[index].status = 'Approved';
-
-    }
-
-    this.showApproveModal = false;
-
-    this.selectedExpense = null;
-
-  }
-
-  // ==========================================
-  // Confirm Reject
-  // ==========================================
 
   confirmReject(): void {
 
-    if (!this.selectedExpense) return;
-
-    const index = this.expenses.findIndex(
-      expense => expense.id === this.selectedExpense!.id
-    );
-
-    if (index !== -1) {
-
-      this.expenses[index].status = 'Rejected';
-
-      // Save rejection reason if you
-      // later add it to the interface/database
-
-      console.log(
-        'Rejection Reason :',
-        this.rejectReason
-      );
-
+    if (!this.selectedExpense?._id) {
+      return;
     }
 
-    this.showRejectModal = false;
+    this.expenseService
+      .rejectExpense(
+        this.selectedExpense._id,
+        this.rejectReason
+      )
+      .subscribe({
 
-    this.selectedExpense = null;
+        next: () => {
 
-    this.rejectReason = '';
+          this.showRejectModal = false;
+
+          this.selectedExpense = null;
+
+          this.rejectReason = '';
+
+          this.loadExpenses();
+
+        },
+
+        error: (err) => {
+
+          console.error('Reject failed', err);
+
+        }
+
+      });
 
   }
 
-  viewReceipt(expense: Expense): void {
+  // ==========================================
+  // Delete Expense
+  // ==========================================
 
-  this.selectedExpense = {
-    ...expense
-  };
+  deleteExpense(expense: Expense): void {
 
-  this.showReceiptModal = true;
+    this.expenseToDelete = expense;
+
+    this.showDeleteModal = true;
+
+}
+
+cancelDelete(): void {
+
+    this.showDeleteModal = false;
+
+    this.expenseToDelete = null;
 
 }
 
-closeReceiptModal(): void {
+confirmDelete(): void {
 
-  this.showReceiptModal = false;
+    if (!this.expenseToDelete?._id) return;
 
-  this.selectedExpense = null;
+    this.expenseService
+        .deleteExpense(this.expenseToDelete._id)
+        .subscribe({
+
+            next: () => {
+
+                this.showDeleteModal = false;
+
+                this.expenseToDelete = null;
+
+                this.loadExpenses();
+
+            },
+
+            error: err => {
+
+                console.error(err);
+
+            }
+
+        });
 
 }
+
+  // ==========================================
+  // Refresh Expenses
+  // ==========================================
+
+  refreshExpenses(): void {
+
+    this.loadExpenses();
+
+  }
+
+    // ==========================================
+  // Status Badge Class
+  // ==========================================
+
+  getStatusClass(status?: string): string {
+
+    switch (status) {
+
+      case 'APPROVED':
+        return 'approved';
+
+      case 'REJECTED':
+        return 'rejected';
+
+      case 'PENDING':
+      default:
+        return 'pending';
+
+    }
+
+  }
+
+  // ==========================================
+  // Receipt URL
+  // ==========================================
+
+  getReceiptUrl(): string {
+
+    if (!this.selectedExpense) {
+      return '';
+    }
+
+    const expense: any = this.selectedExpense;
+
+    if (expense.receiptUrl) {
+      return expense.receiptUrl;
+    }
+
+    if (expense.receipt) {
+      return `http://localhost:5000/uploads/expense-receipts/${expense.receipt}`;
+    }
+
+    return '';
+
+  }
+
+  // ==========================================
+  // Helpers
+  // ==========================================
+
+  hasReceipt(expense: Expense): boolean {
+
+    const data: any = expense;
+
+    return !!(data.receipt || data.receiptUrl);
+
+  }
+
+  getEmployeeName(expense: Expense): string {
+
+    const data: any = expense;
+
+    return data.employee?.fullName || '-';
+
+  }
+
+  getEmployeeId(expense: Expense): string {
+
+    const data: any = expense;
+
+    return data.employee?.employeeId || '-';
+
+  }
+
+  getManagerRemarks(expense: Expense): string {
+
+    const data: any = expense;
+
+    return data.managerRemarks || '-';
+
+  }
 
 }

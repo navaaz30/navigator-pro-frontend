@@ -1,23 +1,41 @@
-import { Component, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  ChangeDetectorRef
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+
+import { ReportService } from '../../services/report.service';
 
 import {
   Chart,
   DoughnutController,
   PieController,
-  LineController,
   BarController,
   ArcElement,
-  LineElement,
   BarElement,
   CategoryScale,
   LinearScale,
-  PointElement,
   Tooltip,
   Legend
 } from 'chart.js';
+
+Chart.register(
+  DoughnutController,
+  PieController,
+  BarController,
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend
+);
 
 interface EmployeeReport {
 
@@ -37,21 +55,6 @@ interface EmployeeReport {
 
 }
 
-Chart.register(
-  DoughnutController,
-  PieController,
-  LineController,
-  BarController,
-  ArcElement,
-  LineElement,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  Tooltip,
-  Legend
-);
-
 @Component({
   selector: 'app-reports',
   standalone: true,
@@ -63,436 +66,419 @@ Chart.register(
   templateUrl: './reports.html',
   styleUrl: './reports.scss'
 })
-export class Reports implements AfterViewInit {
-  // ==========================================
+
+export class Reports implements OnInit, AfterViewInit, OnDestroy {
+
+  constructor(
+    private reportService: ReportService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  // =====================================================
   // Filters
-  // ==========================================
+  // =====================================================
 
   selectedPeriod = 'today';
 
   selectedDepartment = '';
 
-  // ==========================================
-  // Modal Controls
-  // ==========================================
+  // =====================================================
+  // Modal
+  // =====================================================
 
   showViewModal = false;
 
   selectedReport: EmployeeReport | null = null;
 
-  // ==========================================
-  // Dummy Report Data
-  // ==========================================
+  // =====================================================
+  // Backend Data
+  // =====================================================
 
-  reports: EmployeeReport[] = [
+  summary: any = {};
 
-    {
-      employee: 'Abhishek Singh',
-      department: 'Electrical',
-      attendance: 96,
-      tasks: 45,
-      expenses: 24500,
-      leaves: 2,
-      performance: 'Excellent'
-    },
+  attendanceData: any = {};
 
-    {
-      employee: 'Rohit Sharma',
-      department: 'Civil',
-      attendance: 91,
-      tasks: 39,
-      expenses: 18200,
-      leaves: 4,
-      performance: 'Good'
-    },
+  taskData: any = {};
 
-    {
-      employee: 'Sanjeev Kumar',
-      department: 'Electrical',
-      attendance: 88,
-      tasks: 34,
-      expenses: 12850,
-      leaves: 5,
-      performance: 'Average'
-    },
+  leaveData: any = {};
 
-    {
-      employee: 'Pankaj Mehta',
-      department: 'Mechanical',
-      attendance: 76,
-      tasks: 24,
-      expenses: 9800,
-      leaves: 8,
-      performance: 'Poor'
-    },
+  expenseData: any = {};
 
-    {
-      employee: 'Deepak Verma',
-      department: 'Safety',
-      attendance: 94,
-      tasks: 42,
-      expenses: 21400,
-      leaves: 3,
-      performance: 'Excellent'
-    }
+  inventoryData: any = {};
 
-  ];
+  reports: EmployeeReport[] = [];
 
-  // ==========================================
+  // =====================================================
+  // Charts
+  // =====================================================
+
+  attendanceChart?: Chart;
+
+  expenseChart?: Chart;
+
+  taskChart?: Chart;
+
+  leaveChart?: Chart;
+
+  // =====================================================
   // Filtered Reports
-  // ==========================================
+  // =====================================================
 
   get filteredReports(): EmployeeReport[] {
 
     return this.reports.filter(report => {
 
-      const matchesDepartment =
+      return (
 
         this.selectedDepartment === '' ||
 
-        report.department === this.selectedDepartment;
+        report.department === this.selectedDepartment
 
-      return matchesDepartment;
+      );
 
     });
 
   }
 
-    // ==========================================
-  // View Report
-  // ==========================================
+  // =====================================================
+  // Lifecycle
+  // =====================================================
 
-  viewReport(report: EmployeeReport): void {
+  ngOnInit(): void {
 
-    this.selectedReport = {
-      ...report
-    };
+    this.loadSummary();
 
-    this.showViewModal = true;
+    this.loadAttendanceReport();
 
-  }
+    this.loadTaskReport();
 
-  // ==========================================
-  // Close View Modal
-  // ==========================================
+    this.loadLeaveReport();
 
-  closeViewModal(): void {
+    this.loadExpenseReport();
 
-    this.showViewModal = false;
+    this.loadInventoryReport();
 
-    this.selectedReport = null;
+    this.loadEmployeeReport();
 
   }
 
-  // ==========================================
-  // Export PDF (Placeholder)
-  // ==========================================
+  ngAfterViewInit(): void {
 
-  downloadPDF(report: EmployeeReport): void {
-
-    console.log(
-      'Export PDF for:',
-      report.employee
-    );
-
-    alert(
-      'PDF Export functionality will be connected with the backend later.'
-    );
+    // Charts will be created after
+    // API data has loaded.
 
   }
 
-  // ==========================================
-  // Print Report (Placeholder)
-  // ==========================================
+  ngOnDestroy(): void {
 
-  printReport(report: EmployeeReport): void {
+    this.attendanceChart?.destroy();
 
-    console.log(
-      'Print Report for:',
-      report.employee
-    );
+    this.expenseChart?.destroy();
 
-    alert(
-      'Print functionality will be connected with the backend later.'
-    );
+    this.taskChart?.destroy();
+
+    this.leaveChart?.destroy();
 
   }
 
-   // ==========================================
-// Initialize Charts
-// ==========================================
+    // =====================================================
+  // Dashboard Summary
+  // =====================================================
 
-ngAfterViewInit(): void {
+  loadSummary(): void {
 
+    this.reportService.getSummary().subscribe({
 
-  this.loadAttendanceChart();
+      next: (res: any) => {
 
-  this.loadExpenseChart();
+        this.summary = res.data;
 
-  this.loadTaskChart();
-
-  this.loadLeaveChart();
-
-}
-
-// ==========================================
-// Attendance Chart
-// ==========================================
-
-loadAttendanceChart(): void {
-
-  const canvas = document.getElementById(
-    'attendanceChart'
-  ) as HTMLCanvasElement;
-
-  if (!canvas) return;
-
-  new Chart(canvas, {
-
-    type: 'doughnut',
-
-    data: {
-
-      labels: [
-        'Present',
-        'Absent',
-        'On Leave'
-      ],
-
-      datasets: [
-
-        {
-
-          data: [98, 12, 10],
-
-          backgroundColor: [
-
-            '#22c55e',
-
-            '#ef4444',
-
-            '#f59e0b'
-
-          ],
-
-          borderWidth: 2,
-
-          borderColor: '#ffffff'
-
-        }
-
-      ]
-
-    },
-
-    options: {
-
-      responsive: true,
-
-      maintainAspectRatio: false,
-
-      plugins: {
-
-        legend: {
-
-          position: 'bottom'
-
-        }
-
-      }
-
-    }
-
-  });
-
-}
-
-// ==========================================
-// Expense Analysis Chart
-// ==========================================
-
-loadExpenseChart(): void {
-
-  const canvas = document.getElementById(
-    'expenseChart'
-  ) as HTMLCanvasElement;
-
-  if (!canvas) return;
-
-  new Chart(canvas, {
-
-    type: 'line',
-
-    data: {
-
-      labels: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec'
-      ],
-
-      datasets: [
-
-        {
-
-          label: 'Expenses (₹)',
-
-          data: [
-            12000,
-            18500,
-            15000,
-            22000,
-            18000,
-            24500,
-            21000,
-            26000,
-            23500,
-            28000,
-            25000,
-            30000
-          ],
-
-          borderColor: '#2563eb',
-
-          backgroundColor: 'rgba(37,99,235,0.15)',
-
-          fill: true,
-
-          tension: 0.4,
-
-          pointRadius: 5,
-
-          pointHoverRadius: 7
-
-        }
-
-      ]
-
-    },
-
-    options: {
-
-      responsive: true,
-
-      maintainAspectRatio: false,
-
-      plugins: {
-
-        legend: {
-
-          display: true,
-
-          position: 'bottom'
-
-        }
+        this.cdr.detectChanges();
 
       },
 
-      scales: {
+      error: (err) => {
 
-        y: {
-
-          beginAtZero: true
-
-        }
+        console.error('Summary Error:', err);
 
       }
 
-    }
+    });
 
-  });
+  }
 
-}
+  // =====================================================
+  // Attendance Report
+  // =====================================================
 
-// ==========================================
-// Task Completion Chart
-// ==========================================
+  loadAttendanceReport(): void {
 
-loadTaskChart(): void {
+    this.reportService.getAttendanceReport().subscribe({
 
-  const canvas = document.getElementById(
-    'taskChart'
-  ) as HTMLCanvasElement;
+      next: (res: any) => {
 
-  if (!canvas) return;
+        this.attendanceData = res.data;
 
-  new Chart(canvas, {
+        this.cdr.detectChanges();
 
-    type: 'bar',
+        setTimeout(() => {
 
-    data: {
+          this.loadAttendanceChart();
 
-      labels: [
-        'Completed',
-        'In Progress',
-        'Pending'
-      ],
-
-      datasets: [
-
-        {
-
-          label: 'Tasks',
-
-          data: [
-            245,
-            52,
-            18
-          ],
-
-          backgroundColor: [
-
-            '#22c55e',
-
-            '#3b82f6',
-
-            '#f59e0b'
-
-          ],
-
-          borderRadius: 8
-
-        }
-
-      ]
-
-    },
-
-    options: {
-
-      responsive: true,
-
-      maintainAspectRatio: false,
-
-      plugins: {
-
-        legend: {
-
-          display: false
-
-        }
+        }, 0);
 
       },
 
-      scales: {
+      error: (err) => {
 
-        y: {
+        console.error('Attendance Error:', err);
 
-          beginAtZero: true,
-          suggestedMax: 300,
+      }
 
-          ticks: {
+    });
 
-            stepSize: 50
+  }
+
+  // =====================================================
+  // Task Report
+  // =====================================================
+
+  loadTaskReport(): void {
+
+    this.reportService.getTaskReport().subscribe({
+
+      next: (res: any) => {
+
+        this.taskData = res.data;
+
+        this.cdr.detectChanges();
+
+        setTimeout(() => {
+
+          this.loadTaskChart();
+
+        }, 0);
+
+      },
+
+      error: (err) => {
+
+        console.error('Task Error:', err);
+
+      }
+
+    });
+
+  }
+
+  // =====================================================
+  // Leave Report
+  // =====================================================
+
+  loadLeaveReport(): void {
+
+    this.reportService.getLeaveReport().subscribe({
+
+      next: (res: any) => {
+
+        this.leaveData = res.data;
+
+        this.cdr.detectChanges();
+
+        setTimeout(() => {
+
+          this.loadLeaveChart();
+
+        }, 0);
+
+      },
+
+      error: (err) => {
+
+        console.error('Leave Error:', err);
+
+      }
+
+    });
+
+  }
+
+  // =====================================================
+  // Expense Report
+  // =====================================================
+
+  loadExpenseReport(): void {
+
+    this.reportService.getExpenseReport().subscribe({
+
+      next: (res: any) => {
+
+        this.expenseData = res.data;
+
+        this.cdr.detectChanges();
+
+        setTimeout(() => {
+
+          this.loadExpenseChart();
+
+        }, 0);
+
+      },
+
+      error: (err) => {
+
+        console.error('Expense Error:', err);
+
+      }
+
+    });
+
+  }
+
+  // =====================================================
+  // Inventory Report
+  // =====================================================
+
+  loadInventoryReport(): void {
+
+    this.reportService.getInventoryReport().subscribe({
+
+      next: (res: any) => {
+
+        this.inventoryData = res.data;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Inventory Error:', err);
+
+      }
+
+    });
+
+  }
+
+  // =====================================================
+  // Employee Report
+  // =====================================================
+
+  loadEmployeeReport(): void {
+
+    this.reportService.getEmployeeReport().subscribe({
+
+      next: (res: any) => {
+
+        this.reports = res.data.map((employee: any) => ({
+
+          employee: employee.fullName,
+
+          department: employee.department,
+
+          
+          attendance: employee.attendance,
+
+          tasks: employee.tasks,
+
+          expenses: employee.expenses,
+
+          leaves: employee.leaves,
+
+          performance: employee.performance
+
+        }));
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (err) => {
+
+        console.error('Employee Report Error:', err);
+
+      }
+
+    });
+
+  }
+
+    // =====================================================
+  // Attendance Chart
+  // =====================================================
+
+  loadAttendanceChart(): void {
+
+    const canvas = document.getElementById(
+      'attendanceChart'
+    ) as HTMLCanvasElement;
+
+    if (!canvas) return;
+
+    this.attendanceChart?.destroy();
+
+    this.attendanceChart = new Chart(canvas, {
+
+      type: 'doughnut',
+
+      data: {
+
+        labels: [
+
+          'Present',
+
+          'Absent',
+
+          'Half Day'
+
+        ],
+
+        datasets: [
+
+          {
+
+            data: [
+
+              this.attendanceData?.present ?? 0,
+
+              this.attendanceData?.absent ?? 0,
+
+              this.attendanceData?.halfDay ?? 0
+
+            ],
+
+            backgroundColor: [
+
+              '#16a34a',
+
+              '#dc2626',
+
+              '#f59e0b'
+
+            ],
+
+            borderWidth: 2,
+
+            borderColor: '#fff'
+
+          }
+
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+          legend: {
+
+            position: 'bottom'
 
           }
 
@@ -500,90 +486,494 @@ loadTaskChart(): void {
 
       }
 
-    }
+    });
 
-  });
+  }
 
-}
+  // =====================================================
+  // Task Chart
+  // =====================================================
 
-// ==========================================
-// Leave Statistics Chart
-// ==========================================
+  loadTaskChart(): void {
 
-loadLeaveChart(): void {
+    const canvas = document.getElementById(
+      'taskChart'
+    ) as HTMLCanvasElement;
 
-  const canvas = document.getElementById(
-    'leaveChart'
-  ) as HTMLCanvasElement;
+    if (!canvas) return;
 
-  if (!canvas) return;
+    this.taskChart?.destroy();
 
-  new Chart(canvas, {
+    this.taskChart = new Chart(canvas, {
 
-    type: 'pie',
+      type: 'bar',
 
-    data: {
+      data: {
 
-      labels: [
-        'Casual',
-        'Sick',
-        'Earned',
-        'Emergency'
-      ],
+        labels: [
 
-      datasets: [
+          'Completed',
 
-        {
+          'In Progress',
 
-          data: [
-            42,
-            18,
-            27,
-            8
-          ],
+          'Pending'
 
-          backgroundColor: [
+        ],
 
-            '#3b82f6',
+        datasets: [
 
-            '#22c55e',
+          {
 
-            '#f59e0b',
+            label: 'Tasks',
 
-            '#ef4444'
+            data: [
 
-          ],
+              this.taskData?.completed ?? 0,
 
-          borderColor: '#ffffff',
+              this.taskData?.inProgress ?? 0,
 
-          borderWidth: 2
+              this.taskData?.pending ?? 0
 
-        }
+            ],
 
-      ]
+            backgroundColor: [
 
-    },
+              '#16a34a',
 
-    options: {
+              '#2563eb',
 
-      responsive: true,
+              '#f59e0b'
 
-      maintainAspectRatio: false,
+            ],
 
-      plugins: {
+            borderRadius: 8
 
-        legend: {
+          }
 
-          position: 'bottom'
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+          legend: {
+
+            display: false
+
+          }
+
+        },
+
+        scales: {
+
+          y: {
+
+            beginAtZero: true,
+
+            ticks: {
+
+              precision: 0
+
+            }
+
+          }
 
         }
 
       }
 
-    }
+    });
 
-  });
+  }
 
-}
+  // =====================================================
+  // Leave Chart
+  // =====================================================
+
+  loadLeaveChart(): void {
+
+    const canvas = document.getElementById(
+      'leaveChart'
+    ) as HTMLCanvasElement;
+
+    if (!canvas) return;
+
+    this.leaveChart?.destroy();
+
+    this.leaveChart = new Chart(canvas, {
+
+      type: 'pie',
+
+      data: {
+
+        labels: [
+
+          'Casual',
+
+          'Sick',
+
+          'Earned'
+
+        ],
+
+        datasets: [
+
+          {
+
+            data: [
+
+              this.leaveData?.leaveTypes?.casual ?? 0,
+
+              this.leaveData?.leaveTypes?.sick ?? 0,
+
+              this.leaveData?.leaveTypes?.earned ?? 0
+
+            ],
+
+            backgroundColor: [
+
+              '#3b82f6',
+
+              '#22c55e',
+
+              '#f59e0b'
+
+            ],
+
+            borderWidth: 2,
+
+            borderColor: '#fff'
+
+          }
+
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+          legend: {
+
+            position: 'bottom'
+
+          }
+
+        }
+
+      }
+
+    });
+
+  }
+
+  // =====================================================
+  // Expense Chart
+  // =====================================================
+
+  loadExpenseChart(): void {
+
+    const canvas = document.getElementById(
+      'expenseChart'
+    ) as HTMLCanvasElement;
+
+    if (!canvas) return;
+
+    this.expenseChart?.destroy();
+
+    this.expenseChart = new Chart(canvas, {
+
+      type: 'bar',
+
+      data: {
+
+        labels: [
+
+          'Approved',
+
+          'Pending',
+
+          'Rejected'
+
+        ],
+
+        datasets: [
+
+          {
+
+            label: 'Amount (₹)',
+
+            data: [
+
+              this.expenseData?.approvedExpenses ?? 0,
+
+              this.expenseData?.pendingExpenses ?? 0,
+
+              this.expenseData?.rejectedExpenses ?? 0
+
+            ],
+
+            backgroundColor: [
+
+              '#22c55e',
+
+              '#f59e0b',
+
+              '#ef4444'
+
+            ],
+
+            borderRadius: 8
+
+          }
+
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+          legend: {
+
+            display: false
+
+          }
+
+        },
+
+        scales: {
+
+          y: {
+
+            beginAtZero: true,
+
+            ticks: {
+
+              callback(value) {
+
+                return '₹' + value;
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    });
+
+  }
+
+    // =====================================================
+  // View Report
+  // =====================================================
+
+  viewReport(report: EmployeeReport): void {
+
+    this.selectedReport = { ...report };
+
+    this.showViewModal = true;
+
+  }
+
+  // =====================================================
+  // Close Modal
+  // =====================================================
+
+  closeViewModal(): void {
+
+    this.selectedReport = null;
+
+    this.showViewModal = false;
+
+  }
+
+  // =====================================================
+  // Export PDF
+  // =====================================================
+
+  downloadPDF(report: EmployeeReport): void {
+
+    console.log('PDF Export', report);
+
+    alert(
+      'PDF Export will be implemented in the next update.'
+    );
+
+  }
+
+  // =====================================================
+  // Export Excel
+  // =====================================================
+
+  downloadExcel(): void {
+
+    console.log('Excel Export');
+
+    alert(
+      'Excel Export will be implemented in the next update.'
+    );
+
+  }
+
+  // =====================================================
+  // Print
+  // =====================================================
+
+  printReport(report: EmployeeReport): void {
+
+    console.log('Print', report);
+
+    window.print();
+
+  }
+
+  // =====================================================
+  // Refresh
+  // =====================================================
+
+  refreshReports(): void {
+
+    this.loadSummary();
+
+    this.loadAttendanceReport();
+
+    this.loadTaskReport();
+
+    this.loadLeaveReport();
+
+    this.loadExpenseReport();
+
+    this.loadInventoryReport();
+
+    this.loadEmployeeReport();
+
+  }
+
+  // =====================================================
+  // Apply Filters
+  // =====================================================
+
+  applyFilters(): void {
+
+    this.refreshReports();
+
+  }
+
+  // =====================================================
+  // Reset Filters
+  // =====================================================
+
+  resetFilters(): void {
+
+    this.selectedDepartment = '';
+
+    this.selectedPeriod = 'today';
+
+    this.refreshReports();
+
+  }
+
+  // =====================================================
+  // Helper Getters
+  // =====================================================
+
+  get totalEmployees(): number {
+
+    return this.summary?.totalEmployees ?? 0;
+
+  }
+
+  get presentToday(): number {
+
+    return this.summary?.presentToday ?? 0;
+
+  }
+
+  get completedTasks(): number {
+
+    return this.summary?.completedTasks ?? 0;
+
+  }
+
+  get totalExpenses(): number {
+
+    return this.summary?.totalExpenses ?? 0;
+
+  }
+
+  get inventoryValue(): number {
+
+    return this.summary?.totalInventoryValue ?? 0;
+
+  }
+
+  get totalAttendance(): number {
+
+    return this.attendanceData?.present ?? 0;
+
+  }
+
+  get totalLeaves(): number {
+
+    return this.leaveData?.total ?? 0;
+
+  }
+
+  get pendingTasks(): number {
+
+    return this.taskData?.pending ?? 0;
+
+  }
+
+  get approvedExpenses(): number {
+
+    return this.expenseData?.approvedExpenses ?? 0;
+
+  }
+
+  // =====================================================
+  // Currency Formatter
+  // =====================================================
+
+  formatCurrency(value: number): string {
+
+    return new Intl.NumberFormat(
+
+      'en-IN',
+
+      {
+
+        style: 'currency',
+
+        currency: 'INR',
+
+        maximumFractionDigits: 0
+
+      }
+
+    ).format(value);
+
+  }
 
 }

@@ -26,30 +26,33 @@ h1{
 .toolbar{
 
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
 
-    gap:20px;
+    gap:24px;
 
-    margin-bottom:24px;
+    margin:28px 0;
 
-    flex-wrap:wrap;
 }
 
-.toolbar input{
+.toolbar > input{
 
-    width:420px;
-    max-width:100%;
+    flex:1;
+
+    max-width:430px;
 
     padding:12px 16px;
 
     border:1px solid #d1d5db;
 
-    border-radius:10px;
+    border-radius:8px;
 
-    font-size:14px;
+    font-size:15px;
 
     outline:none;
+
 }
 
 .toolbar input:focus{
@@ -65,7 +68,8 @@ h1{
 
     gap:12px;
 
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
+
 }
 
 .filters select{
@@ -81,36 +85,74 @@ h1{
     cursor:pointer;
 }
 
+.filters input[type="date"]{
+
+    width:170px;
+
+    padding:11px 14px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+}
+
 .add-btn{
 
     display:flex;
 
     align-items:center;
 
-    gap:8px;
+    justify-content:center;
 
-    background:#2563eb;
+    gap:10px;
 
-    color:white;
+    height:48px;
+
+    min-width:170px;
+
+    padding:0 22px;
 
     border:none;
 
-    border-radius:10px;
+    border-radius:12px;
 
-    padding:12px 22px;
+    background:#2563eb;
 
-    cursor:pointer;
+    color:#fff;
 
-    font-size:14px;
+    font-size:15px;
 
     font-weight:600;
 
+    cursor:pointer;
+
     transition:.25s;
+
+    white-space:nowrap;
+
 }
 
 .add-btn:hover{
 
     background:#1d4ed8;
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 22px rgba(37,99,235,.25);
+
+}
+
+.add-btn mat-icon{
+
+    font-size:22px;
+
+    width:22px;
+
+    height:22px;
+
 }
 
 /* ==========================================
@@ -370,8 +412,8 @@ tbody tr:hover{
 
   display:flex;
   flex-direction:column;
-
-  gap:18px;
+  gap:16px;
+  
 }
 
 .modal-body label{
@@ -500,26 +542,44 @@ tbody tr:hover{
    View Modal
 ========================================== */
 
-.details{
+.detail-row{
 
-    padding:24px;
+    padding:28px;
+
 }
 
-.details p{
+.detail-row p{
 
-    margin:12px 0;
+    display:flex;
 
-    padding-bottom:12px;
+    align-items:center;
 
-    border-bottom:1px solid #f1f5f9;
+    margin:0;
 
-    color:#374151;
+    padding:16px 0;
+
+    border-bottom:1px solid #eef2f7;
+
+    font-size:15px;
+
 }
 
-.details p:last-child{
+.detail-row p:last-child{
 
     border-bottom:none;
+
 }
+
+.detail-row strong{
+
+    width:170px;
+
+    color:#111827;
+
+    font-weight:600;
+}
+
+
 
 /* ==========================================
    Delete Popup
@@ -744,19 +804,26 @@ tbody tr:hover{
     gap:8px;
 }
 
-.modal-body::-webkit-scrollbar{
-    width:8px;
+.close-modal-btn{
+
+    background:#2563eb;
+
+    color:#fff;
+
+    border:none;
+
+    padding:12px 24px;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
 }
 
-.modal-body::-webkit-scrollbar-track{
-    background:transparent;
-}
+.close-modal-btn:hover{
 
-.modal-body::-webkit-scrollbar-thumb{
-    background:#cfd4dc;
-    border-radius:20px;
-}
+    background:#1d4ed8;
 
-.modal-body::-webkit-scrollbar-thumb:hover{
-    background:#9ca3af;
 }

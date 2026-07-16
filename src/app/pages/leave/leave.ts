@@ -1,31 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectorRef } from '@angular/core';
 
-interface LeaveRequest {
-
-  id: string;
-
-  employee: string;
-
-  department: string;
-
-  leaveType: string;
-
-  fromDate: string;
-
-  toDate: string;
-
-  totalDays: number;
-
-  reason: string;
-
-  appliedDate: string;
-
-  status: 'Pending' | 'Approved' | 'Rejected';
-
-}
+import {
+  LeaveService
+} from '../../services/leave.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-leave',
@@ -38,13 +20,29 @@ interface LeaveRequest {
   templateUrl: './leave.html',
   styleUrl: './leave.scss'
 })
-export class Leave {
+export class Leave implements OnInit {
 
   // ==========================================
-  // Filter
+  // Constructor
   // ==========================================
 
-  selectedStatus = '';
+  constructor(
+    private leaveService: LeaveService,
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  // ==========================================
+  // Filters
+  // ==========================================
+
+  selectedStatus = 'ALL';
+
+  loading = false;
+
+  selectedManager = 'ALL';
+
+  managers: any[] = [];
 
   // ==========================================
   // Modal Controls
@@ -59,109 +57,143 @@ export class Leave {
   rejectReason = '';
 
   // ==========================================
-  // Selected Leave
+  // Leave Data
   // ==========================================
 
-  selectedLeave: LeaveRequest | null = null;
+  leaves: any[] = [];
+
+  selectedLeave: any = null;
 
   // ==========================================
-  // Dummy Data
+  // Init
   // ==========================================
 
-  leaves: LeaveRequest[] = [
+  ngOnInit(): void {
 
-    {
-      id: 'LV-101',
-      employee: 'Abhishek Singh',
-      department: 'Electrical',
-      leaveType: 'Casual Leave',
-      fromDate: '10 Jul 2026',
-      toDate: '12 Jul 2026',
-      totalDays: 3,
-      reason: 'Family Function',
-      appliedDate: '05 Jul 2026',
-      status: 'Pending'
+    this.loadManagers();
+
+    this.loadAllLeaves();
+
+}
+
+
+  // ==========================================
+// Load All Leaves (Admin)
+// ==========================================
+
+loadAllLeaves(): void {
+
+  this.loading = true;
+
+  this.leaveService.getAllLeaves().subscribe({
+
+    next: (response: any) => {
+
+      this.leaves = response.data || [];
+
+     
+
+      this.loading = false;
+
+      this.cdr.detectChanges();
+
+      console.log(this.leaves);
+
     },
 
-    {
-      id: 'LV-102',
-      employee: 'Rohit Sharma',
-      department: 'Civil',
-      leaveType: 'Sick Leave',
-      fromDate: '05 Jul 2026',
-      toDate: '06 Jul 2026',
-      totalDays: 2,
-      reason: 'High Fever',
-      appliedDate: '03 Jul 2026',
-      status: 'Approved'
-    },
+    error: (error) => {
 
-    {
-      id: 'LV-103',
-      employee: 'Sanjeev Kumar',
-      department: 'Electrical',
-      leaveType: 'Earned Leave',
-      fromDate: '15 Jul 2026',
-      toDate: '18 Jul 2026',
-      totalDays: 4,
-      reason: 'Personal Work',
-      appliedDate: '08 Jul 2026',
-      status: 'Pending'
-    },
+      console.error(error);
 
-    {
-      id: 'LV-104',
-      employee: 'Pankaj Mehta',
-      department: 'Mechanical',
-      leaveType: 'Emergency Leave',
-      fromDate: '20 Jul 2026',
-      toDate: '20 Jul 2026',
-      totalDays: 1,
-      reason: 'Medical Emergency',
-      appliedDate: '18 Jul 2026',
-      status: 'Rejected'
-    },
+      this.loading = false;
 
-    {
-      id: 'LV-105',
-      employee: 'Deepak Verma',
-      department: 'Safety',
-      leaveType: 'Casual Leave',
-      fromDate: '25 Jul 2026',
-      toDate: '27 Jul 2026',
-      totalDays: 3,
-      reason: 'Family Trip',
-      appliedDate: '20 Jul 2026',
-      status: 'Approved'
     }
 
-  ];
+  });
+
+}
+
+loadManagers(): void {
+
+    this.userService.getManagers().subscribe({
+
+        next: (response: any) => {
+
+            this.managers = response.data || [];
+
+        },
+
+        error: (error) => {
+
+            console.error(error);
+
+        }
+
+    });
+
+}
 
   // ==========================================
-  // Filtered Leave Requests
+  // Load Pending Leaves
   // ==========================================
 
-  get filteredLeaves(): LeaveRequest[] {
+  loadPendingLeaves(): void {
 
-    return this.leaves.filter(leave => {
+    this.loading = true;
 
-      return this.selectedStatus === '' ||
+    this.leaveService.getPendingLeaves().subscribe({
 
-      leave.status === this.selectedStatus;
+      next: (response: any) => {
+
+        this.leaves = response.data || [];
+
+        this.loading = false;
+
+        console.log(this.leaves);
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.loading = false;
+
+      }
 
     });
 
   }
 
-    // ==========================================
-  // View Leave
+  // ==========================================
+  // Filtered Leaves
   // ==========================================
 
-  viewLeave(leave: LeaveRequest): void {
+  get filteredLeaves() {
 
-    this.selectedLeave = {
-      ...leave
-    };
+    return this.leaves.filter((leave: any) => {
+
+        const statusMatch =
+            this.selectedStatus === 'ALL' ||
+            leave.status === this.selectedStatus;
+
+        const managerMatch =
+            this.selectedManager === 'ALL' ||
+            leave.assignedManager?.fullName === this.selectedManager;
+
+        return statusMatch && managerMatch;
+
+    });
+
+}
+
+  // ==========================================
+  // View
+  // ==========================================
+
+  viewLeave(leave: any): void {
+
+    this.selectedLeave = { ...leave };
 
     this.showViewModal = true;
 
@@ -176,34 +208,16 @@ export class Leave {
   }
 
   // ==========================================
-  // Approve Leave
+  // Approve
   // ==========================================
 
-  approveLeave(leave: LeaveRequest): void {
+  approveLeave(leave: any): void {
 
     this.selectedLeave = leave;
 
     this.showApproveModal = true;
 
   }
-
-  // ==========================================
-  // Reject Leave
-  // ==========================================
-
-  rejectLeave(leave: LeaveRequest): void {
-
-    this.selectedLeave = leave;
-
-    this.rejectReason = '';
-
-    this.showRejectModal = true;
-
-  }
-
-  // ==========================================
-  // Cancel Approve
-  // ==========================================
 
   cancelApprove(): void {
 
@@ -213,9 +227,47 @@ export class Leave {
 
   }
 
+  confirmApprove(): void {
+
+    if (!this.selectedLeave) return;
+
+    this.leaveService
+      .approveLeave(this.selectedLeave._id)
+      .subscribe({
+
+        next: () => {
+
+          this.showApproveModal = false;
+
+          this.selectedLeave = null;
+
+          this.loadAllLeaves();
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+
+      });
+
+  }
+
   // ==========================================
-  // Cancel Reject
+  // Reject
   // ==========================================
+
+  rejectLeave(leave: any): void {
+
+    this.selectedLeave = leave;
+
+    this.rejectReason = '';
+
+    this.showRejectModal = true;
+
+  }
 
   cancelReject(): void {
 
@@ -226,60 +278,37 @@ export class Leave {
     this.rejectReason = '';
 
   }
-    // ==========================================
-  // Confirm Approve
-  // ==========================================
-
-  confirmApprove(): void {
-
-    if (!this.selectedLeave) return;
-
-    const index = this.leaves.findIndex(
-      leave => leave.id === this.selectedLeave!.id
-    );
-
-    if (index !== -1) {
-
-      this.leaves[index].status = 'Approved';
-
-    }
-
-    this.showApproveModal = false;
-
-    this.selectedLeave = null;
-
-  }
-
-  // ==========================================
-  // Confirm Reject
-  // ==========================================
 
   confirmReject(): void {
 
     if (!this.selectedLeave) return;
 
-    const index = this.leaves.findIndex(
-      leave => leave.id === this.selectedLeave!.id
-    );
-
-    if (index !== -1) {
-
-      this.leaves[index].status = 'Rejected';
-
-      // Save rejection reason for future backend integration
-
-      console.log(
-        'Rejection Reason:',
+    this.leaveService
+      .rejectLeave(
+        this.selectedLeave._id,
         this.rejectReason
-      );
+      )
+      .subscribe({
 
-    }
+        next: () => {
 
-    this.showRejectModal = false;
+          this.showRejectModal = false;
 
-    this.selectedLeave = null;
+          this.selectedLeave = null;
 
-    this.rejectReason = '';
+          this.rejectReason = '';
+
+          this.loadAllLeaves();
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+
+      });
 
   }
 

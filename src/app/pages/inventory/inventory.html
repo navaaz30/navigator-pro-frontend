@@ -1,3 +1,7 @@
+<!-- ===================================================
+     PAGE HEADER
+=================================================== -->
+
 <div class="page-header">
 
     <div>
@@ -5,364 +9,697 @@
         <h1>Inventory</h1>
 
         <p class="subtitle">
-            Manage all inventory items and stock levels.
+
+            Manage inventory items and stock levels.
+
         </p>
 
     </div>
 
+    <button
+        class="add-btn"
+        (click)="openInventoryForm()">
+
+        <mat-icon>add</mat-icon>
+
+        Add Item
+
+    </button>
+
 </div>
+
+<!-- ===================================================
+     TOOLBAR
+=================================================== -->
 
 <div class="toolbar">
 
-    <input
-        type="text"
-        placeholder="Search by Item ID, Name..."
-        [(ngModel)]="searchText">
+    <div class="search-box">
+
+        <mat-icon>search</mat-icon>
+
+        <input
+            type="text"
+            placeholder="Search by Item ID, Name or Supplier..."
+            [(ngModel)]="searchText"
+            (input)="onSearch()">
+
+    </div>
 
     <div class="toolbar-right">
 
-        <select [(ngModel)]="selectedCategory">
-            <option value="">All Categories</option>
-            <option>Safety</option>
-            <option>Electrical</option>
-            <option>Mechanical</option>
-            <option>Tools</option>
-        </select>
+        <select
+            [(ngModel)]="selectedCategory"
+            (change)="onCategoryChange()">
 
-        <button
-            class="add-btn"
-            (click)="openInventoryForm()">
-            + Add Item
-        </button>
+            <option value="">All Categories</option>
+
+            <option
+                *ngFor="let category of categories"
+                [value]="category">
+
+                {{ category }}
+
+            </option>
+
+        </select>
 
     </div>
 
 </div>
+
+<!-- ===================================================
+     INVENTORY TABLE
+=================================================== -->
 
 <div class="table-card">
 
-<table>
+    <table>
 
-<thead>
+        <thead>
 
-<tr>
+            <tr>
 
-<th>Item ID</th>
+                <th>Item ID</th>
 
-<th>Item Name</th>
+                <th>Item Name</th>
 
-<th>Category</th>
+                <th>Category</th>
 
-<th>Quantity</th>
+                <th>Qty</th>
 
-<th>Unit Price</th>
+                <th>Unit</th>
 
-<th>Supplier</th>
+                <th>Unit Price</th>
 
-<th>Status</th>
+                <th>Supplier</th>
 
-<th>Actions</th>
+                <th>Updated By</th>
 
-</tr>
+                <th>Status</th>
 
-</thead>
+                <th class="action-column">
+                    Actions
+                </th>
 
-<tbody>
+            </tr>
 
-<tr *ngFor="let item of filteredInventory">
+        </thead>
 
-<td>{{ item.id }}</td>
+        <tbody>
 
-<td>{{ item.name }}</td>
+            <tr
+                *ngFor="let item of filteredInventory; trackBy: trackByInventory">
 
-<td>{{ item.category }}</td>
+                <td>
 
-<td>{{ item.quantity }}</td>
+                    {{ item.itemId }}
 
-<td>₹{{ item.price }}</td>
+                </td>
 
-<td>{{ item.supplier }}</td>
+                <td>
 
-<td>
+                    {{ item.name }}
 
-<span
-class="status"
+                </td>
 
-[ngClass]="{
+                <td>
 
-'in-stock': item.status==='In Stock',
+                    {{ item.category }}
 
-'low-stock': item.status==='Low Stock',
+                </td>
 
-'out-stock': item.status==='Out of Stock'
+                <td>
 
-}">
+                    {{ item.quantity }}
 
-{{ item.status }}
+                </td>
 
-</span>
+                <td>
 
-</td>
+                    {{ item.unit }}
 
-<td class="actions">
+                </td>
 
-<button
-class="view-btn"
-(click)="viewInventory(item)">
+                <td>
 
-<mat-icon>visibility</mat-icon>
+                    {{ formatCurrency(item.unitPrice) }}
 
-</button>
+                </td>
 
-<button
-class="edit-btn"
-(click)="editInventory(item)">
+                <td>
 
-<mat-icon>edit</mat-icon>
+                    {{ item.supplier || '-' }}
 
-</button>
+                </td>
 
-<button
-class="delete-btn"
-(click)="deleteInventory(item)">
+                <td>
 
-<mat-icon>delete</mat-icon>
+                    {{ getUpdatedBy(item) }}
 
-</button>
+                </td>
 
-</td>
+                <td>
 
-</tr>
+                    <span
 
-      <tr *ngIf="filteredInventory.length === 0">
+                        class="status"
 
-        <td
-          colspan="7"
-          class="empty-state">
+                        [ngClass]="getStatusClass(item.quantity)">
 
-          No inventory items found.
+                        {{ getStatus(item.quantity) }}
 
-        </td>
+                    </span>
 
-      </tr>
+                </td>
 
+                <td class="actions">
 
+                    <button
 
-</tbody>
+                        class="view-btn"
 
-</table>
+                        (click)="viewInventory(item)"
+
+                        title="View">
+
+                        <mat-icon>
+
+                            visibility
+
+                        </mat-icon>
+
+                    </button>
+
+                    <button
+
+                        class="edit-btn"
+
+                        (click)="editInventory(item)"
+
+                        title="Edit">
+
+                        <mat-icon>
+
+                            edit
+
+                        </mat-icon>
+
+                    </button>
+
+                    <button
+
+                        class="delete-btn"
+
+                        (click)="deleteInventory(item)"
+
+                        title="Delete">
+
+                        <mat-icon>
+
+                            delete
+
+                        </mat-icon>
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+            <!-- =============================
+                 EMPTY STATE
+            ============================== -->
+
+            <tr *ngIf="!loading && filteredInventory.length === 0">
+
+                <td
+                    colspan="10"
+                    class="empty-state">
+
+                    <mat-icon>
+
+                        inventory_2
+
+                    </mat-icon>
+
+                    <h3>
+
+                        No Inventory Found
+
+                    </h3>
+
+                    <p>
+
+                        No inventory items match your search or filter.
+
+                    </p>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
 
 </div>
 
-<!-- ==========================================
-     Add / Edit Inventory Modal
-========================================== -->
+<!-- ===================================================
+     ADD / EDIT INVENTORY MODAL
+=================================================== -->
 
 <div
-  class="modal-overlay"
-  *ngIf="showForm">
+    class="modal-overlay"
+    *ngIf="showForm">
 
-  <div class="modal">
+    <div class="modal">
 
-    <div class="modal-header">
+        <!-- ===========================
+             Header
+        =========================== -->
 
-      <h2>
+        <div class="modal-header">
 
-        {{ isEditMode ? 'Edit Inventory Item' : 'Add Inventory Item' }}
+            <h2>
 
-      </h2>
+                {{ isEditMode ? 'Edit Inventory Item' : 'Add Inventory Item' }}
 
-      <button
-        class="close-btn"
-        (click)="closeForm()">
+            </h2>
 
-        <mat-icon>close</mat-icon>
+            <button
+                class="close-btn"
+                (click)="closeForm()">
 
-      </button>
+                <mat-icon>close</mat-icon>
+
+            </button>
+
+        </div>
+
+        <!-- ===========================
+             Validation Error
+        =========================== -->
+
+        <div
+            class="validation-error"
+            *ngIf="validationError">
+
+            {{ validationError }}
+
+        </div>
+
+        <!-- ===========================
+             Body
+        =========================== -->
+
+        <div class="modal-body">
+
+            <!-- Item Name -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Item Name <span>*</span>
+
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="newItem.name"
+                    placeholder="Enter item name">
+
+            </div>
+
+            <!-- Category -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Category <span>*</span>
+
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="newItem.category"
+                    placeholder="Enter category">
+
+            </div>
+
+            <!-- Description -->
+
+            <div class="form-group full-width">
+
+                <label>
+
+                    Description
+
+                </label>
+
+                <textarea
+                    rows="4"
+                    [(ngModel)]="newItem.description"
+                    placeholder="Enter description">
+
+                </textarea>
+
+            </div>
+
+            <!-- Quantity -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Quantity <span>*</span>
+
+                </label>
+
+                <input
+                    type="number"
+                    [(ngModel)]="newItem.quantity">
+
+            </div>
+
+            <!-- Unit -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Unit <span>*</span>
+
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="newItem.unit"
+                    placeholder="pcs, kg, litre...">
+
+            </div>
+
+            <!-- Unit Price -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Unit Price (₹) <span>*</span>
+
+                </label>
+
+                <input
+                    type="number"
+                    [(ngModel)]="newItem.unitPrice">
+
+            </div>
+
+            <!-- Supplier -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Supplier
+
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="newItem.supplier"
+                    placeholder="Supplier name">
+
+            </div>
+
+        </div>
+
+        <!-- ===========================
+             Footer
+        =========================== -->
+
+        <div class="modal-footer">
+
+            <button
+                class="cancel-btn"
+                (click)="closeForm()">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="save-btn"
+                (click)="saveItem()">
+
+                {{ isEditMode ? 'Update Item' : 'Save Item' }}
+
+            </button>
+
+        </div>
 
     </div>
-
-    <div
-      class="validation-error"
-      *ngIf="validationError">
-
-      {{ validationError }}
-
-    </div>
-
-    <div class="modal-body">
-
-      <label>Item Name</label>
-
-      <input
-        type="text"
-        [(ngModel)]="newItem.name"
-        placeholder="Enter item name">
-
-      <label>Category</label>
-
-      <select [(ngModel)]="newItem.category">
-
-        <option value="Safety">Safety</option>
-        <option value="Electrical">Electrical</option>
-        <option value="Mechanical">Mechanical</option>
-        <option value="Tools">Tools</option>
-
-      </select>
-
-      <label>Quantity</label>
-
-      <input
-        type="number"
-        [(ngModel)]="newItem.quantity"
-        placeholder="Enter quantity">
-
-      <label>Unit Price (₹)</label>
-
-      <input
-        type="number"
-        [(ngModel)]="newItem.price"
-        placeholder="Enter price">
-
-      <label>Supplier</label>
-
-      <input
-        type="text"
-        [(ngModel)]="newItem.supplier"
-        placeholder="Supplier name">
-
-    </div>
-
-    <div class="modal-footer">
-
-      <button
-        class="cancel-btn"
-        (click)="closeForm()">
-
-        Cancel
-
-      </button>
-
-      <button
-        class="save-btn"
-        (click)="saveItem()">
-
-        {{ isEditMode ? 'Update Item' : 'Save Item' }}
-
-      </button>
-
-    </div>
-
-  </div>
 
 </div>
 
-<!-- ==========================================
-     View Inventory Modal
-========================================== -->
+<!-- ===================================================
+     VIEW INVENTORY MODAL
+=================================================== -->
 
 <div
-  class="modal-overlay"
-  *ngIf="showViewModal">
+    class="modal-overlay"
+    *ngIf="showViewModal">
 
-  <div class="modal">
+    <div class="modal">
 
-    <div class="modal-header">
+        <div class="modal-header">
 
-      <h2>
+            <h2>
 
-        Inventory Details
+                Inventory Details
 
-      </h2>
+            </h2>
 
-      <button
-        class="close-btn"
-        (click)="closeViewModal()">
+            <button
+                class="close-btn"
+                (click)="closeViewModal()">
 
-        <mat-icon>close</mat-icon>
+                <mat-icon>close</mat-icon>
 
-      </button>
+            </button>
+
+        </div>
+
+        <div
+            class="modal-body details-grid"
+            *ngIf="selectedItem">
+
+            <div class="detail-item">
+
+                <label>Item ID</label>
+
+                <span>{{ selectedItem.itemId }}</span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Item Name</label>
+
+                <span>{{ selectedItem.name }}</span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Category</label>
+
+                <span>{{ selectedItem.category }}</span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Quantity</label>
+
+                <span>
+
+                    {{ selectedItem.quantity }}
+
+                    {{ selectedItem.unit }}
+
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Unit Price</label>
+
+                <span>
+
+                    {{ formatCurrency(selectedItem.unitPrice) }}
+
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Supplier</label>
+
+                <span>
+
+                    {{ selectedItem.supplier || '-' }}
+
+                </span>
+
+            </div>
+
+            <div class="detail-item full-width">
+
+                <label>Description</label>
+
+                <span>
+
+                    {{ selectedItem.description || '-' }}
+
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Status</label>
+
+                <span
+
+                    class="status"
+
+                    [ngClass]="getStatusClass(selectedItem.quantity)">
+
+                    {{ getStatus(selectedItem.quantity) }}
+
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Updated By</label>
+
+                <span>
+
+                    {{ getUpdatedBy(selectedItem) }}
+
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Created At</label>
+
+                <span>
+
+                    {{ formatDate(selectedItem.createdAt) }}
+
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <label>Updated At</label>
+
+                <span>
+
+                    {{ formatDate(selectedItem.updatedAt) }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                class="cancel-btn"
+                (click)="closeViewModal()">
+
+                Close
+
+            </button>
+
+        </div>
 
     </div>
-
-    <div class="details">
-
-      <p><strong>Item ID :</strong> {{ selectedItem?.id }}</p>
-
-      <p><strong>Item :</strong> {{ selectedItem?.name }}</p>
-
-      <p><strong>Category :</strong> {{ selectedItem?.category }}</p>
-
-      <p><strong>Quantity :</strong> {{ selectedItem?.quantity }}</p>
-
-      <p><strong>Unit Price :</strong> ₹{{ selectedItem?.price }}</p>
-
-      <p><strong>Supplier :</strong> {{ selectedItem?.supplier }}</p>
-
-      <p><strong>Status :</strong> {{ selectedItem?.status }}</p>
-
-    </div>
-
-    <div class="modal-footer">
-
-      <button
-        class="cancel-btn"
-        (click)="closeViewModal()">
-
-        Close
-
-      </button>
-
-    </div>
-
-  </div>
 
 </div>
 
-<!-- ==========================================
-     Delete Confirmation
-========================================== -->
+<!-- ===================================================
+     DELETE CONFIRMATION MODAL
+=================================================== -->
 
 <div
-  class="modal-overlay"
-  *ngIf="showDeleteModal">
+    class="modal-overlay"
+    *ngIf="showDeleteModal">
 
-  <div class="delete-modal">
+    <div class="delete-modal">
 
-    <h2>
+        <div class="delete-icon">
 
-      Delete Inventory Item
+            <mat-icon>
 
-    </h2>
+                delete_forever
 
-    <p>
+            </mat-icon>
 
-      Are you sure you want to delete
+        </div>
 
-      <strong>{{ selectedItem?.name }}</strong>?
+        <h2>
 
-    </p>
+            Delete Inventory Item
 
-    <div class="delete-actions">
+        </h2>
 
-      <button
-        class="cancel-btn"
-        (click)="cancelDelete()">
+        <p>
 
-        Cancel
+            Are you sure you want to delete
 
-      </button>
+            <strong>
 
-      <button
-        class="delete-confirm-btn"
-        (click)="confirmDelete()">
+                {{ itemToDelete?.name }}
 
-        Delete
+            </strong>
 
-      </button>
+            ?
+
+        </p>
+
+        <div class="delete-actions">
+
+            <button
+                class="cancel-btn"
+                (click)="cancelDelete()">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="delete-confirm-btn"
+                (click)="confirmDelete()">
+
+                Delete
+
+            </button>
+
+        </div>
 
     </div>
-
-  </div>
 
 </div>

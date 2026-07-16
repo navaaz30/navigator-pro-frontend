@@ -16,9 +16,19 @@ export class AttendanceService {
   // Attendance APIs
   // ===========================
 
-  getAttendance(): Observable<any> {
-    return this.http.get(this.attendanceUrl);
+  getAttendance(date?: string): Observable<any> {
+
+  if (date) {
+
+    return this.http.get<any>(
+      `${this.attendanceUrl}?date=${date}`
+    );
+
   }
+
+  return this.http.get<any>(this.attendanceUrl);
+
+}
 
   getAttendanceById(id: string): Observable<any> {
     return this.http.get(`${this.attendanceUrl}/${id}`);

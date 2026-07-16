@@ -11,29 +11,47 @@
 
   <input
     type="text"
-    placeholder="Search by Employee Name or ID..."
+    placeholder="Search by Employee Name, ID or Status..."
     [(ngModel)]="searchText">
 
   <div class="filters">
 
+    <select
+        [(ngModel)]="selectedDateFilter"
+        (ngModelChange)="onDateFilterChange()">
+
+        <option value="TODAY">Today</option>
+        <option value="YESTERDAY">Yesterday</option>
+        <option value="CUSTOM">Select Date</option>
+
+    </select>
+
+    <input
+    *ngIf="selectedDateFilter === 'CUSTOM'"
+    type="date"
+    [(ngModel)]="selectedDate"
+    (ngModelChange)="onCustomDateChange()">
+
     <select [(ngModel)]="selectedStatus">
-      <option value="">All Status</option>
-      <option value="PRESENT">Present</option>
-      <option value="ABSENT">Absent</option>
-      <option value="LEAVE">Leave</option>
-      <option value="HALF_DAY">Half Day</option>
+
+        <option value="">All Status</option>
+        <option value="PRESENT">Present</option>
+        <option value="ABSENT">Absent</option>
+        <option value="LEAVE">Leave</option>
+        <option value="HALF_DAY">Half Day</option>
+
     </select>
 
     <button
-      class="add-btn"
-      (click)="openAttendanceForm()">
+        class="add-btn"
+        (click)="openAttendanceForm()">
 
-      <mat-icon>add</mat-icon>
-      <span>Mark Attendance</span>
+        <mat-icon>add</mat-icon>
+        <span>Mark Attendance</span>
 
     </button>
 
-  </div>
+</div>
 
 </div>
 
@@ -318,32 +336,32 @@
       </div>
 
       <div class="detail-row">
-        <strong>Employee ID:</strong>
+        <strong>Employee ID</strong>
 {{ selectedAttendance?.employee?.employeeId }}
       </div>
 
       <div class="detail-row">
-        <strong>Email:</strong>
+        <strong>Email</strong>
 {{ selectedAttendance?.employee?.email }}
       </div>
 
       <div class="detail-row">
-        <strong>Date: </strong>
+        <strong>Date</strong>
         <span>{{ selectedAttendance?.date | date:'dd MMM yyyy' }}</span>
       </div>
 
       <div class="detail-row">
-        <strong>Clock In: </strong>
+        <strong>Clock In</strong>
         <span>{{ selectedAttendance?.clockIn | date:'hh:mm a' }}</span>
       </div>
 
       <div class="detail-row">
-        <strong>Clock Out: </strong>
+        <strong>Clock Out</strong>
         <span>{{ selectedAttendance?.clockOut | date:'hh:mm a' }}</span>
       </div>
 
       <div class="detail-row">
-        <strong>Status: </strong>
+        <strong>Status</strong>
 
         <span
           class="status"
@@ -364,7 +382,7 @@
         class="detail-row"
         *ngIf="selectedAttendance?.remarks">
 
-        <strong>Remarks: </strong>
+        <strong>Remarks</strong>
 
         <span>{{ selectedAttendance?.remarks }}</span>
 
@@ -375,7 +393,7 @@
     <div class="modal-footer">
 
       <button
-        class="cancel-btn"
+        class="close-modal-btn"
         (click)="closeViewModal()">
 
         Close

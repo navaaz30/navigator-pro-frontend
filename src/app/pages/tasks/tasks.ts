@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
+import { TaskService } from '../../services/task.service';
+import { UserService } from '../../services/user.service';
 import { Task } from '../../models/task.model';
 
 @Component({
@@ -16,179 +18,363 @@ import { Task } from '../../models/task.model';
   templateUrl: './tasks.html',
   styleUrl: './tasks.scss'
 })
-export class Tasks {
+export class Tasks implements OnInit {
+
+  constructor(
+    private taskService: TaskService,
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  // ==========================================
+  // Search & Filters
+  // ==========================================
 
   searchText = '';
+
   selectedStatus = '';
+
   selectedPriority = '';
+
+  loading = false;
+
   validationError = '';
 
-  showForm = false;
-  isEditMode = false;
-  showViewModal = false;
+  // ==========================================
+  // Popup Controls
+  // ==========================================
 
-  selectedTask: Task | null = null;
+  showForm = false;
+
+  showViewModal = false;
 
   showDeleteModal = false;
 
-  taskToDelete: Task | null = null;
+  isEditMode = false;
 
-  newTask: Task = {
-    id: '',
-    technician: '',
-    client: '',
-    status: 'Pending',
-    priority: 'Medium',
-    dueDate: ''
+  selectedTask: any = null;
+
+  taskToDelete: any = null;
+
+  // ==========================================
+  // Data
+  // ==========================================
+
+  tasks: any[] = [];
+
+  employees: any[] = [];
+
+  // ==========================================
+  // Form Model
+  // ==========================================
+
+  newTask: any = {
+
+    _id: '',
+
+    assignedTo: '',
+
+    title: '',
+
+    description: '',
+
+    priority: 'MEDIUM',
+
+    status: 'PENDING',
+
+    dueDate: '',
+
+    remarks: ''
+
   };
 
-  tasks: Task[] = [
-    {
-      id: 'T-101',
-      technician: 'Abhishek Singh',
-      client: 'Reliance Industries',
-      status: 'Pending',
-      priority: 'High',
-      dueDate: '29 Jun 2026'
-    },
-    {
-      id: 'T-102',
-      technician: 'Rohit Sharma',
-      client: 'Tata Power',
-      status: 'Ongoing',
-      priority: 'Medium',
-      dueDate: '30 Jun 2026'
-    },
-    {
-      id: 'T-103',
-      technician: 'Sanjeev Kumar',
-      client: 'Adani Green',
-      status: 'Completed',
-      priority: 'Low',
-      dueDate: '27 Jun 2026'
-    },
-    {
-      id: 'T-104',
-      technician: 'Pankaj Mehta',
-      client: 'Airtel',
-      status: 'Overdue',
-      priority: 'High',
-      dueDate: '25 Jun 2026'
-    }
-  ];
+  // ==========================================
+  // Init
+  // ==========================================
 
-  get filteredTasks(): Task[] {
+  ngOnInit(): void {
 
-    return this.tasks.filter(task => {
+    this.loadEmployees();
 
-      const matchesSearch =
-        task.id.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        task.technician.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        task.client.toLowerCase().includes(this.searchText.toLowerCase());
+    this.loadTasks();
 
-      const matchesStatus =
-        this.selectedStatus === '' ||
-        task.status === this.selectedStatus;
+  }
 
-      const matchesPriority =
-        this.selectedPriority === '' ||
-        task.priority === this.selectedPriority;
+  // ==========================================
+  // Load Employees
+  // ==========================================
 
-      return matchesSearch && matchesStatus && matchesPriority;
+  loadEmployees(): void {
+
+    this.userService.getUsers().subscribe({
+
+      next: (response: any) => {
+
+        const users = response.data || [];
+
+        this.employees = users.filter(
+
+          (user: any) => user.role === 'EMPLOYEE'
+
+        );
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+      }
 
     });
 
   }
 
-  openAssignForm(): void {
+  // ==========================================
+  // Load Tasks
+  // ==========================================
+
+  loadTasks(): void {
+
+    this.loading = true;
+
+    this.taskService.getTasks().subscribe({
+
+      next: (response: any) => {
+
+        this.tasks = response.data || [];
+
+        this.loading = false;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.loading = false;
+
+      }
+
+    });
+
+  }
+
+  // ==========================================
+  // Search Filter
+  // ==========================================
+
+  get filteredTasks(): any[] {
+
+    return this.tasks.filter((task: any) => {
+
+      const employee =
+
+        task.assignedTo?.fullName || '';
+
+      const keyword =
+
+        this.searchText.toLowerCase();
+
+      const matchesSearch =
+
+        task.title?.toLowerCase().includes(keyword) ||
+
+        employee.toLowerCase().includes(keyword);
+
+      const matchesStatus =
+
+        !this.selectedStatus ||
+
+        task.status === this.selectedStatus;
+
+      const matchesPriority =
+
+        !this.selectedPriority ||
+
+        task.priority === this.selectedPriority;
+
+      return (
+
+        matchesSearch &&
+
+        matchesStatus &&
+
+        matchesPriority
+
+      );
+
+    });
+
+  }
+
+  // ==========================================
+  // Open Add Task
+  // ==========================================
+
+  openAddForm(): void {
+
+    this.validationError = '';
 
     this.isEditMode = false;
 
     this.newTask = {
-      id: '',
-      technician: '',
-      client: '',
-      status: 'Pending',
-      priority: 'Medium',
-      dueDate: ''
+
+      _id: '',
+
+      assignedTo: '',
+
+      title: '',
+
+      description: '',
+
+      priority: 'MEDIUM',
+
+      status: 'PENDING',
+
+      dueDate: '',
+
+      remarks: ''
+
     };
-    
-    this.validationError = '';
+
     this.showForm = true;
 
   }
 
+    // ==========================================
+  // Save Task
+  // ==========================================
+
   saveTask(): void {
 
-   if (
-  !this.newTask.technician.trim() ||
-  !this.newTask.client.trim() ||
-  !this.newTask.dueDate
-) {
+    this.validationError = '';
 
-  this.validationError = 'Please fill all required fields.';
-  return;
+    if (
+      !this.newTask.assignedTo ||
+      !this.newTask.title ||
+      !this.newTask.description ||
+      !this.newTask.priority ||
+      !this.newTask.dueDate
+    ) {
 
-}
+      this.validationError = 'Please fill all required fields.';
 
-this.validationError = '';
-
-    if (this.isEditMode) {
-
-      const index = this.tasks.findIndex(
-        task => task.id === this.newTask.id
-      );
-
-      if (index !== -1) {
-        this.tasks[index] = { ...this.newTask };
-      }
-
-    } else {
-
-      const nextId =
-        this.tasks.length + 101;
-
-      const formattedDate = new Date(this.newTask.dueDate)
-  .toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  });
-
-this.tasks.push({
-  ...this.newTask,
-  dueDate: formattedDate,
-
-
-        id: `T-${nextId}`
-
-      });
+      return;
 
     }
 
-    this.closeForm();
+    let payload: any;
 
-  }
-    closeForm(): void {
+if (this.isEditMode) {
 
-    this.showForm = false;
+    payload = {
 
-    this.isEditMode = false;
+        assignedTo: this.newTask.assignedTo,
 
-    this.newTask = {
-      id: '',
-      technician: '',
-      client: '',
-      status: 'Pending',
-      priority: 'Medium',
-      dueDate: ''
+        title: this.newTask.title,
+
+        description: this.newTask.description,
+
+        priority: this.newTask.priority,
+
+        status: this.newTask.status,
+
+        dueDate: this.newTask.dueDate,
+
+        remarks: this.newTask.remarks
+
     };
 
+} else {
+
+    payload = {
+
+        assignedTo: this.newTask.assignedTo,
+
+        title: this.newTask.title,
+
+        description: this.newTask.description,
+
+        priority: this.newTask.priority,
+
+        dueDate: this.newTask.dueDate
+
+    };
+
+}
+
+    // ==========================
+    // Update Task
+    // ==========================
+
+    if (this.isEditMode) {
+
+      this.taskService.updateTask(
+
+        this.newTask._id,
+
+        payload
+
+      ).subscribe({
+
+        next: () => {
+
+          this.closeForm();
+
+          this.loadTasks();
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+        }
+
+      });
+
+      return;
+
+    }
+
+    // ==========================
+    // Create Task
+    // ==========================
+
+    this.taskService.createTask(
+
+      payload
+
+    ).subscribe({
+
+      next: () => {
+
+        this.closeForm();
+
+        this.loadTasks();
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+      }
+
+    });
+
   }
 
-  viewTask(task: Task): void {
+  // ==========================================
+  // View Task
+  // ==========================================
 
-    this.selectedTask = { ...task };
+  viewTask(task: any): void {
+
+    this.selectedTask = task;
 
     this.showViewModal = true;
 
@@ -202,37 +388,147 @@ this.tasks.push({
 
   }
 
-  editTask(task: Task): void {
+  // ==========================================
+  // Edit Task
+  // ==========================================
+
+  editTask(task: any): void {
+
+    this.validationError = '';
 
     this.isEditMode = true;
 
-    this.newTask = { ...task };
+    this.newTask = {
+
+      _id: task._id,
+
+      assignedTo:
+
+        task.assignedTo?._id ||
+
+        task.assignedTo,
+
+      title: task.title,
+
+      description: task.description,
+
+      priority: task.priority,
+
+      status: task.status,
+
+      dueDate: task.dueDate
+        ? new Date(task.dueDate)
+            .toISOString()
+            .substring(0, 10)
+        : '',
+
+      remarks: task.remarks || ''
+
+    };
 
     this.showForm = true;
 
   }
 
-  deleteTask(task: Task): void {
+    // ==========================================
+  // Delete Task
+  // ==========================================
 
-  this.taskToDelete = task;
+  deleteTask(task: any): void {
 
-  this.showDeleteModal = true;
+    this.taskToDelete = task;
 
-}
-
-  assignTask(): void {
-
-    this.openAssignForm();
+    this.showDeleteModal = true;
 
   }
 
-  resetFilters(): void {
+  // ==========================================
+  // Confirm Delete
+  // ==========================================
 
-    this.searchText = '';
-    this.selectedStatus = '';
-    this.selectedPriority = '';
+  confirmDelete(): void {
+
+    if (!this.taskToDelete) {
+
+      return;
+
+    }
+
+    this.taskService.deleteTask(
+
+      this.taskToDelete._id
+
+    ).subscribe({
+
+      next: () => {
+
+        this.cancelDelete();
+
+        this.loadTasks();
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+      }
+
+    });
 
   }
+
+  // ==========================================
+  // Cancel Delete
+  // ==========================================
+
+  cancelDelete(): void {
+
+    this.showDeleteModal = false;
+
+    this.taskToDelete = null;
+
+  }
+
+  // ==========================================
+  // Close Form
+  // ==========================================
+
+  closeForm(): void {
+
+    this.showForm = false;
+
+    this.validationError = '';
+
+    this.isEditMode = false;
+
+    this.selectedTask = null;
+
+    this.newTask = {
+
+      _id: '',
+
+      assignedTo: '',
+
+      title: '',
+
+      description: '',
+
+      priority: 'MEDIUM',
+
+      status: 'PENDING',
+
+      dueDate: '',
+
+      remarks: ''
+
+    };
+
+  }
+
+  // ==========================================
+  // Statistics
+  // ==========================================
 
   totalTasks(): number {
 
@@ -243,7 +539,9 @@ this.tasks.push({
   pendingTasks(): number {
 
     return this.tasks.filter(
-      task => task.status === 'Pending'
+
+      (task: any) => task.status === 'PENDING'
+
     ).length;
 
   }
@@ -251,7 +549,9 @@ this.tasks.push({
   ongoingTasks(): number {
 
     return this.tasks.filter(
-      task => task.status === 'Ongoing'
+
+      (task: any) => task.status === 'IN_PROGRESS'
+
     ).length;
 
   }
@@ -259,39 +559,89 @@ this.tasks.push({
   completedTasks(): number {
 
     return this.tasks.filter(
-      task => task.status === 'Completed'
+
+      (task: any) => task.status === 'COMPLETED'
+
     ).length;
 
   }
 
-  overdueTasks(): number {
+  cancelledTasks(): number {
 
     return this.tasks.filter(
-      task => task.status === 'Overdue'
+
+      (task: any) => task.status === 'CANCELLED'
+
     ).length;
 
   }
 
-  confirmDelete(): void {
+  // ==========================================
+  // Helpers
+  // ==========================================
 
-  if (!this.taskToDelete) return;
+  getEmployeeName(task: any): string {
 
-  this.tasks = this.tasks.filter(
-    t => t.id !== this.taskToDelete!.id
-  );
+    if (!task.assignedTo) {
 
-  this.showDeleteModal = false;
+      return '-';
 
-  this.taskToDelete = null;
+    }
 
-}
+    if (typeof task.assignedTo === 'object') {
 
-cancelDelete(): void {
+      return task.assignedTo.fullName || '-';
 
-  this.showDeleteModal = false;
+    }
 
-  this.taskToDelete = null;
+    return '-';
 
-}
+  }
+
+  getStatusClass(status: string): string {
+
+    switch (status) {
+
+      case 'PENDING':
+        return 'pending';
+
+      case 'IN_PROGRESS':
+        return 'ongoing';
+
+      case 'COMPLETED':
+        return 'completed';
+
+      case 'CANCELLED':
+        return 'cancelled';
+
+      default:
+        return '';
+
+    }
+
+  }
+
+  getPriorityClass(priority: string): string {
+
+    switch (priority) {
+
+      case 'LOW':
+        return 'low';
+
+      case 'MEDIUM':
+        return 'medium';
+
+      case 'HIGH':
+        return 'high';
+
+      case 'URGENT':
+        return 'urgent';
+
+      default:
+        return '';
+
+    }
+
+  }
 
 }

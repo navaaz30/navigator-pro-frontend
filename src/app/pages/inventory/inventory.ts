@@ -1,23 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { ChangeDetectorRef } from '@angular/core';
+
+import { InventoryService } from '../../services/inventory.service';
 
 interface InventoryItem {
 
-  id: string;
+  _id: string;
+
+  itemId: string;
 
   name: string;
 
   category: string;
 
+  description: string;
+
   quantity: number;
 
-  price: number;
+  unit: string;
+
+  unitPrice: number;
 
   supplier: string;
 
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
+  updatedBy: {
+
+    _id: string;
+
+    fullName: string;
+
+    employeeId: string;
+
+    role: string;
+
+  };
+
+  createdAt: string;
+
+  updatedAt: string;
 
 }
 
@@ -32,15 +55,36 @@ interface InventoryItem {
   templateUrl: './inventory.html',
   styleUrl: './inventory.scss'
 })
-export class Inventory {
+export class Inventory implements OnInit {
+
+  constructor(
+    private inventoryService: InventoryService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   // ===========================
-  // Search & Filter
+  // Inventory Data
+  // ===========================
+
+  inventoryList: InventoryItem[] = [];
+
+  filteredInventory: InventoryItem[] = [];
+
+  // ===========================
+  // Search & Filters
   // ===========================
 
   searchText = '';
 
   selectedCategory = '';
+
+  categories: string[] = [];
+
+  // ===========================
+  // Loading
+  // ===========================
+
+  loading = false;
 
   // ===========================
   // Modal Controls
@@ -57,7 +101,7 @@ export class Inventory {
   validationError = '';
 
   // ===========================
-  // Selected Item
+  // Selected Items
   // ===========================
 
   selectedItem: InventoryItem | null = null;
@@ -68,156 +112,152 @@ export class Inventory {
   // Inventory Form
   // ===========================
 
-  newItem: InventoryItem = {
-
-    id: '',
+  newItem: any = {
 
     name: '',
 
-    category: 'Safety',
+    category: '',
+
+    description: '',
 
     quantity: 0,
 
-    price: 0,
+    unit: '',
 
-    supplier: '',
+    unitPrice: 0,
 
-    status: 'In Stock'
+    supplier: ''
 
   };
 
   // ===========================
-  // Dummy Data
+  // Initialize Component
   // ===========================
 
-  inventoryList: InventoryItem[] = [
+  ngOnInit(): void {
 
-    {
+    console.log('Inventory component initialized');
 
-      id: 'INV-101',
+    this.loadInventory();
 
-      name: 'Safety Helmet',
+    
 
-      category: 'Safety',
-
-      quantity: 45,
-
-      price: 850,
-
-      supplier: 'ABC Safety',
-
-      status: 'In Stock'
-
-    },
-
-    {
-
-      id: 'INV-102',
-
-      name: 'Safety Gloves',
-
-      category: 'Safety',
-
-      quantity: 12,
-
-      price: 120,
-
-      supplier: 'SafeEquip',
-
-      status: 'Low Stock'
-
-    },
-
-    {
-
-      id: 'INV-103',
-
-      name: 'Drill Machine',
-
-      category: 'Tools',
-
-      quantity: 8,
-
-      price: 4200,
-
-      supplier: 'Bosch',
-
-      status: 'Low Stock'
-
-    },
-
-    {
-
-      id: 'INV-104',
-
-      name: 'Voltage Tester',
-
-      category: 'Electrical',
-
-      quantity: 0,
-
-      price: 650,
-
-      supplier: 'Havells',
-
-      status: 'Out of Stock'
-
-    },
-
-    {
-
-      id: 'INV-105',
-
-      name: 'PVC Cable',
-
-      category: 'Electrical',
-
-      quantity: 55,
-
-      price: 95,
-
-      supplier: 'Polycab',
-
-      status: 'In Stock'
-
-    }
-
-  ];
+  }
 
   // ===========================
-  // Filter Inventory
+  // Load Inventory
   // ===========================
 
-  get filteredInventory(): InventoryItem[] {
+  loadInventory(): void {
 
-    return this.inventoryList.filter(item => {
+    this.loading = true;
 
-      const matchesSearch =
+    this.inventoryService.getInventory().subscribe({
 
-        item.name
-          .toLowerCase()
-          .includes(this.searchText.toLowerCase())
+      next: (response) => {
 
-        ||
+        this.inventoryList = response.data || [];
 
-        item.id
-          .toLowerCase()
-          .includes(this.searchText.toLowerCase());
+this.extractCategories();
 
-      const matchesCategory =
+this.applyFilters();
 
-        this.selectedCategory === '' ||
+this.loading = false;
 
-        item.category === this.selectedCategory;
+this.cdr.detectChanges();
 
-      return matchesSearch && matchesCategory;
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+        this.loading = false;
+
+      }
 
     });
 
   }
 
   // ===========================
-  // Open Inventory Form
+  // Extract Categories
+  // ===========================
+
+  extractCategories(): void {
+
+    this.categories = [
+
+      ...new Set(
+
+        this.inventoryList.map(item => item.category)
+
+      )
+
+    ].sort();
+
+  }
+
+  // ===========================
+  // Search & Filter
+  // ===========================
+
+  applyFilters(): void {
+
+  const search = this.searchText.trim().toLowerCase();
+
+  this.filteredInventory = this.inventoryList.filter(item => {
+
+    const matchesSearch =
+      !search ||
+      item.itemId.toLowerCase().includes(search) ||
+      item.name.toLowerCase().includes(search) ||
+      item.category.toLowerCase().includes(search) ||
+      item.supplier.toLowerCase().includes(search);
+
+    const matchesCategory =
+      !this.selectedCategory ||
+      item.category === this.selectedCategory;
+
+    return matchesSearch && matchesCategory;
+
+  });
+
+}
+
+  onSearch(): void {
+  this.applyFilters();
+}
+
+onCategoryChange(): void {
+  this.applyFilters();
+}
+
+
+  // ===========================
+  // Status Helper
+  // ===========================
+
+  getStatus(quantity: number): string {
+
+    if (quantity === 0) {
+
+      return 'Out of Stock';
+
+    }
+
+    if (quantity <= 20) {
+
+      return 'Low Stock';
+
+    }
+
+    return 'In Stock';
+
+  }
+
+    // ===========================
+  // Open Add Inventory Form
   // ===========================
 
   openInventoryForm(): void {
@@ -228,130 +268,23 @@ export class Inventory {
 
     this.newItem = {
 
-      id: '',
-
       name: '',
 
-      category: 'Safety',
+      category: '',
+
+      description: '',
 
       quantity: 0,
 
-      price: 0,
+      unit: '',
 
-      supplier: '',
+      unitPrice: 0,
 
-      status: 'In Stock'
+      supplier: ''
 
     };
 
     this.showForm = true;
-
-  }
-
-    // ===========================
-  // Save Inventory Item
-  // ===========================
-
-  saveItem(): void {
-
-    this.validationError = '';
-
-    if (
-      !this.newItem.name.trim() ||
-      !this.newItem.category.trim() ||
-      !this.newItem.supplier.trim()
-    ) {
-
-      this.validationError = 'Please fill all required fields.';
-      return;
-
-    }
-
-    if (this.newItem.quantity < 0) {
-
-      this.validationError = 'Quantity cannot be negative.';
-      return;
-
-    }
-
-    if (this.newItem.price <= 0) {
-
-      this.validationError = 'Price must be greater than zero.';
-      return;
-
-    }
-
-    // Auto Status
-
-    if (this.newItem.quantity === 0) {
-
-      this.newItem.status = 'Out of Stock';
-
-    } else if (this.newItem.quantity <= 20) {
-
-      this.newItem.status = 'Low Stock';
-
-    } else {
-
-      this.newItem.status = 'In Stock';
-
-    }
-
-    if (this.isEditMode) {
-
-      const index = this.inventoryList.findIndex(
-        item => item.id === this.newItem.id
-      );
-
-      if (index !== -1) {
-
-        this.inventoryList[index] = {
-          ...this.newItem
-        };
-
-      }
-
-    } else {
-
-      const lastId = this.inventoryList.length
-        ? Math.max(
-            ...this.inventoryList.map(item =>
-              Number(item.id.replace('INV-', ''))
-            )
-          )
-        : 100;
-
-      this.newItem.id = `INV-${lastId + 1}`;
-
-      this.inventoryList.push({
-        ...this.newItem
-      });
-
-    }
-
-    this.closeForm();
-
-  }
-
-  // ===========================
-  // View Inventory
-  // ===========================
-
-  viewInventory(item: InventoryItem): void {
-
-    this.selectedItem = {
-      ...item
-    };
-
-    this.showViewModal = true;
-
-  }
-
-  closeViewModal(): void {
-
-    this.showViewModal = false;
-
-    this.selectedItem = null;
 
   }
 
@@ -366,10 +299,201 @@ export class Inventory {
     this.validationError = '';
 
     this.newItem = {
+
       ...item
+
     };
 
     this.showForm = true;
+
+  }
+
+  // ===========================
+  // Save Inventory
+  // ===========================
+
+  saveItem(): void {
+
+    this.validationError = '';
+
+    if (!this.newItem.name?.trim()) {
+
+      this.validationError = 'Item name is required.';
+
+      return;
+
+    }
+
+    if (!this.newItem.category?.trim()) {
+
+      this.validationError = 'Category is required.';
+
+      return;
+
+    }
+
+    if (!this.newItem.unit?.trim()) {
+
+      this.validationError = 'Unit is required.';
+
+      return;
+
+    }
+
+    if (this.newItem.quantity < 0) {
+
+      this.validationError = 'Quantity cannot be negative.';
+
+      return;
+
+    }
+
+    if (this.newItem.unitPrice <= 0) {
+
+      this.validationError = 'Unit price must be greater than zero.';
+
+      return;
+
+    }
+
+    if (this.isEditMode) {
+
+      this.updateInventory();
+
+    } else {
+
+      this.createInventory();
+
+    }
+
+  }
+
+  // ===========================
+  // Create Inventory
+  // ===========================
+
+  createInventory(): void {
+
+    const payload = {
+
+      name: this.newItem.name,
+
+      category: this.newItem.category,
+
+      description: this.newItem.description,
+
+      quantity: this.newItem.quantity,
+
+      unit: this.newItem.unit,
+
+      unitPrice: this.newItem.unitPrice,
+
+      supplier: this.newItem.supplier
+
+    };
+
+    this.inventoryService.createInventory(payload).subscribe({
+
+      next: () => {
+
+        this.loadInventory();
+
+        this.closeForm();
+
+      },
+
+      error: (err) => {
+
+        console.error(err);
+
+      }
+
+    });
+
+  }
+
+  // ===========================
+  // Update Inventory
+  // ===========================
+
+  updateInventory(): void {
+
+    const payload = {
+
+      name: this.newItem.name,
+
+      category: this.newItem.category,
+
+      description: this.newItem.description,
+
+      quantity: this.newItem.quantity,
+
+      unit: this.newItem.unit,
+
+      unitPrice: this.newItem.unitPrice,
+
+      supplier: this.newItem.supplier
+
+    };
+
+    this.inventoryService
+      .updateInventory(
+        this.newItem._id,
+        payload
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.loadInventory();
+
+          this.closeForm();
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+
+      });
+
+  }
+
+  // ===========================
+  // View Inventory
+  // ===========================
+
+  viewInventory(item: InventoryItem): void {
+
+    this.inventoryService
+      .getInventoryById(item._id)
+      .subscribe({
+
+        next: (response) => {
+
+          this.selectedItem = response.data;
+
+          this.showViewModal = true;
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+
+      });
+
+  }
+
+  closeViewModal(): void {
+
+    this.selectedItem = null;
+
+    this.showViewModal = false;
 
   }
 
@@ -381,63 +505,241 @@ export class Inventory {
 
     this.itemToDelete = item;
 
-    this.selectedItem = item;
-
     this.showDeleteModal = true;
 
   }
 
   confirmDelete(): void {
 
-    if (!this.itemToDelete) return;
+    if (!this.itemToDelete) {
 
-    this.inventoryList = this.inventoryList.filter(
-      item => item.id !== this.itemToDelete!.id
-    );
+      return;
 
-    this.cancelDelete();
+    }
+
+    this.inventoryService
+      .deleteInventory(this.itemToDelete._id)
+      .subscribe({
+
+        next: () => {
+
+          this.loadInventory();
+
+          this.cancelDelete();
+
+        },
+
+        error: (err) => {
+
+          console.error(err);
+
+        }
+
+      });
 
   }
 
   cancelDelete(): void {
 
-    this.showDeleteModal = false;
-
     this.itemToDelete = null;
 
-    this.selectedItem = null;
+    this.showDeleteModal = false;
 
   }
 
     // ===========================
-  // Close Inventory Form
+  // Close Form
   // ===========================
 
   closeForm(): void {
 
     this.showForm = false;
 
-    this.validationError = '';
-
     this.isEditMode = false;
+
+    this.validationError = '';
 
     this.newItem = {
 
-      id: '',
-
       name: '',
 
-      category: 'Safety',
+      category: '',
+
+      description: '',
 
       quantity: 0,
 
-      price: 0,
+      unit: '',
 
-      supplier: '',
+      unitPrice: 0,
 
-      status: 'In Stock'
+      supplier: ''
 
     };
+
+  }
+
+  // ===========================
+  // Refresh Inventory
+  // ===========================
+
+  refreshInventory(): void {
+
+  this.searchText = '';
+  this.selectedCategory = '';
+
+  this.applyFilters();
+
+}
+
+  // ===========================
+  // Format Currency
+  // ===========================
+
+  formatCurrency(amount: number): string {
+
+    return new Intl.NumberFormat('en-IN', {
+
+      style: 'currency',
+
+      currency: 'INR',
+
+      maximumFractionDigits: 2
+
+    }).format(amount);
+
+  }
+
+  // ===========================
+  // Format Date
+  // ===========================
+
+  formatDate(date: string): string {
+
+    if (!date) {
+
+      return '-';
+
+    }
+
+    return new Date(date).toLocaleString('en-IN', {
+
+      day: '2-digit',
+
+      month: 'short',
+
+      year: 'numeric',
+
+      hour: '2-digit',
+
+      minute: '2-digit'
+
+    });
+
+  }
+
+  // ===========================
+  // Updated By Helper
+  // ===========================
+
+  getUpdatedBy(item: InventoryItem): string {
+
+    if (!item.updatedBy) {
+
+      return '-';
+
+    }
+
+    return item.updatedBy.fullName;
+
+  }
+
+  // ===========================
+  // Track By
+  // ===========================
+
+  trackByInventory(
+    index: number,
+    item: InventoryItem
+  ): string {
+
+    return item._id;
+
+  }
+
+  // ===========================
+  // Status Badge Class
+  // ===========================
+
+  getStatusClass(quantity: number): string {
+
+    if (quantity === 0) {
+
+      return 'out-stock';
+
+    }
+
+    if (quantity <= 20) {
+
+      return 'low-stock';
+
+    }
+
+    return 'in-stock';
+
+  }
+
+  // ===========================
+  // Total Items
+  // ===========================
+
+  get totalItems(): number {
+
+    return this.inventoryList.length;
+
+  }
+
+  // ===========================
+  // Total Quantity
+  // ===========================
+
+  get totalQuantity(): number {
+
+    return this.inventoryList.reduce(
+
+      (sum, item) => sum + item.quantity,
+
+      0
+
+    );
+
+  }
+
+  // ===========================
+  // Low Stock Count
+  // ===========================
+
+  get lowStockCount(): number {
+
+    return this.inventoryList.filter(
+
+      item => item.quantity > 0 && item.quantity <= 20
+
+    ).length;
+
+  }
+
+  // ===========================
+  // Out Of Stock Count
+  // ===========================
+
+  get outOfStockCount(): number {
+
+    return this.inventoryList.filter(
+
+      item => item.quantity === 0
+
+    ).length;
 
   }
 

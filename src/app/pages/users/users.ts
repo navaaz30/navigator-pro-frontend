@@ -1,15 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
-interface User {
-  id: number;
-  name: string;
-  phone: string;
-  department: string;
-  status: 'Active' | 'Inactive';
-}
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-users',
@@ -22,193 +16,294 @@ interface User {
   templateUrl: './users.html',
   styleUrl: './users.scss'
 })
-export class Users {
+export class Users implements OnInit {
 
-  // ==========================
+  constructor(
+    private userService: UserService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  // ==========================================
   // Search
-  // ==========================
+  // ==========================================
 
   searchText = '';
 
-  // ==========================
+  // ==========================================
   // Popup Controls
-  // ==========================
+  // ==========================================
 
   showForm = false;
   showDeletePopup = false;
   isViewMode = false;
   isEditMode = false;
+  isManagerMode = false;
 
   validationError = '';
 
-  selectedUserId: number | null = null;
+  selectedUser: any = null;
 
-  // ==========================
-  // User List
-  // ==========================
+  userToDelete: any = null;
 
-  users: User[] = [
+  showViewModal = false;
 
-    {
-      id: 1,
-      name: 'Abhishek Singh',
-      phone: '9876543210',
-      department: 'Electrical',
-      status: 'Active'
-    },
+  // ==========================================
+  // Users List
+  // ==========================================
 
-    {
-      id: 2,
-      name: 'Rohit Sharma',
-      phone: '9876501234',
-      department: 'Mechanical',
-      status: 'Active'
-    },
+  users: any[] = [];
+managers: any[] = [];
 
-    {
-      id: 3,
-      name: 'Sanjeev Kumar',
-      phone: '9898989898',
-      department: 'Civil',
-      status: 'Inactive'
-    }
+departments: string[] = [
+  'Electrical',
+  'Mechanical',
+  'Civil',
+  'Safety'
+];
 
-  ];
-
-  // ==========================
+  // ==========================================
   // Form Model
-  // ==========================
+  // ==========================================
 
-  newUser: User = {
-    id: 0,
-    name: '',
+  newUser: any = {
+    fullName: '',
+    email: '',
     phone: '',
+    employeeId: '',
     department: '',
-    status: 'Active'
+    designation: '',
+    role: 'EMPLOYEE',
+    manager: '',
+    isActive: true,
+    password: ''
   };
 
-  // ==========================
-  // Search Filter
-  // ==========================
+  // ==========================================
+  // Init
+  // ==========================================
 
-  get filteredUsers(): User[] {
+  ngOnInit(): void {
 
-    return this.users.filter(user =>
-
-      user.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-
-      user.phone.includes(this.searchText) ||
-
-      user.department.toLowerCase().includes(this.searchText.toLowerCase())
-
-    );
+    this.loadUsers();
 
   }
 
-  // ==========================
-  // Open Add Form
-  // ==========================
+  // ==========================================
+  // Load Users
+  // ==========================================
 
-  openAddForm(): void {
+  loadUsers(): void {
+
+  this.userService.getUsers().subscribe({
+
+    next: (response: any) => {
+
+      this.users = response.data;
+
+      // Keep only managers for the dropdown
+      this.managers = this.users.filter(
+        (user: any) => user.role === 'MANAGER'
+      );
+
+      this.cdr.detectChanges();
+
+    },
+
+    error: (error) => {
+
+      console.error(error);
+
+    }
+
+  });
+
+  
+
+}
+  // ==========================================
+  // Search Filter
+  // ==========================================
+
+  get filteredUsers(): any[] {
+
+    return this.users.filter((user: any) => {
+
+      const keyword = this.searchText.toLowerCase();
+
+      return (
+
+        user.fullName?.toLowerCase().includes(keyword) ||
+
+        user.employeeId?.toLowerCase().includes(keyword) ||
+
+        user.email?.toLowerCase().includes(keyword) ||
+
+        user.role?.toLowerCase().includes(keyword) ||
+
+        user.department?.toLowerCase().includes(keyword)
+
+      );
+
+    });
+
+  }
+
+  // ==========================================
+  // Open Add User
+  // ==========================================
+
+  openAddForm(role: 'EMPLOYEE' | 'MANAGER'): void {
 
     this.isEditMode = false;
     this.isViewMode = false;
-
     this.validationError = '';
+
+    this.isManagerMode = role === 'MANAGER';
 
     this.newUser = {
 
-      id: this.users.length + 1,
-
-      name: '',
-
+      fullName: '',
+      email: '',
       phone: '',
-
+      employeeId: '',
       department: '',
-
-      status: 'Active'
+      designation: '',
+      role: role,
+      manager: '',
+      isActive: true,
+      password: ''
 
     };
 
     this.showForm = true;
 
-  }
+}
 
-  // ==========================
+    // ==========================================
   // Save User
-  // ==========================
+  // ==========================================
 
   saveUser(): void {
 
-   if (
-  !this.newUser.name.trim() ||
-  !this.newUser.phone.trim() ||
-  !this.newUser.department.trim()
-) {
-  this.validationError = 'Please fill all required fields.';
-  return;
-}
-
-// Phone number validation
-const phonePattern = /^[0-9]{10}$/;
-
-if (!phonePattern.test(this.newUser.phone)) {
-  this.validationError = 'Phone number must contain exactly 10 digits.';
-  return;
-}
-
-// Clear validation if everything is correct
-this.validationError = '';
-
     this.validationError = '';
+
+    if (
+      !this.newUser.fullName ||
+      !this.newUser.email ||
+      !this.newUser.phone ||
+      !this.newUser.department ||
+      !this.newUser.designation ||
+      !this.newUser.employeeId
+    ) {
+
+      this.validationError = 'Please fill all required fields.';
+
+      return;
+
+    }
+
+    if (
+    this.newUser.role === 'EMPLOYEE' &&
+    !this.newUser.manager
+) {
+    this.validationError = 'Please select a manager.';
+    return;
+}
 
     if (this.isEditMode) {
 
-      const index = this.users.findIndex(
-        u => u.id === this.newUser.id
-      );
+  // Managers and Admins should never have a manager
+  if (this.newUser.role !== 'EMPLOYEE') {
+    this.newUser.manager = null;
+  }
 
-      if (index !== -1) {
+  this.userService.updateUser(
 
-        this.users[index] = { ...this.newUser };
+    this.newUser._id,
 
-      }
+    this.newUser
+
+  ).subscribe({
+
+        next: () => {
+
+          this.closeForm();
+
+          this.loadUsers();
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+        }
+
+      });
 
     }
 
     else {
 
-      this.users.push({ ...this.newUser });
+    if (this.newUser.role !== 'EMPLOYEE') {
+
+        this.newUser.manager = null;
 
     }
 
-    this.closeForm();
+    this.userService.createUser(
+        this.newUser
+    
+
+      ).subscribe({
+
+        next: () => {
+
+          this.closeForm();
+
+          this.loadUsers();
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+        }
+
+      });
+
+    }
+
+    
 
   }
 
-  // ==========================
+  // ==========================================
   // View User
-  // ==========================
+  // ==========================================
 
-  viewUser(user: User): void {
+  viewUser(user: any): void {
 
-    this.isViewMode = true;
+  this.selectedUser = user;
 
-    this.isEditMode = false;
+  this.showViewModal = true;
 
-    this.validationError = '';
+}
 
-    this.newUser = { ...user };
+closeViewModal(): void {
 
-    this.showForm = true;
+  this.showViewModal = false;
 
-  }
+  this.selectedUser = null;
 
-  // ==========================
+}
+
+  // ==========================================
   // Edit User
-  // ==========================
+  // ==========================================
 
-  editUser(user: User): void {
+  editUser(user: any): void {
 
     this.isViewMode = false;
 
@@ -216,55 +311,133 @@ this.validationError = '';
 
     this.validationError = '';
 
-    this.newUser = { ...user };
+    this.selectedUser = user;
+
+    this.newUser = {
+
+    ...user,
+
+    manager: user.manager?._id || ''
+
+};
 
     this.showForm = true;
 
   }
 
-  // ==========================
-  // Delete Popup
-  // ==========================
+  // ==========================================
+  // Delete User
+  // ==========================================
 
-  deleteUser(user: User): void {
+  deleteUser(user: any): void {
 
-    this.selectedUserId = user.id;
-
+    this.selectedUser = user;
     this.showDeletePopup = true;
 
   }
 
+  // ==========================================
+  // Confirm Delete
+  // ==========================================
+
   confirmDelete(): void {
 
-    if (this.selectedUserId !== null) {
+  if (!this.selectedUser) return;
 
-      this.users = this.users.filter(
-        user => user.id !== this.selectedUserId
-      );
+  this.userService.deleteUser(this.selectedUser._id).subscribe({
+
+    next: () => {
+
+      this.cancelDelete();
+
+      this.loadUsers();
+
+    },
+
+    error: (error) => {
+
+      console.error(error);
 
     }
 
-    this.cancelDelete();
+  });
+
+}
+
+  // ==========================================
+  // Change Status
+  // ==========================================
+
+  changeStatus(user: any): void {
+
+    this.userService.changeStatus(
+
+      user._id,
+
+      !user.isActive
+
+    ).subscribe({
+
+      next: () => {
+
+        this.loadUsers();
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+      }
+
+    });
 
   }
+
+  // ==========================================
+  // Cancel Delete
+  // ==========================================
 
   cancelDelete(): void {
 
     this.showDeletePopup = false;
 
-    this.selectedUserId = null;
+    this.userToDelete = null;
+
+    this.selectedUser = null;
 
   }
 
-  // ==========================
+  // ==========================================
   // Close Form
-  // ==========================
+  // ==========================================
 
   closeForm(): void {
 
     this.showForm = false;
 
     this.validationError = '';
+
+    this.isEditMode = false;
+
+    this.isViewMode = false;
+
+    this.selectedUser = null;
+
+    this.newUser = {
+
+      fullName: '',
+      email: '',
+      phone: '',
+      employeeId: '',
+      department: '',
+      designation: '',
+      role: 'EMPLOYEE',
+      manager:'',
+      isActive: true,
+      password: ''
+
+    };
 
   }
 

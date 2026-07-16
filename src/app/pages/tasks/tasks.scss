@@ -1,681 +1,984 @@
-h1{
-    margin-bottom:24px;
-    font-size:28px;
-    font-weight:700;
-    color:#111827;
-    margin-top:25px;
+/* ==========================================================
+   Tasks Page
+========================================================== */
+
+:host {
+  display: block;
+  padding: 30px;
+  background: #f5f7fb;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-.subtitle{
-    color:#64748b;
-    font-size:15px;
-    font-weight:400;
-    margin-top:-8px;
-}
-/* ===========================
-   Page Header
-=========================== */
+/* ==========================================================
+   Header
+========================================================== */
 
 .page-header {
   margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .subtitle {
+    margin-top: 6px;
+    color: #6b7280;
+    font-size: 15px;
+  }
 }
 
-/* ===========================
+/* ==========================================================
    Toolbar
-=========================== */
+========================================================== */
 
 .toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  gap: 18px;
   margin-bottom: 24px;
   flex-wrap: wrap;
 }
 
 .toolbar input {
-  width: 400px;
-  max-width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  outline: none;
-  font-size: 14px;
-  background: white;
-}
 
-.toolbar input:focus {
-  border-color: #2563eb;
-}
+  flex: 1;
+  min-width: 320px;
 
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+  height: 48px;
 
-.filters select {
-  padding: 11px 14px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  background: white;
-  cursor: pointer;
-  font-size: 14px;
-}
+  padding: 0 18px;
 
-.assign-btn{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
+  border: 1px solid #dbe2ea;
 
-  background:#2563eb;
-  color:white;
+  border-radius: 12px;
 
-  border:none;
-  border-radius:10px;
-
-  padding:12px 22px;
-
-  font-size:14px;
-  font-weight:600;
-
-  cursor:pointer;
-  transition:.25s;
-}
-
-.assign-btn:hover{
-  background:#1d4ed8;
-}
-
-.assign-btn mat-icon{
-  font-size:20px;
-  width:20px;
-  height:20px;
-}
-
-/* ===========================
-   Table Card
-=========================== */
-
-.table-card {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 5px 18px rgba(0,0,0,.08);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background: #f8fafc;
-}
-
-th {
-  text-align: left;
-  padding: 18px;
   font-size: 15px;
-  font-weight: 700;
-  color: #374151;
-}
 
-td {
-  padding: 18px;
-  font-size: 14px;
-  color: #374151;
-  border-top: 1px solid #f1f5f9;
-}
+  outline: none;
 
-tbody tr {
+  background: white;
+
   transition: .25s;
 }
 
-tbody tr:hover {
-  background: #f8fbff;
+.toolbar input:focus {
+
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 4px rgba(37,99,235,.08);
+
 }
 
-/* ===========================
+.filters {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  flex-wrap: wrap;
+
+}
+
+.filters select {
+
+  width: 170px;
+
+  height: 48px;
+
+  border-radius: 12px;
+
+  border: 1px solid #dbe2ea;
+
+  padding: 0 14px;
+
+  background: white;
+
+  font-size: 14px;
+
+  outline: none;
+
+}
+
+.assign-btn {
+
+  height: 48px;
+
+  padding: 0 24px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #2563eb;
+
+  color: white;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .25s;
+
+}
+
+.assign-btn:hover {
+
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+
+}
+
+/* ==========================================================
+   Table Card
+========================================================== */
+
+.table-card {
+
+  background: white;
+
+  border-radius: 18px;
+
+  box-shadow: 0 10px 35px rgba(15,23,42,.06);
+
+  overflow: hidden;
+
+}
+
+table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+}
+
+thead {
+
+  background: #f8fafc;
+
+}
+
+th {
+
+  text-align: left;
+
+  padding: 18px 22px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  color: #374151;
+
+  border-bottom: 1px solid #edf2f7;
+
+}
+
+td {
+
+  padding: 18px 22px;
+
+  border-bottom: 1px solid #f1f5f9;
+
+  font-size: 14px;
+
+  color: #374151;
+
+}
+
+tbody tr {
+
+  transition: .25s;
+
+}
+
+tbody tr:hover {
+
+  background: #f8fbff;
+
+}
+
+.empty-state {
+
+  text-align: center;
+
+  padding: 45px;
+
+  color: #94a3b8;
+
+  font-size: 15px;
+
+}
+
+/* ==========================================================
+   Actions
+========================================================== */
+
+.actions {
+
+  display: flex;
+
+  gap: 10px;
+
+  align-items: center;
+
+}
+
+.actions button {
+
+  border: none;
+
+  border-radius: 10px;
+
+  padding: 10px 14px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  transition: .25s;
+
+}
+
+.view-btn {
+
+  background: #eff6ff;
+
+  color: #2563eb;
+
+}
+
+.view-btn:hover {
+
+  background: #dbeafe;
+
+}
+
+.edit-btn {
+
+  background: #f5f3ff;
+
+  color: #7c3aed;
+
+}
+
+.edit-btn:hover {
+
+  background: #ede9fe;
+
+}
+
+.delete-btn {
+
+  background: #fef2f2;
+
+  color: #dc2626;
+
+}
+
+.delete-btn:hover {
+
+  background: #fee2e2;
+
+}
+
+/* ==========================================================
    Status Badges
-=========================== */
+========================================================== */
 
 .status {
-  padding: 6px 14px;
-  border-radius: 30px;
-  font-size: 13px;
-  font-weight: 600;
+
+ padding:6px 16px;
+
+border-radius:999px;
+
+font-size:12px;
+
+font-weight:600;
+
+display:inline-flex;
+
+justify-content:center;
+
+align-items:center;
+
+min-width:95px;
+
 }
 
-.status.pending {
-  background: #fef3c7;
-  color: #b45309;
+.status.pending{
+
+    background:#fef3c7;
+
+    color:#b45309;
+
 }
 
-.status.ongoing {
-  background: #dbeafe;
-  color: #1d4ed8;
+.status.ongoing{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
 }
 
-.status.completed {
-  background: #dcfce7;
-  color: #15803d;
+.status.completed{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
 }
 
-.status.overdue {
-  background: #fee2e2;
-  color: #dc2626;
+.status.cancelled{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
 }
 
-/* ===========================
+/* ==========================================================
    Priority Badges
-=========================== */
+========================================================== */
 
 .priority {
-  padding: 6px 14px;
-  border-radius: 30px;
-  font-size: 13px;
-  font-weight: 600;
+
+  padding:6px 16px;
+
+border-radius:999px;
+
+font-size:12px;
+
+font-weight:600;
+
+display:inline-flex;
+
+justify-content:center;
+
+align-items:center;
+
+min-width:95px;
+
 }
 
-.priority.high {
-  background: #fee2e2;
-  color: #dc2626;
+.priority.low{
+
+    background:#f3f4f6;
+
+    color:#6b7280;
+
 }
 
-.priority.medium {
-  background: #fef3c7;
-  color: #b45309;
+.priority.medium{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
 }
 
-.priority.low {
-  background: #dcfce7;
-  color: #15803d;
+.priority.high{
+
+    background:#fed7aa;
+
+    color:#c2410c;
+
 }
 
-/* ===========================
-   Action Buttons
-=========================== */
+.priority.urgent{
 
-.actions{
-    display:flex;
-    gap:10px;
-}
-
-.actions button{
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-
-    border:none;
-    border-radius:8px;
-
-    padding:8px 14px;
-
-    cursor:pointer;
-
-    font-size:13px;
-    font-weight:500;
-
-    transition:.25s;
-}
-
-.actions button mat-icon{
-
-    font-size:18px;
-    width:18px;
-    height:18px;
-}
-
-.view-btn{
-    background:#dbeafe;
-    color:#2563eb;
-}
-
-.edit-btn{
-    background:#ede9fe;
-    color:#7c3aed;
-}
-
-.delete-btn{
     background:#fee2e2;
-    color:#dc2626;
+
+    color:#b91c1c;
+
 }
 
-.actions button:hover{
+/* ==========================================================
+   Modal Overlay
+========================================================== */
 
-    transform:translateY(-2px);
+.modal-backdrop {
 
-    box-shadow:0 6px 14px rgba(0,0,0,.12);
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(15,23,42,.45);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  padding: 24px;
+
+  z-index: 999;
+
+  backdrop-filter: blur(4px);
+
 }
 
-/* ===========================
+/* ==========================================================
+   Main Modal
+========================================================== */
+
+.task-modal,
+.view-modal {
+
+  width: min(850px, 95vw);
+
+  max-height: 90vh;
+
+  background: white;
+
+  border-radius: 18px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  box-shadow: 0 20px 60px rgba(15,23,42,.18);
+
+  animation: modalFade .25s ease;
+
+}
+
+/* ==========================================================
+   Header
+========================================================== */
+
+.modal-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 22px 28px;
+
+  border-bottom: 1px solid #edf2f7;
+
+}
+
+.modal-header h2 {
+
+  margin: 0;
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+  color: #1f2937;
+
+}
+
+.close-btn {
+
+  width: 38px;
+
+  height: 38px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #f3f4f6;
+
+  cursor: pointer;
+
+  transition: .25s;
+
+  font-size: 18px;
+
+}
+
+.close-btn:hover {
+
+  background: #e5e7eb;
+
+}
+
+/* ==========================================================
+   Body
+========================================================== */
+
+.modal-body {
+
+  padding: 28px;
+
+  overflow-y: auto;
+
+}
+
+.form-group {
+
+  display: flex;
+
+  flex-direction: column;
+
+  margin-bottom: 22px;
+
+}
+
+.form-group label {
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  color: #374151;
+
+  margin-bottom: 8px;
+
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+
+  width: 100%;
+
+  border: 1px solid #dbe2ea;
+
+  border-radius: 12px;
+
+  padding: 12px 14px;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition: .25s;
+
+  box-sizing: border-box;
+
+  background: white;
+
+}
+
+.form-group textarea {
+
+  resize: vertical;
+
+  min-height: 110px;
+
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+
+  border-color: #2563eb;
+
+  box-shadow: 0 0 0 4px rgba(37,99,235,.08);
+
+}
+
+.form-row {
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 20px;
+
+}
+
+/* ==========================================================
+   Validation
+========================================================== */
+
+.error-message {
+
+  margin: 20px 28px 0;
+
+  padding: 12px 16px;
+
+  border-radius: 10px;
+
+  background: #fee2e2;
+
+  color: #b91c1c;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+}
+
+/* ==========================================================
+   Modal Footer
+========================================================== */
+
+.modal-footer {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 14px;
+
+  padding: 22px 28px;
+
+  border-top: 1px solid #edf2f7;
+
+  background: #fafbfc;
+
+}
+
+.cancel-btn,
+.save-btn,
+.delete-confirm-btn {
+
+  min-width: 130px;
+
+  height: 46px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .25s;
+
+}
+
+.cancel-btn {
+
+  background: #f3f4f6;
+
+  color: #374151;
+
+}
+
+.cancel-btn:hover {
+
+  background: #e5e7eb;
+
+}
+
+.save-btn {
+
+  background: #2563eb;
+
+  color: white;
+
+}
+
+.save-btn:hover {
+
+  background: #1d4ed8;
+
+  transform: translateY(-1px);
+
+}
+
+.delete-confirm-btn {
+
+  background: #dc2626;
+
+  color: white;
+
+}
+
+.delete-confirm-btn:hover {
+
+  background: #b91c1c;
+
+}
+
+/* ==========================================================
+   View Modal
+========================================================== */
+
+.view-content {
+
+  padding: 28px;
+
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 18px;
+
+}
+
+.detail {
+
+  background: #f8fafc;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  padding: 16px;
+
+}
+
+.detail span {
+
+  display: block;
+
+  font-size: 13px;
+
+  color: #6b7280;
+
+  margin-bottom: 8px;
+
+}
+
+.detail strong {
+
+  display: block;
+
+  font-size: 15px;
+
+  color: #111827;
+
+  font-weight: 600;
+
+  word-break: break-word;
+
+}
+
+/* ==========================================================
+   Delete Modal
+========================================================== */
+
+.delete-modal {
+
+  width: 430px;
+
+  max-width: 95vw;
+
+  background: white;
+
+  border-radius: 18px;
+
+  padding: 32px;
+
+  text-align: center;
+
+  box-shadow: 0 20px 60px rgba(15,23,42,.18);
+
+  animation: modalFade .25s ease;
+
+}
+
+.delete-modal h2 {
+
+  margin: 0 0 14px;
+
+  color: #111827;
+
+  font-size: 24px;
+
+}
+
+.delete-modal p {
+
+  color: #6b7280;
+
+  line-height: 1.7;
+
+  margin-bottom: 26px;
+
+}
+
+.delete-actions {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 16px;
+
+}
+
+/* ==========================================================
+   Material Icons
+========================================================== */
+
+mat-icon {
+
+  font-size: 18px;
+
+  width: 18px;
+
+  height: 18px;
+
+}
+
+/* ==========================================================
+   Scrollbar
+========================================================== */
+
+.modal-body::-webkit-scrollbar {
+
+  width: 8px;
+
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+
+  background: #cbd5e1;
+
+  border-radius: 20px;
+
+}
+
+.modal-body::-webkit-scrollbar-track {
+
+  background: transparent;
+
+}
+
+/* ==========================================================
+   Animation
+========================================================== */
+
+@keyframes modalFade {
+
+  from {
+
+    opacity: 0;
+
+    transform: translateY(20px) scale(.98);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: translateY(0) scale(1);
+
+  }
+
+}
+
+/* ==========================================================
    Responsive
-=========================== */
+========================================================== */
 
 @media (max-width: 992px) {
 
   .toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
 
-  .toolbar input {
-    width: 100%;
+    flex-direction: column;
+
+    align-items: stretch;
+
   }
 
   .filters {
+
     width: 100%;
+
+    justify-content: space-between;
+
   }
 
-  .filters select,
-  .assign-btn {
+  .filters select {
+
     flex: 1;
+
+  }
+
+  .assign-btn {
+
+    width: 100%;
+
+    justify-content: center;
+
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  :host {
+
+    padding: 18px;
+
   }
 
   .table-card {
+
     overflow-x: auto;
+
   }
 
   table {
+
     min-width: 900px;
+
   }
 
-}
+  .form-row {
 
-/* ==========================================
-   Empty State
-========================================== */
+    grid-template-columns: 1fr;
 
-.empty-state{
-    text-align:center;
-    padding:40px;
-    font-size:15px;
-    font-weight:600;
-    color:#94a3b8;
-}
+  }
 
-/* ==========================================
-   Modal Backdrop
-========================================== */
+  .view-content {
 
-.modal-backdrop{
+    grid-template-columns: 1fr;
 
-    position:fixed;
+  }
 
-    inset:0;
+  .modal-footer {
 
-    background:rgba(0,0,0,.45);
+    flex-direction: column;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+  }
 
-    z-index:1000;
+  .cancel-btn,
+  .save-btn,
+  .delete-confirm-btn {
 
-    animation:fadeIn .25s;
-}
+    width: 100%;
 
-/* ==========================================
-   Task Modal
-========================================== */
+  }
 
-.task-modal,
-.view-modal{
+  .delete-actions {
 
-    width:600px;
-    max-width:95%;
+    flex-direction: column;
 
-    background:white;
+  }
 
-    border-radius:18px;
-
-    overflow:hidden;
-
-    box-shadow:0 20px 45px rgba(0,0,0,.18);
-
-    animation:popup .25s;
-}
-
-/* ==========================================
-   Header
-========================================== */
-
-.modal-header{
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:20px 25px;
-
-    border-bottom:1px solid #e5e7eb;
-}
-
-.modal-header h2{
-
-    margin:0;
-
-    font-size:22px;
-    font-weight:700;
-}
-
-.close-btn{
-
-    border:none;
-    background:transparent;
-
-    cursor:pointer;
-
-    font-size:22px;
-    color:#64748b;
-}
-
-.close-btn:hover{
-
-    color:#ef4444;
-}
-
-/* ==========================================
-   Body
-========================================== */
-
-.modal-body{
-
-    padding:25px;
-}
-
-.form-group{
-
-    display:flex;
-    flex-direction:column;
-
-    margin-bottom:18px;
-}
-
-.form-group label{
-
-    margin-bottom:8px;
-
-    font-size:14px;
-    font-weight:600;
-
-    color:#374151;
-}
-
-.form-group input,
-.form-group select{
-
-    padding:12px 14px;
-
-    border:1px solid #d1d5db;
-
-    border-radius:10px;
-
-    font-size:14px;
-
-    outline:none;
-}
-
-.form-group input:focus,
-.form-group select:focus{
-
-    border-color:#2563eb;
-}
-
-.form-row{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:18px;
-}
-
-/* ==========================================
-   Footer
-========================================== */
-
-.modal-footer{
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    gap:12px;
-
-    padding:20px 25px;
-
-    border-top:1px solid #e5e7eb;
-}
-
-.cancel-btn{
-
-    background:#e5e7eb;
-
-    color:#374151;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 24px;
-
-    cursor:pointer;
-
-    font-weight:600;
-}
-
-.cancel-btn:hover{
-
-    background:#d1d5db;
-}
-
-.save-btn{
-
-    background:#2563eb;
-
-    color:white;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 24px;
-
-    cursor:pointer;
-
-    font-weight:600;
-}
-
-.save-btn:hover{
-
-    background:#1d4ed8;
-}
-
-/* ==========================================
-   View Modal
-========================================== */
-
-.view-content{
-
-    padding:25px;
-}
-
-.detail{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    padding:14px 0;
-
-    border-bottom:1px solid #f1f5f9;
-}
-
-.detail:last-child{
-
-    border-bottom:none;
-}
-
-.detail span{
-
-    color:#64748b;
-}
-
-.detail strong{
-
-    color:#111827;
-}
-
-/* ==========================================
-   Animations
-========================================== */
-
-@keyframes popup{
-
-    from{
-
-        opacity:0;
-        transform:translateY(-20px) scale(.96);
-
-    }
-
-    to{
-
-        opacity:1;
-        transform:translateY(0) scale(1);
-
-    }
-
-}
-
-@keyframes fadeIn{
-
-    from{
-
-        opacity:0;
-
-    }
-
-    to{
-
-        opacity:1;
-
-    }
-
-}
-
-/* ==========================================
-   Responsive
-========================================== */
-
-@media(max-width:768px){
-
-    .task-modal,
-    .view-modal{
-
-        width:95%;
-    }
-
-    .form-row{
-
-        grid-template-columns:1fr;
-    }
-
-    .modal-footer{
-
-        flex-direction:column;
-    }
-
-    .modal-footer button{
-
-        width:100%;
-    }
-
-}
-
-.error-message {
-  color: #dc2626;
-  background: #fee2e2;
-  border: 1px solid #fecaca;
-  padding: 10px 14px;
-  border-radius: 8px;
-  margin: 15px 25px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* Delete Modal */
-
-.delete-modal{
-
-    width:420px;
-
-    background:#fff;
-
-    border-radius:16px;
-
-    padding:28px;
-
-    text-align:center;
-
-    box-shadow:0 20px 40px rgba(0,0,0,.18);
-
-    animation:popup .25s;
-}
-
-.delete-modal h2{
-
-    margin:0 0 14px;
-
-    font-size:24px;
-
-    color:#111827;
-}
-
-.delete-modal p{
-
-    color:#6b7280;
-
-    line-height:1.6;
-
-    margin-bottom:28px;
-}
-
-.delete-actions{
-
-    display:flex;
-
-    justify-content:center;
-
-    gap:16px;
-}
-
-.delete-confirm-btn{
-
-    background:#dc2626;
-
-    color:white;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:12px 24px;
-
-    cursor:pointer;
-
-    font-weight:600;
-
-    transition:.25s;
-}
-
-.delete-confirm-btn:hover{
-
-    background:#b91c1c;
 }

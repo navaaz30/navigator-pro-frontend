@@ -83,7 +83,7 @@
 
         <div>
 
-            <h2>120</h2>
+            <h2>{{ summary.totalEmployees || 0 }}</h2>
 
             <p>Total Employees</p>
 
@@ -101,7 +101,7 @@
 
         <div>
 
-            <h2>98</h2>
+            <h2>{{ summary.presentToday || 0 }}</h2>
 
             <p>Present Today</p>
 
@@ -119,7 +119,7 @@
 
         <div>
 
-            <h2>245</h2>
+            <h2>{{ summary.completedTasks || 0 }}</h2>
 
             <p>Tasks Completed</p>
 
@@ -137,7 +137,7 @@
 
         <div>
 
-            <h2>₹1,82,400</h2>
+            <h2>₹{{ summary.totalExpenses || 0 }}</h2>
 
             <p>Total Expenses</p>
 
@@ -169,7 +169,7 @@
 
     <div class="chart-value">
 
-        <h3>98%</h3>
+        <h3>{{ attendanceData.present || 0 }}</h3>
 
         <p>Present</p>
 
@@ -201,7 +201,7 @@
 
     <div class="chart-value">
 
-        <h3>₹1.82L</h3>
+        <h3>₹{{ expenseData.totalExpenses || 0 }}</h3>
 
         <p>This Month</p>
 
@@ -233,7 +233,7 @@
 
     <div class="chart-value">
 
-        <h3>245</h3>
+        <h3>{{ taskData.completed || 0 }}</h3>
 
         <p>Completed</p>
 
@@ -265,7 +265,7 @@
 
     <div class="chart-value">
 
-        <h3>95</h3>
+        <h3>{{ (leaveData.total || 0) }}</h3>
 
         <p>Requests</p>
 

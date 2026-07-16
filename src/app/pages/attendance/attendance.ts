@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
+
 import { AttendanceService } from '../../services/attendance.service';
 
 interface AttendanceRecord {
@@ -34,24 +35,51 @@ export class Attendance implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
+  // ==========================================
+  // Search & Filters
+  // ==========================================
+
   searchText = '';
+
   selectedStatus = '';
 
+  selectedDateFilter = 'TODAY';
+
+  selectedDate = '';
+
+  // ==========================================
+  // Popup Controls
+  // ==========================================
+
   showForm = false;
+
   showViewModal = false;
+
   showDeleteModal = false;
 
   isEditMode = false;
 
   validationError = '';
 
+  // ==========================================
+  // Selected Records
+  // ==========================================
+
   selectedAttendance: any = null;
 
   attendanceToDelete: any = null;
 
+  // ==========================================
+  // Data
+  // ==========================================
+
   attendanceList: any[] = [];
 
   employees: any[] = [];
+
+  // ==========================================
+  // Form Model
+  // ==========================================
 
   newAttendance: any = {
     employee: '',
@@ -64,23 +92,136 @@ export class Attendance implements OnInit {
     email: ''
   };
 
+  // ==========================================
+  // Init
+  // ==========================================
+
   ngOnInit(): void {
 
-  this.loadAttendance();
+    // Backend defaults to today's attendance
+    this.loadAttendance();
 
-  this.loadEmployees();
+    this.loadEmployees();
 
-}
+  }
 
-  loadAttendance(): void {
+  // ==========================================
+  // Load Attendance
+  // ==========================================
 
-    this.attendanceService.getAttendance().subscribe({
+  loadAttendance(date?: string): void {
+
+    this.attendanceService
+      .getAttendance(date)
+      .subscribe({
+
+        next: (response: any) => {
+
+          this.attendanceList = response.data || [];
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: (error) => {
+
+          console.error(error);
+
+        }
+
+      });
+
+  }
+
+  // ==========================================
+  // Refresh Attendance
+  // Keeps selected date after CRUD operations
+  // ==========================================
+
+  private refreshAttendance(): void {
+
+    if (this.selectedDateFilter === 'TODAY') {
+
+      this.loadAttendance();
+
+    }
+
+    else if (this.selectedDateFilter === 'YESTERDAY') {
+
+      const yesterday = new Date();
+
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      this.loadAttendance(
+        yesterday.toISOString().split('T')[0]
+      );
+
+    }
+
+    else if (
+      this.selectedDateFilter === 'CUSTOM' &&
+      this.selectedDate
+    ) {
+
+      this.loadAttendance(this.selectedDate);
+
+    }
+
+  }
+
+  // ==========================================
+  // Date Filter
+  // ==========================================
+
+  onDateFilterChange(): void {
+
+    if (this.selectedDateFilter === 'TODAY') {
+
+      this.selectedDate = '';
+
+      this.loadAttendance();
+
+    }
+
+    else if (this.selectedDateFilter === 'YESTERDAY') {
+
+      const yesterday = new Date();
+
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      this.loadAttendance(
+        yesterday.toISOString().split('T')[0]
+      );
+
+    }
+
+  }
+
+  // ==========================================
+  // Custom Date
+  // ==========================================
+
+  onCustomDateChange(): void {
+
+    if (this.selectedDate) {
+
+      this.loadAttendance(this.selectedDate);
+
+    }
+
+  }
+
+  // ==========================================
+  // Load Employees
+  // ==========================================
+
+    loadEmployees(): void {
+
+    this.attendanceService.getEmployees().subscribe({
 
       next: (response: any) => {
 
-        this.attendanceList = response.data;
-
-        this.cdr.detectChanges();
+        this.employees = response.data || [];
 
       },
 
@@ -94,25 +235,9 @@ export class Attendance implements OnInit {
 
   }
 
-  loadEmployees(): void {
-
-  this.attendanceService.getEmployees().subscribe({
-
-    next: (response: any) => {
-
-      this.employees = response.data;
-
-    },
-
-    error: (error) => {
-
-      console.error(error);
-
-    }
-
-  });
-
-}
+  // ==========================================
+  // Attendance Table Filter
+  // ==========================================
 
   get filteredAttendance(): any[] {
 
@@ -122,13 +247,18 @@ export class Attendance implements OnInit {
         record.employee?.fullName?.toLowerCase() || '';
 
       const employeeId =
-        record.employeeId?.toLowerCase() || '';
+        record.employee?.employeeId?.toLowerCase() || '';
+
+      const status =
+        record.status?.toLowerCase() || '';
 
       const matchesSearch =
 
         employeeName.includes(this.searchText.toLowerCase()) ||
 
-        employeeId.includes(this.searchText.toLowerCase());
+        employeeId.includes(this.searchText.toLowerCase()) ||
+
+        status.includes(this.searchText.toLowerCase());
 
       const matchesStatus =
 
@@ -142,9 +272,9 @@ export class Attendance implements OnInit {
 
   }
 
-    // ===========================
+  // ==========================================
   // Open Attendance Form
-  // ===========================
+  // ==========================================
 
   openAttendanceForm(): void {
 
@@ -153,107 +283,210 @@ export class Attendance implements OnInit {
     this.validationError = '';
 
     this.newAttendance = {
-  employee: '',
-  employeeId: '',
-  email: '',
-  date: '',
-  clockIn: '',
-  clockOut: '',
-  status: 'PRESENT',
-  remarks: ''
-};
+
+      employee: '',
+
+      employeeId: '',
+
+      email: '',
+
+      date: '',
+
+      clockIn: '',
+
+      clockOut: '',
+
+      status: 'PRESENT',
+
+      remarks: ''
+
+    };
 
     this.showForm = true;
 
   }
 
+  // ==========================================
+  // Employee Selection
+  // ==========================================
 
   onEmployeeChange(): void {
 
-  const employee = this.employees.find(
-    (emp: any) => emp._id === this.newAttendance.employee
-  );
+    const employee = this.employees.find(
 
-  if (employee) {
+      (emp: any) => emp._id === this.newAttendance.employee
 
-    this.newAttendance.employeeId = employee.employeeId;
+    );
 
-    this.newAttendance.email = employee.email;
+    if (employee) {
+
+      this.newAttendance.employeeId = employee.employeeId;
+
+      this.newAttendance.email = employee.email;
+
+    }
 
   }
 
-}
-  // ===========================
+  // ==========================================
   // Save Attendance
-  // ===========================
+  // ==========================================
 
   saveAttendance(): void {
 
     this.validationError = '';
 
     if (
+
       !this.newAttendance.employee ||
+
       !this.newAttendance.date ||
+
       !this.newAttendance.status
+
     ) {
-      this.validationError = 'Please fill all required fields.';
+
+      this.validationError =
+
+        'Please fill all required fields.';
+
       return;
+
     }
+
+    const attendanceDate =
+
+      new Date(this.newAttendance.date);
+
+    const clockIn =
+
+      new Date(attendanceDate);
+
+    const clockOut =
+
+      new Date(attendanceDate);
+
+    if (this.newAttendance.clockIn) {
+
+      const [hour, minute] =
+
+        this.newAttendance.clockIn.split(':');
+
+      clockIn.setHours(
+
+        +hour,
+
+        +minute,
+
+        0,
+
+        0
+
+      );
+
+    }
+
+    if (this.newAttendance.clockOut) {
+
+      const [hour, minute] =
+
+        this.newAttendance.clockOut.split(':');
+
+      clockOut.setHours(
+
+        +hour,
+
+        +minute,
+
+        0,
+
+        0
+
+      );
+
+    }
+
+    const attendancePayload = {
+
+      ...this.newAttendance,
+
+      date: attendanceDate,
+
+      clockIn,
+
+      clockOut
+
+    };
 
     if (this.isEditMode) {
 
-      this.attendanceService.updateAttendance(
-        this.newAttendance._id,
-        this.newAttendance
-      ).subscribe({
+      this.attendanceService
 
-        next: () => {
+        .updateAttendance(
 
-          this.closeForm();
+          this.newAttendance._id,
 
-          this.loadAttendance();
+          attendancePayload
 
-        },
+        )
 
-        error: (error) => {
+        .subscribe({
 
-          console.error(error);
+          next: () => {
 
-        }
+            this.closeForm();
 
-      });
+            this.refreshAttendance();
 
-    } else {
+          },
 
-      this.attendanceService.createAttendance(
-        this.newAttendance
-      ).subscribe({
+          error: (error) => {
 
-        next: () => {
+            console.error(error);
 
-          this.closeForm();
+          }
 
-          this.loadAttendance();
+        });
 
-        },
+    }
 
-        error: (error) => {
+    else {
 
-          console.error(error);
+      this.attendanceService
 
-        }
+        .createAttendance(
 
-      });
+          attendancePayload
+
+        )
+
+        .subscribe({
+
+          next: () => {
+
+            this.closeForm();
+
+            this.refreshAttendance();
+
+          },
+
+          error: (error) => {
+
+            console.error(error);
+
+          }
+
+        });
 
     }
 
   }
 
-  // ===========================
+  // ==========================================
   // View Attendance
-  // ===========================
+  // ==========================================
 
-  viewAttendance(attendance: any): void {
+    viewAttendance(attendance: any): void {
 
     this.selectedAttendance = { ...attendance };
 
@@ -269,9 +502,9 @@ export class Attendance implements OnInit {
 
   }
 
-  // ===========================
+  // ==========================================
   // Edit Attendance
-  // ===========================
+  // ==========================================
 
   editAttendance(attendance: any): void {
 
@@ -279,15 +512,61 @@ export class Attendance implements OnInit {
 
     this.validationError = '';
 
-    this.newAttendance = { ...attendance };
+    const clockIn = attendance.clockIn
+      ? new Date(attendance.clockIn)
+      : null;
+
+    const clockOut = attendance.clockOut
+      ? new Date(attendance.clockOut)
+      : null;
+
+    const attendanceDate = attendance.date
+      ? new Date(attendance.date)
+      : null;
+
+    this.newAttendance = {
+
+      ...attendance,
+
+      employee:
+        attendance.employee?._id ||
+        attendance.employee,
+
+      employeeId:
+        attendance.employee?.employeeId ||
+        attendance.employeeId,
+
+      email:
+        attendance.employee?.email ||
+        attendance.email,
+
+      date: attendanceDate
+        ? attendanceDate
+            .toISOString()
+            .split('T')[0]
+        : '',
+
+      clockIn: clockIn
+        ? clockIn
+            .toTimeString()
+            .slice(0, 5)
+        : '',
+
+      clockOut: clockOut
+        ? clockOut
+            .toTimeString()
+            .slice(0, 5)
+        : ''
+
+    };
 
     this.showForm = true;
 
   }
 
-  // ===========================
+  // ==========================================
   // Delete Attendance
-  // ===========================
+  // ==========================================
 
   deleteAttendance(attendance: any): void {
 
@@ -301,27 +580,33 @@ export class Attendance implements OnInit {
 
   confirmDelete(): void {
 
-    if (!this.attendanceToDelete) return;
+    if (!this.attendanceToDelete) {
 
-    this.attendanceService.deleteAttendance(
-      this.attendanceToDelete._id
-    ).subscribe({
+      return;
 
-      next: () => {
+    }
 
-        this.cancelDelete();
+    this.attendanceService
+      .deleteAttendance(
+        this.attendanceToDelete._id
+      )
+      .subscribe({
 
-        this.loadAttendance();
+        next: () => {
 
-      },
+          this.cancelDelete();
 
-      error: (error) => {
+          this.refreshAttendance();
 
-        console.error(error);
+        },
 
-      }
+        error: (error) => {
 
-    });
+          console.error(error);
+
+        }
+
+      });
 
   }
 
@@ -335,9 +620,9 @@ export class Attendance implements OnInit {
 
   }
 
-  // ===========================
+  // ==========================================
   // Close Attendance Form
-  // ===========================
+  // ==========================================
 
   closeForm(): void {
 
@@ -348,13 +633,23 @@ export class Attendance implements OnInit {
     this.isEditMode = false;
 
     this.newAttendance = {
+
       employee: '',
+
       employeeId: '',
+
+      email: '',
+
       date: '',
+
       clockIn: '',
+
       clockOut: '',
+
       status: 'PRESENT',
+
       remarks: ''
+
     };
 
   }
