@@ -1,10 +1,16 @@
 import {
   Component,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  OnInit
 } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+
+
+import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -17,9 +23,13 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './settings.html',
   styleUrl: './settings.scss'
 })
-export class Settings {
+export class Settings implements OnInit {
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+  private cdr: ChangeDetectorRef,
+  private userService: UserService,
+  private router: Router
+) {}
 
   // ==========================================
   // Toast Notification
@@ -27,47 +37,52 @@ export class Settings {
 
   showToast = false;
 
+  showLogoutPopup = false;
+
   toastMessage = '';
 
   toastType: 'success' | 'error' = 'success';
 
-private toastTimeout: any;
+  private toastTimeout: any;
 
-openToast(message: string, type: 'success' | 'error'): void {
+  openToast(
+    message: string,
+    type: 'success' | 'error'
+  ): void {
 
-  console.log('Toast Open');
+    this.toastMessage = message;
 
-  this.toastMessage = message;
-  this.toastType = type;
-  this.showToast = true;
+    this.toastType = type;
 
-  if (this.toastTimeout) {
-    clearTimeout(this.toastTimeout);
+    this.showToast = true;
+
+    if (this.toastTimeout) {
+
+      clearTimeout(this.toastTimeout);
+
+    }
+
+    this.toastTimeout = setTimeout(() => {
+
+      this.showToast = false;
+
+      this.cdr.detectChanges();
+
+    }, 3000);
+
   }
-
- this.toastTimeout = setTimeout(() => {
-
-  console.log('Toast Close');
-
-  this.showToast = false;
-
-  this.cdr.detectChanges();
-
-}, 3000);
-
-}
 
   // ==========================================
   // Profile
   // ==========================================
 
-  fullName = 'Abhishek Singh';
+  fullName = '';
 
-  email = 'admin@navigatorpro.com';
+  email = '';
 
-  phone = '+91 9876543210';
+  phone = '';
 
-  designation = 'Super Admin';
+  designation = '';
 
   // ==========================================
   // Security
@@ -80,31 +95,105 @@ openToast(message: string, type: 'success' | 'error'): void {
   confirmPassword = '';
 
   // ==========================================
-  // Company
+  // Init
   // ==========================================
 
-  companyName = 'Navigator Pro Pvt Ltd';
+  ngOnInit(): void {
 
-  companyEmail = 'contact@navigatorpro.com';
+    this.loadProfile();
+    
 
-  companyPhone = '+91 9876543210';
-
-  website = 'www.navigatorpro.com';
-
-  address = 'Chennai, Tamil Nadu, India';
+  }
 
   // ==========================================
-  // Profile
+  // Load Profile
+  // ==========================================
+
+  loadProfile(): void {
+
+    this.userService.getProfile().subscribe({
+
+      next: (response: any) => {
+
+        const user = response.data;
+
+        this.fullName = user.fullName;
+
+        this.email = user.email;
+
+        this.phone = user.phone;
+
+        this.designation = user.role;
+
+        this.cdr.detectChanges();
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.openToast(
+          'Failed to load profile.',
+          'error'
+        );
+
+      }
+
+    });
+
+  }
+
+  // ==========================================
+  // Save Profile
   // ==========================================
 
   saveProfile(): void {
 
-    console.log('Profile Updated');
+    const payload = {
 
-    this.openToast(
-      'Profile updated successfully.',
-      'success'
-    );
+      fullName: this.fullName,
+
+      email: this.email,
+
+      phone: this.phone
+
+    };
+
+    this.userService.updateProfile(payload).subscribe({
+
+      next: (response: any) => {
+
+        const user = response.data;
+
+        this.fullName = user.fullName;
+
+        this.email = user.email;
+
+        this.phone = user.phone;
+
+        this.designation = user.role;
+
+        this.openToast(
+          'Profile updated successfully.',
+          'success'
+        );
+
+      },
+
+      error: (error) => {
+
+        console.error(error);
+
+        this.openToast(
+          error.error?.message ||
+          'Failed to update profile.',
+          'error'
+        );
+
+      }
+
+    });
 
   }
 
@@ -115,88 +204,136 @@ openToast(message: string, type: 'success' | 'error'): void {
   changePhoto(): void {
 
     this.openToast(
-      'Photo upload will be connected to the backend later.',
+      'Profile photo upload will be added soon.',
       'success'
     );
 
   }
 
-  // ==========================================
-  // Password
-  // ==========================================
+    // ==========================================
+// Update Password
+// ==========================================
 
-  updatePassword(): void {
+updatePassword(): void {
 
-    if (!this.currentPassword.trim()) {
-
-      this.openToast(
-        'Please enter your current password.',
-        'error'
-      );
-
-      return;
-
-    }
-
-    if (!this.newPassword.trim()) {
-
-      this.openToast(
-        'Please enter a new password.',
-        'error'
-      );
-
-      return;
-
-    }
-
-    if (!this.confirmPassword.trim()) {
-
-      this.openToast(
-        'Please confirm your password.',
-        'error'
-      );
-
-      return;
-
-    }
-
-    if (this.newPassword !== this.confirmPassword) {
-
-      this.openToast(
-        'Passwords do not match.',
-        'error'
-      );
-
-      return;
-
-    }
-
-    console.log('Password Updated');
-
-    this.currentPassword = '';
-    this.newPassword = '';
-    this.confirmPassword = '';
+  if (!this.currentPassword.trim()) {
 
     this.openToast(
-      'Password updated successfully.',
-      'success'
+      'Please enter your current password.',
+      'error'
     );
+
+    return;
 
   }
 
-  // ==========================================
-  // Company
-  // ==========================================
-
-  saveCompany(): void {
-
-    console.log('Company Updated');
+  if (!this.newPassword.trim()) {
 
     this.openToast(
-      'Company details updated successfully.',
-      'success'
+      'Please enter a new password.',
+      'error'
     );
 
+    return;
+
   }
+
+  if (!this.confirmPassword.trim()) {
+
+    this.openToast(
+      'Please confirm your password.',
+      'error'
+    );
+
+    return;
+
+  }
+
+  if (this.newPassword !== this.confirmPassword) {
+
+    this.openToast(
+      'Passwords do not match.',
+      'error'
+    );
+
+    return;
+
+  }
+
+  if (this.currentPassword === this.newPassword) {
+
+    this.openToast(
+      'New password cannot be the same as the current password.',
+      'error'
+    );
+
+    return;
+
+  }
+
+  this.userService.changePassword({
+
+    currentPassword: this.currentPassword,
+
+    newPassword: this.newPassword
+
+  }).subscribe({
+
+    next: () => {
+
+      this.currentPassword = '';
+
+      this.newPassword = '';
+
+      this.confirmPassword = '';
+
+      this.openToast(
+        'Password changed successfully.',
+        'success'
+      );
+
+    },
+
+    error: (error) => {
+
+      this.openToast(
+        error.error?.message ||
+        'Failed to change password.',
+        'error'
+      );
+
+    }
+
+  });
+
+}
+
+
+  // ==========================================
+// Logout
+// ==========================================
+
+logout(): void {
+
+  this.showLogoutPopup = true;
+
+}
+
+cancelLogout(): void {
+
+  this.showLogoutPopup = false;
+
+}
+
+confirmLogout(): void {
+
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+
+  this.showLogoutPopup = false;
+
+  this.router.navigate(['/login']);
+
+}
 
 }

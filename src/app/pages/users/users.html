@@ -249,12 +249,16 @@ isEditMode
         [(ngModel)]="newUser.fullName"
         >
 
-      <label>Employee ID</label>
+      <div *ngIf="isEditMode">
 
-      <input
-        type="text"
-        [(ngModel)]="newUser.employeeId"
-        >
+  <label>Employee ID</label>
+
+  <input
+      type="text"
+      [(ngModel)]="newUser.employeeId"
+      readonly>
+
+</div>
 
       <label>Email</label>
 
@@ -311,21 +315,7 @@ isEditMode
 
       <div class="time-grid">
 
-        <div>
-
-          <label>Role</label>
-
-          <select
-            [(ngModel)]="newUser.role"
-            >
-
-            <option value="ADMIN">Admin</option>
-            <option value="MANAGER">Manager</option>
-            <option value="EMPLOYEE">Employee</option>
-
-          </select>
-
-        </div>
+        
 
         <div *ngIf="newUser.role === 'EMPLOYEE'">
 
@@ -347,20 +337,19 @@ isEditMode
 
 </div>
 
-        <div>
+        <div *ngIf="isEditMode">
 
-          <label>Status</label>
+  <label>Status</label>
 
-          <select
-            [(ngModel)]="newUser.isActive"
-            >
+  <select
+    [(ngModel)]="newUser.isActive">
 
-            <option [ngValue]="true">Active</option>
-            <option [ngValue]="false">Inactive</option>
+    <option [ngValue]="true">Active</option>
+    <option [ngValue]="false">Inactive</option>
 
-          </select>
+  </select>
 
-        </div>
+</div>
 
       </div>
 

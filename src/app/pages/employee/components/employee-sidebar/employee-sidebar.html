@@ -1,0 +1,84 @@
+<div class="sidebar">
+
+  <h2 class="logo">Navigator Pro</h2>
+
+  <nav>
+    <ul>
+
+      <!-- Dashboard -->
+      <li>
+        <a
+          routerLink="/employee/dashboard"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }">
+
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+
+        </a>
+      </li>
+
+      <!-- My Tasks -->
+      <li>
+        <a
+          routerLink="/employee/tasks"
+          routerLinkActive="active">
+
+          <mat-icon>task_alt</mat-icon>
+          <span>My Tasks</span>
+
+        </a>
+      </li>
+
+      <!-- Attendance -->
+      <li>
+        <a
+          routerLink="/employee/attendance"
+          routerLinkActive="active">
+
+          <mat-icon>fact_check</mat-icon>
+          <span>Attendance</span>
+
+        </a>
+      </li>
+
+      <!-- Expenses -->
+      <li>
+        <a
+          routerLink="/employee/expenses"
+          routerLinkActive="active">
+
+          <mat-icon>payments</mat-icon>
+          <span>Expenses</span>
+
+        </a>
+      </li>
+
+      <!-- Leave -->
+      <li>
+        <a
+          routerLink="/employee/leave"
+          routerLinkActive="active">
+
+          <mat-icon>event_note</mat-icon>
+          <span>Leave</span>
+
+        </a>
+      </li>
+
+      <!-- Profile -->
+      <li>
+        <a
+          routerLink="/employee/profile"
+          routerLinkActive="active">
+
+          <mat-icon>person</mat-icon>
+          <span>Profile</span>
+
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+
+</div>

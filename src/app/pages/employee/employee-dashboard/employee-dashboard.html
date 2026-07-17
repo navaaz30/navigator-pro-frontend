@@ -1,0 +1,148 @@
+<div class="page-header">
+
+    <div>
+
+        <h1>Dashboard</h1>
+
+        <p class="subtitle">
+            Welcome back! Here's your work summary.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     Dashboard KPI Cards
+========================================== -->
+
+<div class="cards">
+
+    <app-stats-card
+        title="Today's Attendance"
+        [value]="stats.attendanceToday"
+        icon="fact_check">
+    </app-stats-card>
+
+    <app-stats-card
+        title="Working Hours"
+        [value]="stats.workingHours"
+        icon="schedule">
+    </app-stats-card>
+
+    <app-stats-card
+        title="Pending Tasks"
+        [value]="stats.pendingTasks"
+        icon="task">
+    </app-stats-card>
+
+    <app-stats-card
+        title="Pending Leaves"
+        [value]="stats.pendingLeaves"
+        icon="pending_actions">
+    </app-stats-card>
+
+    <app-stats-card
+        title="Pending Expenses"
+        [value]="stats.pendingExpenses"
+        icon="payments">
+    </app-stats-card>
+
+    <app-stats-card
+        title="Attendance %"
+        [value]="stats.attendancePercentage"
+        icon="percent">
+    </app-stats-card>
+
+</div>
+
+<!-- ==========================================
+     Charts
+========================================== -->
+
+<div class="charts-row">
+
+    <app-task-chart
+        [pending]="stats.taskSummary.pending"
+        [inProgress]="stats.taskSummary.inProgress"
+        [completed]="stats.taskSummary.completed"
+        [cancelled]="stats.taskSummary.cancelled">
+    </app-task-chart>
+
+</div>
+
+<!-- ==========================================
+     Summary Cards
+========================================== -->
+
+<div class="summary-row">
+
+    <div class="summary-card">
+
+        <h3>Task Summary</h3>
+
+        <div class="summary-item">
+            <span>Pending</span>
+            <strong>{{ stats.taskSummary.pending }}</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>In Progress</span>
+            <strong>{{ stats.taskSummary.inProgress }}</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Completed</span>
+            <strong>{{ stats.taskSummary.completed }}</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Cancelled</span>
+            <strong>{{ stats.taskSummary.cancelled }}</strong>
+        </div>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>Leave Summary</h3>
+
+        <div class="summary-item">
+            <span>Pending</span>
+            <strong>{{ stats.leaveSummary.pending }}</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Approved</span>
+            <strong>{{ stats.leaveSummary.approved }}</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Rejected</span>
+            <strong>{{ stats.leaveSummary.rejected }}</strong>
+        </div>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>Expense Summary</h3>
+
+        <div class="summary-item">
+            <span>Pending</span>
+            <strong>{{ stats.expenseSummary.pending }}</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Approved</span>
+            <strong>{{ stats.expenseSummary.approved }}</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Rejected</span>
+            <strong>{{ stats.expenseSummary.rejected }}</strong>
+        </div>
+
+    </div>
+
+</div>

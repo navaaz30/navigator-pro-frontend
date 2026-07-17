@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class AttendanceService {
 
   private attendanceUrl = 'http://localhost:5000/api/attendance';
-  private employeeUrl = 'http://localhost:5000/api/users/employees';
+  private staffUrl = 'http://localhost:5000/api/users/staff';
 
   constructor(private http: HttpClient) {}
 
@@ -50,8 +50,10 @@ export class AttendanceService {
   // Employee APIs
   // ===========================
 
-  getEmployees(): Observable<any> {
-    return this.http.get(this.employeeUrl);
-  }
+  getStaff(): Observable<any> {
+
+  return this.http.get(this.staffUrl);
+
+}
 
 }

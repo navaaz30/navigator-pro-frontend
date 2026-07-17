@@ -444,11 +444,17 @@ td:last-child{
 
 }
 
-.modal-body div{
+.modal-body > div:not(.time-grid){
 
     display:flex;
 
     flex-direction:column;
+
+}
+
+.modal-body label{
+
+    margin-bottom:8px;
 
 }
 

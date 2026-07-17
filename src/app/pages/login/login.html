@@ -40,3 +40,20 @@
   </div>
 
 </div>
+
+<!-- Toast -->
+
+<div
+  class="toast"
+  *ngIf="showToast"
+  [ngClass]="toastType">
+
+  <mat-icon>
+    {{ toastType === 'success'
+      ? 'check_circle'
+      : 'error' }}
+  </mat-icon>
+
+  {{ toastMessage }}
+
+</div>

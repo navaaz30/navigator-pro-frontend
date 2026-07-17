@@ -2,7 +2,7 @@
   <div>
     <h1>Attendance</h1>
     <p class="subtitle">
-      Monitor and manage employee attendance records.
+      Monitor and manage staff attendance records.
     </p>
   </div>
 </div>
@@ -197,21 +197,22 @@
 
     <div class="modal-body">
 
-      <label>Employee</label>
+      <label>Staff Member</label>
 
       <select
         [(ngModel)]="newAttendance.employee"
         (change)="onEmployeeChange()">
 
-        <option value="">Select Employee</option>
+        <option value="">Select Staff Member</option>
 
         <option
-          *ngFor="let emp of employees"
-          [value]="emp._id">
+  *ngFor="let emp of employees"
+  [value]="emp._id">
 
-          {{ emp.fullName }}
+  {{ emp.fullName }}
+  ({{ emp.role === 'MANAGER' ? 'Manager' : 'Employee' }})
 
-        </option>
+</option>
 
       </select>
 

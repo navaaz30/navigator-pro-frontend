@@ -1,4 +1,11 @@
-import { Component, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+  Input
+} from '@angular/core';
+
 import { Chart } from 'chart.js/auto';
 
 @Component({
@@ -7,35 +14,93 @@ import { Chart } from 'chart.js/auto';
   templateUrl: './task-chart.html',
   styleUrl: './task-chart.scss'
 })
-export class TaskChart implements AfterViewInit {
+export class TaskChart implements AfterViewInit, OnChanges {
+
+  @Input() pending = 0;
+  @Input() inProgress = 0;
+  @Input() completed = 0;
+  @Input() cancelled = 0;
+
+  private chart!: Chart;
 
   ngAfterViewInit(): void {
+    this.createChart();
+  }
 
-    new Chart('taskChart', {
+  ngOnChanges(changes: SimpleChanges): void {
+
+    if (this.chart) {
+
+      this.chart.data.datasets[0].data = [
+        this.completed,
+        this.inProgress,
+        this.pending,
+        this.cancelled
+      ];
+
+      this.chart.update();
+
+    }
+
+  }
+
+  private createChart(): void {
+
+    this.chart = new Chart('taskChart', {
 
       type: 'doughnut',
 
       data: {
-        labels: ['Completed', 'In Progress', 'Pending', 'Overdue'],
-        datasets: [{
-          data: [65, 20, 10, 5],
-          backgroundColor: [
-            '#4CAF50',
-            '#2196F3',
-            '#FFC107',
-            '#F44336'
-          ]
-        }]
+
+        labels: [
+          'Completed',
+          'In Progress',
+          'Pending',
+          'Cancelled'
+        ],
+
+        datasets: [
+
+          {
+
+            data: [
+              this.completed,
+              this.inProgress,
+              this.pending,
+              this.cancelled
+            ],
+
+            backgroundColor: [
+              '#22c55e',
+              '#3b82f6',
+              '#f59e0b',
+              '#ef4444'
+            ],
+
+            borderWidth: 0
+
+          }
+
+        ]
+
       },
 
       options: {
+
         responsive: true,
+
+        maintainAspectRatio: false,
+
         plugins: {
-  legend: {
-    display: true,
-    position: 'right'
-  }
-}
+
+          legend: {
+
+            position: 'right'
+
+          }
+
+        }
+
       }
 
     });

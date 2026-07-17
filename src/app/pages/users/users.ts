@@ -192,8 +192,8 @@ departments: string[] = [
       !this.newUser.email ||
       !this.newUser.phone ||
       !this.newUser.department ||
-      !this.newUser.designation ||
-      !this.newUser.employeeId
+      !this.newUser.designation 
+      
     ) {
 
       this.validationError = 'Please fill all required fields.';

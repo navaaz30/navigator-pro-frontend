@@ -25,7 +25,7 @@
 
     <p class="subtitle">
 
-        Manage your profile, security and company preferences.
+        Manage your profile and security settings.
 
     </p>
 
@@ -41,7 +41,7 @@
 
         <h2>Profile Information</h2>
 
-        <p>Update your administrator profile.</p>
+        <p>Manage your personal profile information.</p>
 
     </div>
 
@@ -51,7 +51,7 @@
 
             <img
                 src="https://i.pravatar.cc/150?img=12"
-                alt="Admin">
+                alt="Profile">
 
             <button
                 class="change-photo"
@@ -99,11 +99,12 @@
 
                 <div class="form-group">
 
-                    <label>Designation</label>
+                    <label>Role</label>
 
                     <input
                         type="text"
-                        [(ngModel)]="designation">
+                        [(ngModel)]="designation"
+                        readonly>
 
                 </div>
 
@@ -135,150 +136,168 @@
 
 <div class="bottom-grid">
 
-<div class="settings-card">
+    <div class="settings-card">
 
-    <div class="card-header">
+        <div class="card-header">
 
-        <h2>Security</h2>
+            <h2>Security</h2>
 
-        <p>Manage your account password.</p>
-
-    </div>
-
-    <div class="form-grid">
-
-        <div class="form-group">
-
-            <label>Current Password</label>
-
-            <input
-                type="password"
-                [(ngModel)]="currentPassword">
+            <p>Change your account password.</p>
 
         </div>
 
-        <div class="form-group">
+        <div class="form-grid">
 
-            <label>New Password</label>
+            <div class="form-group">
 
-            <input
-                type="password"
-                [(ngModel)]="newPassword">
+                <label>Current Password</label>
+
+                <input
+                    type="password"
+                    [(ngModel)]="currentPassword">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>New Password</label>
+
+                <input
+                    type="password"
+                    [(ngModel)]="newPassword">
+
+            </div>
+
+            <div class="form-group full-width">
+
+                <label>Confirm Password</label>
+
+                <input
+                    type="password"
+                    [(ngModel)]="confirmPassword">
+
+            </div>
 
         </div>
 
-        <div class="form-group full-width">
+        <div class="save-section">
 
-            <label>Confirm Password</label>
+            <button
+                class="save-btn"
+                (click)="updatePassword()">
 
-            <input
-                type="password"
-                [(ngModel)]="confirmPassword">
+                <mat-icon>lock_reset</mat-icon>
+
+                Update Password
+
+            </button>
 
         </div>
-
-    </div>
-
-    <div class="save-section">
-
-        <button
-            class="save-btn"
-            (click)="updatePassword()">
-
-            <mat-icon>lock_reset</mat-icon>
-
-            Update Password
-
-        </button>
 
     </div>
 
 </div>
 
 <!-- ==========================================
-     Company Card
+     Account Card
 ========================================== -->
 
-<div class="settings-card">
+<div class="bottom-grid">
 
-    <div class="card-header">
+    <div class="settings-card account-card">
 
-        <h2>Company Information</h2>
+        <div class="card-header">
 
-        <p>Manage your organization details.</p>
+            <h2>Account</h2>
 
-    </div>
-
-    <div class="form-grid">
-
-        <div class="form-group">
-
-            <label>Company Name</label>
-
-            <input
-                type="text"
-                [(ngModel)]="companyName">
+            <p>Manage your login session.</p>
 
         </div>
 
-        <div class="form-group">
+        <div class="account-content">
 
-            <label>Email Address</label>
+            <div>
 
-            <input
-                type="email"
-                [(ngModel)]="companyEmail">
+                <h3>Logout</h3>
 
-        </div>
+                <p>
+                    Sign out from your account on this device.
+                </p>
 
-        <div class="form-group">
+            </div>
 
-            <label>Phone Number</label>
+            <button
+                class="logout-btn"
+                (click)="showLogoutPopup = true">
 
-            <input
-                type="text"
-                [(ngModel)]="companyPhone">
+                <mat-icon>logout</mat-icon>
 
-        </div>
+                Logout
 
-        <div class="form-group">
-
-            <label>Website</label>
-
-            <input
-                type="text"
-                [(ngModel)]="website">
+            </button>
 
         </div>
-
-        <div class="form-group full-width">
-
-            <label>Office Address</label>
-
-            <textarea
-                rows="3"
-                [(ngModel)]="address">
-
-            </textarea>
-
-        </div>
-
-    </div>
-
-    <div class="save-section">
-
-        <button
-            class="save-btn"
-            (click)="saveCompany()">
-
-            <mat-icon>business</mat-icon>
-
-            Save Company Details
-
-        </button>
 
     </div>
 
 </div>
+
+<!-- ==========================================
+Logout Confirmation
+========================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="showLogoutPopup">
+
+    <div class="delete-modal">
+
+        <div class="delete-icon">
+
+            <mat-icon color="warn">
+
+                logout
+
+            </mat-icon>
+
+        </div>
+
+        <h2>Logout</h2>
+
+        <p>
+
+            Are you sure you want to logout from
+
+            <strong>
+
+                Navigator Pro
+
+            </strong>
+
+            ?
+
+        </p>
+
+        <div class="popup-buttons">
+
+            <button
+                class="cancel-btn"
+                (click)="cancelLogout()">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="delete-confirm-btn"
+                (click)="confirmLogout()">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>

@@ -20,10 +20,10 @@ export class UserService {
   }
 
   getManagers(): Observable<any> {
-  return this.http.get<any>(
-    `${this.apiUrl}/managers`
-  );
-}
+    return this.http.get<any>(
+      `${this.apiUrl}/managers`
+    );
+  }
 
   // ===========================
   // Get User By Id
@@ -34,38 +34,101 @@ export class UserService {
   }
 
   // ===========================
+  // Get Logged-in Profile
+  // ===========================
+
+  getProfile(): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/profile`
+    );
+  }
+
+  // ===========================
   // Create User
   // ===========================
 
   createUser(user: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, user);
+    return this.http.post<any>(
+      this.apiUrl,
+      user
+    );
   }
 
   // ===========================
-  // Update User
+  // Update User (Admin)
   // ===========================
 
-  updateUser(id: string, user: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, user);
+  updateUser(
+    id: string,
+    user: any
+  ): Observable<any> {
+
+    return this.http.put<any>(
+      `${this.apiUrl}/${id}`,
+      user
+    );
+
   }
+
+  // ===========================
+  // Update Logged-in Profile
+  // ===========================
+
+  updateProfile(
+    user: any
+  ): Observable<any> {
+
+    return this.http.put<any>(
+      `${this.apiUrl}/profile`,
+      user
+    );
+
+  }
+
+  // ===========================
+// Change Password
+// ===========================
+
+changePassword(
+  data: {
+    currentPassword: string;
+    newPassword: string;
+  }
+): Observable<any> {
+
+  return this.http.put<any>(
+    `${this.apiUrl}/change-password`,
+    data
+  );
+
+}
 
   // ===========================
   // Delete User
   // ===========================
 
   deleteUser(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+
+    return this.http.delete<any>(
+      `${this.apiUrl}/${id}`
+    );
+
   }
 
   // ===========================
   // Change Status
   // ===========================
 
-  changeStatus(id: string, isActive: boolean): Observable<any> {
+  changeStatus(
+    id: string,
+    isActive: boolean
+  ): Observable<any> {
+
     return this.http.patch<any>(
       `${this.apiUrl}/${id}/status`,
       { isActive }
     );
+
   }
 
 }

@@ -101,7 +101,7 @@ export class Attendance implements OnInit {
     // Backend defaults to today's attendance
     this.loadAttendance();
 
-    this.loadEmployees();
+    this.loadStaff();
 
   }
 
@@ -215,9 +215,9 @@ export class Attendance implements OnInit {
   // Load Employees
   // ==========================================
 
-    loadEmployees(): void {
+    loadStaff(): void {
 
-    this.attendanceService.getEmployees().subscribe({
+  this.attendanceService.getStaff().subscribe({
 
       next: (response: any) => {
 

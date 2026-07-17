@@ -1,0 +1,253 @@
+<div class="page">
+
+  <!-- ==========================
+       Today's Attendance
+  =========================== -->
+
+  <div class="today-card">
+
+    <div class="today-header">
+
+      <div>
+        <h2>Today's Attendance</h2>
+        <p>Mark your attendance for today.</p>
+      </div>
+
+      <div class="today-status">
+
+        <span
+          class="status"
+          [ngClass]="{
+            present: todayAttendance?.status === 'PRESENT',
+            half: todayAttendance?.status === 'HALF_DAY',
+            absent: !todayAttendance
+          }">
+
+          {{ todayAttendance?.status || 'NOT MARKED' }}
+
+        </span>
+
+      </div>
+
+    </div>
+
+    <div class="today-details">
+
+      <div class="detail-card">
+        <mat-icon>login</mat-icon>
+        <div>
+          <span>Clock In</span>
+          <strong>
+            {{ formatTime(todayAttendance?.clockIn) }}
+          </strong>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <mat-icon>logout</mat-icon>
+        <div>
+          <span>Clock Out</span>
+          <strong>
+            {{ formatTime(todayAttendance?.clockOut) }}
+          </strong>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <mat-icon>schedule</mat-icon>
+        <div>
+          <span>Working Hours</span>
+          <strong>
+
+            {{ todayAttendance?.workingHours || 0 }}
+
+            hrs
+
+          </strong>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="action-buttons">
+
+      <button
+        class="clock-in-btn"
+        (click)="clockIn()"
+        [disabled]="!canClockIn">
+
+        <mat-icon>login</mat-icon>
+
+        Clock In
+
+      </button>
+
+      <button
+        class="clock-out-btn"
+        (click)="clockOut()"
+        [disabled]="!canClockOut">
+
+        <mat-icon>logout</mat-icon>
+
+        Clock Out
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ==========================
+       Summary Cards
+  =========================== -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+
+      <mat-icon>check_circle</mat-icon>
+
+      <h3>Present</h3>
+
+      <h1>{{ summary.present }}</h1>
+
+    </div>
+
+    <div class="summary-card">
+
+      <mat-icon>timelapse</mat-icon>
+
+      <h3>Half Day</h3>
+
+      <h1>{{ summary.halfDay }}</h1>
+
+    </div>
+
+    <div class="summary-card">
+
+      <mat-icon>cancel</mat-icon>
+
+      <h3>Absent</h3>
+
+      <h1>{{ summary.absent }}</h1>
+
+    </div>
+
+    <div class="summary-card">
+
+      <mat-icon>percent</mat-icon>
+
+      <h3>Attendance</h3>
+
+      <h1>{{ summary.attendancePercentage }}%</h1>
+
+    </div>
+
+    <div class="summary-card">
+
+      <mat-icon>schedule</mat-icon>
+
+      <h3>Total Hours</h3>
+
+      <h1>{{ summary.totalWorkingHours }}</h1>
+
+    </div>
+
+  </div>
+
+  <!-- ==========================
+       Attendance History
+  =========================== -->
+
+  <div class="table-card">
+
+    <div class="table-header">
+
+      <h2>Attendance History</h2>
+
+    </div>
+
+    <div
+      class="empty-state"
+      *ngIf="attendanceList.length === 0">
+
+      <mat-icon>event_busy</mat-icon>
+
+      <h3>No Attendance Found</h3>
+
+    </div>
+
+    <table *ngIf="attendanceList.length">
+
+      <thead>
+
+        <tr>
+
+          <th>Date</th>
+
+          <th>Clock In</th>
+
+          <th>Clock Out</th>
+
+          <th>Hours</th>
+
+          <th>Status</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let attendance of attendanceList">
+
+          <td>
+
+            {{ formatDate(attendance.date) }}
+
+          </td>
+
+          <td>
+
+            {{ formatTime(attendance.clockIn) }}
+
+          </td>
+
+          <td>
+
+            {{ formatTime(attendance.clockOut) }}
+
+          </td>
+
+          <td>
+
+            {{ attendance.workingHours }}
+
+          </td>
+
+          <td>
+
+            <span
+              class="status"
+              [ngClass]="{
+                present: attendance.status === 'PRESENT',
+                half: attendance.status === 'HALF_DAY',
+                absent: attendance.status === 'ABSENT'
+              }">
+
+              {{ attendance.status }}
+
+            </span>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

@@ -1,0 +1,42 @@
+<div class="topbar">
+
+  <div class="left">
+
+    <div class="welcome">
+
+      <h3>
+
+        {{ greeting }},
+
+        {{ currentUser?.fullName || 'User' }}
+
+      </h3>
+
+      <p>
+
+        {{ currentUser?.role | titlecase }}
+
+      </p>
+
+    </div>
+
+  </div>
+
+  <div class="right">
+
+    <button class="icon-btn notification">
+
+      <mat-icon>notifications</mat-icon>
+
+      <span class="dot"></span>
+
+    </button>
+
+    <img
+      src="https://i.pravatar.cc/100?img=12"
+      class="avatar"
+      alt="profile">
+
+  </div>
+
+</div>

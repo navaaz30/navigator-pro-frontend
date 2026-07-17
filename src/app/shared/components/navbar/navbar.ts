@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,11 +17,44 @@ import { Router } from '@angular/router';
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
-export class Navbar {
+export class Navbar implements OnInit {
+
+  currentUser: any = null;
+
+  greeting = '';
 
   constructor(
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
+
+  ngOnInit(): void {
+
+    this.currentUser = this.authService.getCurrentUser();
+
+    this.setGreeting();
+
+  }
+
+  private setGreeting(): void {
+
+    const hour = new Date().getHours();
+
+    if (hour < 12) {
+
+      this.greeting = 'Good Morning';
+
+    } else if (hour < 17) {
+
+      this.greeting = 'Good Afternoon';
+
+    } else {
+
+      this.greeting = 'Good Evening';
+
+    }
+
+  }
 
   openSettings(): void {
 

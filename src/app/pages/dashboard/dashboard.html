@@ -1,61 +1,170 @@
-<h1>Dashboard</h1>
-<p class="subtitle">Overview of today's field operations.</p>
+<div class="page-header">
+
+    <div>
+
+        <h1>Dashboard</h1>
+
+        <p class="subtitle">
+            Overview of today's field operations.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     Dashboard KPI Cards
+========================================== -->
 
 <div class="cards">
 
-  <app-stats-card
-    title="Total Employees"
-    [value]="stats.totalEmployees"
-    icon="groups">
-  </app-stats-card>
+    <app-stats-card
+        title="Total Employees"
+        [value]="stats.totalEmployees"
+        icon="groups">
+    </app-stats-card>
 
-  <app-stats-card
-    title="Present Today"
-    [value]="stats.presentToday"
-    icon="check_circle">
-  </app-stats-card>
+    <app-stats-card
+        title="Present Today"
+        [value]="stats.presentToday"
+        icon="check_circle">
+    </app-stats-card>
 
-  <app-stats-card
-    title="Half Day"
-    [value]="stats.halfDayToday"
-    icon="schedule">
-  </app-stats-card>
+    <app-stats-card
+        title="Pending Tasks"
+        [value]="stats.pendingTasks"
+        icon="task">
+    </app-stats-card>
 
-  <app-stats-card
-    title="On Leave"
-    [value]="stats.onLeaveToday"
-    icon="event_busy">
-  </app-stats-card>
+    <app-stats-card
+        title="Pending Leaves"
+        [value]="stats.pendingLeaves"
+        icon="pending_actions">
+    </app-stats-card>
 
-  <app-stats-card
-    title="Pending Leaves"
-    [value]="stats.pendingLeaves"
-    icon="pending_actions">
-  </app-stats-card>
+    <app-stats-card
+        title="Pending Expenses"
+        [value]="stats.pendingExpenses"
+        icon="payments">
+    </app-stats-card>
+
+    <app-stats-card
+        title="Low Stock"
+        [value]="stats.lowStockItems"
+        icon="inventory_2">
+    </app-stats-card>
 
 </div>
 
+<!-- ==========================================
+     Charts Section
+========================================== -->
 
 <div class="charts-row">
 
-    <app-task-chart></app-task-chart>
-
-    <app-expense-chart></app-expense-chart>
-
-</div>
-
-<div class="activity-section">
-
-    <app-activity-table></app-activity-table>
+    <app-task-chart
+    [pending]="stats.pendingTasks"
+    [inProgress]="stats.inProgressTasks"
+    [completed]="stats.completedTasks"
+    [cancelled]="stats.cancelledTasks">
+</app-task-chart>
 
 </div>
 
-<div class="info-row">
+<!-- ==========================================
+     Leave / Expense / Inventory Summary
+========================================== -->
 
-    <app-top-performers></app-top-performers>
+<div class="summary-row">
 
-    <app-todays-summary></app-todays-summary>
+    <div class="summary-card">
 
-    <app-quick-actions></app-quick-actions>
+        <h3>Leave Summary</h3>
+
+        <div class="summary-item">
+
+            <span>Pending</span>
+
+            <strong>{{ stats.pendingLeaves }}</strong>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>Approved</span>
+
+            <strong>{{ stats.approvedLeaves }}</strong>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>Rejected</span>
+
+            <strong>{{ stats.rejectedLeaves }}</strong>
+
+        </div>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>Expense Summary</h3>
+
+        <div class="summary-item">
+
+            <span>Pending</span>
+
+            <strong>{{ stats.pendingExpenses }}</strong>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>Approved</span>
+
+            <strong>{{ stats.approvedExpenses }}</strong>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>Rejected</span>
+
+            <strong>{{ stats.rejectedExpenses }}</strong>
+
+        </div>
+
+    </div>
+
+    <div class="summary-card">
+
+        <h3>Inventory Summary</h3>
+
+        <div class="summary-item">
+
+            <span>Total Items</span>
+
+            <strong>{{ stats.inventoryItems }}</strong>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>Low Stock</span>
+
+            <strong>{{ stats.lowStockItems }}</strong>
+
+        </div>
+
+        <div class="summary-item">
+
+            <span>Out of Stock</span>
+
+            <strong>{{ stats.outOfStockItems }}</strong>
+
+        </div>
+
+    </div>
 
 </div>

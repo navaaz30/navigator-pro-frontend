@@ -3,20 +3,31 @@
 ========================================== */
 
 .page-header {
+
     margin-bottom: 24px;
+
 }
 
 .page-header h1 {
+
     margin: 0;
+
     font-size: 32px;
+
     font-weight: 700;
+
     color: #111827;
+
 }
 
 .subtitle {
+
     margin-top: 6px;
+
     color: #64748b;
+
     font-size: 15px;
+
 }
 
 /* ==========================================
@@ -33,7 +44,7 @@
 
     margin-bottom: 28px;
 
-    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
 
     transition: .25s;
 
@@ -43,7 +54,7 @@
 
     transform: translateY(-3px);
 
-    box-shadow: 0 12px 26px rgba(0,0,0,.12);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, .12);
 
 }
 
@@ -61,7 +72,7 @@
 
     margin: 0;
 
-    font-size: 30px;
+    font-size: 28px;
 
     font-weight: 700;
 
@@ -97,9 +108,9 @@
 
     width: 190px;
 
-    text-align: center;
-
     flex-shrink: 0;
+
+    text-align: center;
 
 }
 
@@ -131,7 +142,7 @@
 
     background: #2563eb;
 
-    color: white;
+    color: #ffffff;
 
     font-weight: 600;
 
@@ -220,15 +231,7 @@
 
     box-sizing: border-box;
 
-    background: white;
-
-}
-
-.form-group textarea {
-
-    min-height: 90px;
-
-    resize: vertical;
+    background: #ffffff;
 
 }
 
@@ -237,7 +240,17 @@
 
     border-color: #2563eb;
 
-    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+
+}
+
+.form-group input[readonly] {
+
+    background: #f8fafc;
+
+    color: #6b7280;
+
+    cursor: not-allowed;
 
 }
 
@@ -289,7 +302,27 @@
 
     transform: translateY(-2px);
 
-    box-shadow: 0 8px 20px rgba(37,99,235,.25);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, .25);
+
+}
+
+/* ==========================================
+   Bottom Grid
+========================================== */
+
+.bottom-grid {
+
+    display: flex;
+
+    justify-content: center;
+
+}
+
+.bottom-grid .settings-card {
+
+    width: 100%;
+
+    max-width: 800px;
 
 }
 
@@ -319,12 +352,12 @@
 
     font-weight: 600;
 
-    box-shadow: 0 12px 28px rgba(0,0,0,.18);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .18);
 
     z-index: 9999;
 
     animation: slideIn .35s ease;
-    
+
 }
 
 .toast.success {
@@ -346,7 +379,7 @@
 }
 
 /* ==========================================
-   Toast Animation
+   Animation
 ========================================== */
 
 @keyframes slideIn {
@@ -421,30 +454,284 @@
 
     .profile-avatar img {
 
-        width: 130px;
+        width: 120px;
 
-        height: 130px;
+        height: 120px;
 
     }
 
 }
 
-.bottom-grid{
+/* ==========================================
+   Account Card
+========================================== */
 
-    display:grid;
+.account-content {
 
-    grid-template-columns:420px 1fr;
+    display: flex;
 
-    gap:24px;
+    justify-content: space-between;
 
-    align-items:start;
+    align-items: center;
 
-    margin-top:28px;
+    gap: 20px;
 
 }
 
-.bottom-grid .settings-card{
+.account-content h3 {
 
-    margin-bottom:0;
+    margin: 0;
+
+    font-size: 22px;
+
+    color: #111827;
+
+    font-weight: 700;
+
+}
+
+.account-content p {
+
+    margin-top: 8px;
+
+    color: #64748b;
+
+    font-size: 15px;
+
+}
+
+.logout-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 14px 26px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #dc2626;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+.logout-btn:hover {
+
+    background: #b91c1c;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 22px rgba(220, 38, 38, .25);
+
+}
+
+@media (max-width: 768px) {
+
+    .account-content {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+    .logout-btn {
+
+        width: 100%;
+        justify-content: center;
+
+    }
+
+}
+
+/* ==========================================
+   Logout Popup
+========================================== */
+
+.modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:1000;
+
+    animation:fadeIn .25s;
+}
+
+.delete-modal {
+
+    width: 420px;
+
+    background: #ffffff;
+
+    border-radius: 20px;
+
+    padding: 32px;
+
+    text-align: center;
+
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .25);
+
+    animation: popupAnimation .25s ease;
+
+}
+
+.delete-icon {
+
+    width: 72px;
+
+    height: 72px;
+
+    margin: 0 auto 20px;
+
+    border-radius: 50%;
+
+    background: #fee2e2;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+.delete-icon mat-icon {
+
+    color: #dc2626;
+
+    font-size: 36px;
+
+    width: 36px;
+
+    height: 36px;
+
+}
+
+.delete-modal h2 {
+
+    margin: 0 0 12px;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    color: #111827;
+
+}
+
+.delete-modal p {
+
+    margin: 0;
+
+    color: #6b7280;
+
+    line-height: 1.7;
+
+}
+
+.popup-buttons {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 16px;
+
+    margin-top: 30px;
+
+}
+
+.cancel-btn {
+
+    padding: 12px 28px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #e5e7eb;
+
+    color: #374151;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+.cancel-btn:hover {
+
+    background: #d1d5db;
+
+}
+
+.delete-confirm-btn {
+
+    padding: 12px 28px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #dc2626;
+
+    color: white;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+.delete-confirm-btn:hover {
+
+    background: #b91c1c;
+
+}
+
+@keyframes popupAnimation {
+
+    from {
+
+        opacity: 0;
+
+        transform: scale(.9);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: scale(1);
+
+    }
 
 }

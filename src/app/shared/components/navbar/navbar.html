@@ -5,9 +5,22 @@
     
 
     <div class="welcome">
-      <h3>Good Morning, Abhishek Singh</h3>
-      <p>Super Admin</p>
-    </div>
+
+  <h3>
+
+    {{ greeting }},
+
+    {{ currentUser?.fullName || 'User' }}
+
+  </h3>
+
+  <p>
+
+    {{ currentUser?.role | titlecase }}
+
+  </p>
+
+</div>
 
   </div>
 

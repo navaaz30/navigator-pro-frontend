@@ -1,0 +1,590 @@
+<div class="employee-tasks-container">
+
+  <!-- ========================================= -->
+  <!-- Header -->
+  <!-- ========================================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h2>My Tasks</h2>
+
+      <p>View and manage your assigned tasks.</p>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- Summary Cards -->
+  <!-- ========================================= -->
+
+  <div class="summary-grid">
+
+    <div class="summary-card total">
+
+      <div class="icon">
+
+        <mat-icon>assignment</mat-icon>
+
+      </div>
+
+      <div class="content">
+
+        <span>Total Tasks</span>
+
+        <h2>{{ totalTasks }}</h2>
+
+      </div>
+
+    </div>
+
+    <div class="summary-card pending">
+
+      <div class="icon">
+
+        <mat-icon>schedule</mat-icon>
+
+      </div>
+
+      <div class="content">
+
+        <span>Pending</span>
+
+        <h2>{{ pendingTasks }}</h2>
+
+      </div>
+
+    </div>
+
+    <div class="summary-card progress">
+
+      <div class="icon">
+
+        <mat-icon>autorenew</mat-icon>
+
+      </div>
+
+      <div class="content">
+
+        <span>In Progress</span>
+
+        <h2>{{ inProgressTasks }}</h2>
+
+      </div>
+
+    </div>
+
+    <div class="summary-card completed">
+
+      <div class="icon">
+
+        <mat-icon>task_alt</mat-icon>
+
+      </div>
+
+      <div class="content">
+
+        <span>Completed</span>
+
+        <h2>{{ completedTasks }}</h2>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- Toolbar -->
+  <!-- ========================================= -->
+
+  <div class="toolbar">
+
+    <div class="search-box">
+
+      <mat-icon>search</mat-icon>
+
+      <input
+        type="text"
+        placeholder="Search tasks..."
+        [(ngModel)]="searchText"
+        (input)="applyFilters()"
+      >
+
+    </div>
+
+    <select
+      [(ngModel)]="selectedStatus"
+      (change)="applyFilters()"
+    >
+
+      <option value="ALL">
+
+        All Status
+
+      </option>
+
+      <option value="PENDING">
+
+        Pending
+
+      </option>
+
+      <option value="IN_PROGRESS">
+
+        In Progress
+
+      </option>
+
+      <option value="COMPLETED">
+
+        Completed
+
+      </option>
+
+      <option value="CANCELLED">
+
+        Cancelled
+
+      </option>
+
+    </select>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- Loading -->
+  <!-- ========================================= -->
+
+  <div
+    class="loading-state"
+    *ngIf="isLoading"
+  >
+
+    <mat-icon>hourglass_top</mat-icon>
+
+    <p>Loading tasks...</p>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- Empty State -->
+  <!-- ========================================= -->
+
+  <div
+    class="empty-state"
+    *ngIf="!isLoading && filteredTasks.length === 0"
+  >
+
+    <mat-icon>assignment_late</mat-icon>
+
+    <h3>No Tasks Found</h3>
+
+    <p>No task matches your search.</p>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- Tasks Table -->
+  <!-- ========================================= -->
+
+  <div
+    class="table-container"
+    *ngIf="!isLoading && filteredTasks.length > 0"
+  >
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Title</th>
+
+          <th>Priority</th>
+
+          <th>Due Date</th>
+
+          <th>Assigned By</th>
+
+          <th>Status</th>
+
+          <th>Actions</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let task of filteredTasks">
+
+          <td>
+
+            <strong>
+
+              {{ task.title }}
+
+            </strong>
+
+          </td>
+
+          <td>
+
+            <span
+              class="priority"
+              [ngClass]="task.priority.toLowerCase()"
+            >
+
+              {{ task.priority }}
+
+            </span>
+
+          </td>
+
+          <td>
+
+            {{ formatDate(task.dueDate) }}
+
+          </td>
+
+          <td>
+
+            {{ task.assignedBy?.fullName }}
+
+          </td>
+
+          <td>
+
+            <span
+              class="status"
+              [ngClass]="task.status.toLowerCase()"
+            >
+
+              {{ task.status.replace('_', ' ') }}
+
+            </span>
+
+          </td>
+
+          <td>
+
+            <div class="action-buttons">
+
+              <button
+                class="view-btn"
+                (click)="openView(task)"
+              >
+
+                <mat-icon>
+
+                  visibility
+
+                </mat-icon>
+
+              </button>
+
+              <button
+                class="edit-btn"
+                (click)="openStatusModal(task)"
+              >
+
+                <mat-icon>
+
+                  edit
+
+                </mat-icon>
+
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- View Task Modal -->
+  <!-- ========================================= -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showViewModal && selectedTask"
+  >
+
+    <div class="view-modal">
+
+      <div class="modal-header">
+
+        <h2>
+
+          Task Details
+
+        </h2>
+
+        <button
+          class="close-btn"
+          (click)="closeView()"
+        >
+
+          ✕
+
+        </button>
+
+      </div>
+
+      <div class="view-content">
+
+                <div class="detail">
+
+          <span>
+
+            Task Title
+
+          </span>
+
+          <strong>
+
+            {{ selectedTask.title }}
+
+          </strong>
+
+        </div>
+
+        <div class="detail">
+
+          <span>
+
+            Assigned By
+
+          </span>
+
+          <strong>
+
+            {{ selectedTask.assignedBy?.fullName }}
+
+          </strong>
+
+        </div>
+
+        <div class="detail">
+
+          <span>
+
+            Description
+
+          </span>
+
+          <strong>
+
+            {{ selectedTask.description }}
+
+          </strong>
+
+        </div>
+
+        <div class="detail">
+
+          <span>
+
+            Priority
+
+          </span>
+
+          <strong>
+
+            {{ selectedTask.priority }}
+
+          </strong>
+
+        </div>
+
+        <div class="detail">
+
+          <span>
+
+            Status
+
+          </span>
+
+          <strong>
+
+            {{ selectedTask.status.replace('_',' ') }}
+
+          </strong>
+
+        </div>
+
+        <div class="detail">
+
+          <span>
+
+            Due Date
+
+          </span>
+
+          <strong>
+
+            {{ selectedTask.dueDate | date:'dd MMM yyyy' }}
+
+          </strong>
+
+        </div>
+
+        <div
+          class="detail"
+          *ngIf="selectedTask.remarks"
+        >
+
+          <span>
+
+            Remarks
+
+          </span>
+
+          <strong>
+
+            {{ selectedTask.remarks }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="save-btn"
+          (click)="closeView()"
+        >
+
+          Close
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ========================================= -->
+  <!-- Update Status Modal -->
+  <!-- ========================================= -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="showStatusModal"
+  >
+
+    <div class="task-modal">
+
+      <div class="modal-header">
+
+        <h2>
+
+          Update Task Status
+
+        </h2>
+
+        <button
+          class="close-btn"
+          (click)="closeStatusModal()"
+        >
+
+          ✕
+
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <div class="form-group">
+
+          <label>
+
+            Status
+
+          </label>
+
+          <select [(ngModel)]="selectedTaskStatus">
+
+            <option value="PENDING">
+
+              Pending
+
+            </option>
+
+            <option value="IN_PROGRESS">
+
+              In Progress
+
+            </option>
+
+            <option value="COMPLETED">
+
+              Completed
+
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>
+
+            Remarks
+
+          </label>
+
+          <textarea
+            rows="4"
+            [(ngModel)]="remarks"
+            placeholder="Enter remarks..."
+          >
+
+          </textarea>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="cancel-btn"
+          (click)="closeStatusModal()"
+        >
+
+          Cancel
+
+        </button>
+
+        <button
+          class="save-btn"
+          (click)="updateStatus()"
+        >
+
+          Update Task
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
