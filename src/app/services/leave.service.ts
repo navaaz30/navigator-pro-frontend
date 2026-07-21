@@ -98,4 +98,14 @@ export class LeaveService {
 
   }
 
+  deleteLeaveByAdmin(
+  leaveId: string
+): Observable<any> {
+
+  return this.http.delete<any>(
+    `${this.apiUrl}/admin/${leaveId}`
+  );
+
+}
+
 }

@@ -165,13 +165,25 @@ class="approve-btn"
 
 <button
 
-*ngIf="leave.status === 'Pending'"
+*ngIf="leave.status === 'PENDING'"
 
 class="reject-btn"
 
 (click)="rejectLeave(leave)">
 
 <mat-icon>cancel</mat-icon>
+
+</button>
+
+<!-- Delete -->
+
+<button
+
+class="delete-btn"
+
+(click)="deleteLeave(leave)">
+
+<mat-icon>delete</mat-icon>
 
 </button>
 
@@ -522,5 +534,85 @@ Reject
 </div>
 
 </div>
+
+</div>
+
+<!-- ==========================================
+     Delete Leave Modal
+========================================== -->
+
+<div
+class="modal-overlay"
+*ngIf="showDeleteModal">
+
+    <div class="delete-modal">
+
+        <div class="delete-icon">
+
+            <mat-icon>delete_forever</mat-icon>
+
+        </div>
+
+        <h2>
+
+            Delete Leave Request?
+
+        </h2>
+
+        <p>
+
+            This will remove the leave request from the Admin Portal.
+
+        </p>
+
+        <div class="delete-details">
+
+            <p>
+
+                <strong>Employee :</strong>
+
+                {{ selectedLeave?.employee?.fullName }}
+
+            </p>
+
+            <p>
+
+                <strong>Leave Type :</strong>
+
+                {{ selectedLeave?.leaveType }}
+
+            </p>
+
+            <p>
+
+                <strong>Status :</strong>
+
+                {{ selectedLeave?.status }}
+
+            </p>
+
+        </div>
+
+        <div class="delete-actions">
+
+            <button
+                class="cancel-btn"
+                (click)="cancelDelete()">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="reject-confirm-btn"
+                (click)="confirmDelete()">
+
+                Delete
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>

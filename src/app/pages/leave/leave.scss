@@ -155,6 +155,15 @@ tbody tr:hover{
     color:#dc2626;
 }
 
+.delete-btn{
+    background:#fecaca;
+    color:#b91c1c;
+}
+
+.delete-btn:hover{
+    background:#fca5a5;
+}
+
 /* ==========================================
    Modal Overlay
 ========================================== */
@@ -496,5 +505,83 @@ tbody tr:hover{
     .reject-actions button{
         width:100%;
     }
+
+}
+
+.delete-modal{
+
+    width:min(430px,92vw);
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:34px;
+
+    text-align:center;
+
+    box-shadow:0 25px 60px rgba(15,23,42,.25);
+
+    animation:modalAnimation .25s ease;
+
+}
+
+.delete-icon{
+
+    width:78px;
+
+    height:78px;
+
+    margin:0 auto 20px;
+
+    border-radius:50%;
+
+    background:#fee2e2;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.delete-icon mat-icon{
+
+    font-size:40px;
+
+    width:40px;
+
+    height:40px;
+
+    color:#dc2626;
+
+}
+
+.delete-modal h2{
+
+    margin-bottom:12px;
+
+    color:#1e293b;
+
+}
+
+.delete-modal p{
+
+    color:#64748b;
+
+    line-height:1.6;
+
+}
+
+.delete-actions{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:12px;
+
+    margin-top:30px;
 
 }

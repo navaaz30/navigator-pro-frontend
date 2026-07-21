@@ -54,6 +54,8 @@ export class Leave implements OnInit {
 
   showRejectModal = false;
 
+  showDeleteModal = false;
+
   rejectReason = '';
 
   // ==========================================
@@ -63,6 +65,8 @@ export class Leave implements OnInit {
   leaves: any[] = [];
 
   selectedLeave: any = null;
+
+  deleteMessage = '';
 
   // ==========================================
   // Init
@@ -278,6 +282,52 @@ loadManagers(): void {
     this.rejectReason = '';
 
   }
+
+  deleteLeave(leave: any): void {
+
+  this.selectedLeave = leave;
+
+  this.showDeleteModal = true;
+
+}
+
+cancelDelete(): void {
+
+  this.showDeleteModal = false;
+
+  this.selectedLeave = null;
+
+}
+
+confirmDelete(): void {
+
+  if (!this.selectedLeave) return;
+
+  this.leaveService
+    .deleteLeaveByAdmin(
+      this.selectedLeave._id
+    )
+    .subscribe({
+
+      next: () => {
+
+        this.showDeleteModal = false;
+
+        this.selectedLeave = null;
+
+        this.loadAllLeaves();
+
+      },
+
+      error: (error: any) => {
+
+        console.error(error);
+
+      }
+
+    });
+
+}
 
   confirmReject(): void {
 
