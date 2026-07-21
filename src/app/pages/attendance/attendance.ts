@@ -541,10 +541,8 @@ export class Attendance implements OnInit {
         attendance.email,
 
       date: attendanceDate
-        ? attendanceDate
-            .toISOString()
-            .split('T')[0]
-        : '',
+  ? `${attendanceDate.getFullYear()}-${String(attendanceDate.getMonth() + 1).padStart(2, '0')}-${String(attendanceDate.getDate()).padStart(2, '0')}`
+  : '',
 
       clockIn: clockIn
         ? clockIn
