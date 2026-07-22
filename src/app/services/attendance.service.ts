@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class AttendanceService {
 
-  private attendanceUrl = 'http://localhost:5000/api/attendance';
-  private staffUrl = 'http://localhost:5000/api/users/staff';
+  private attendanceUrl = 'https://navigator-pro-backend.onrender.com/api/attendance';
+  private staffUrl = 'https://navigator-pro-backend.onrender.com/api/users/staff';
 
   constructor(private http: HttpClient) {}
 

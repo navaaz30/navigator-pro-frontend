@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class EmployeeAttendanceService {
 
   private attendanceUrl =
-    'http://localhost:5000/api/attendance';
+    'https://navigator-pro-backend.onrender.com/api/attendance';
 
   constructor(
     private http: HttpClient

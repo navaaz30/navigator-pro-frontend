@@ -14,7 +14,7 @@ export class EmployeeDashboardService {
   getStats(): Observable<any> {
 
     return this.http.get(
-      'http://localhost:5000/api/dashboard/employee'
+      'https://navigator-pro-backend.onrender.com/api/dashboard/employee'
     );
 
   }

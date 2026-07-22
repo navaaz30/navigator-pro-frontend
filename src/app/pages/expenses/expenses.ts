@@ -377,7 +377,7 @@ confirmDelete(): void {
     }
 
     if (expense.receipt) {
-      return `http://localhost:5000/uploads/expense-receipts/${expense.receipt}`;
+      return `https://navigator-pro-backend.onrender.com/uploads/expense-receipts/${expense.receipt}`;
     }
 
     return '';

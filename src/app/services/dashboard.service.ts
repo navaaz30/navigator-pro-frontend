@@ -10,7 +10,7 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
   getStats(): Observable<any> {
-    return this.http.get('http://localhost:5000/api/dashboard');
+    return this.http.get('https://navigator-pro-backend.onrender.com/api/dashboard');
   }
 
 }

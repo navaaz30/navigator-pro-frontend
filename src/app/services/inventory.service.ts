@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class InventoryService {
 
-  private apiUrl = 'http://localhost:5000/api/inventory';
+  private apiUrl = 'https://navigator-pro-backend.onrender.com/api/inventory';
 
   constructor(private http: HttpClient) {}
 

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class EmployeeTaskService {
 
-  private taskUrl = 'http://localhost:5000/api/tasks';
+  private taskUrl = 'https://navigator-pro-backend.onrender.com/api/tasks';
 
   constructor(
     private http: HttpClient

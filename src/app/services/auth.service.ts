@@ -8,7 +8,7 @@ import { LoginResponse } from '../models/login-response';
 })
 export class AuthService {
 
-  private readonly API_URL = 'http://localhost:5000/api/auth';
+  private readonly API_URL = 'https://navigator-pro-backend.onrender.com/api/auth';
 
   constructor(private http: HttpClient) {}
 

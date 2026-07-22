@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class EmployeeLeaveService {
 
-  private readonly API_URL = 'http://localhost:5000/api/leaves';
+  private readonly API_URL = 'https://navigator-pro-backend.onrender.com/api/leaves';
 
   constructor(
     private http: HttpClient

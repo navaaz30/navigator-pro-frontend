@@ -37,7 +37,7 @@ export interface Leave {
 })
 export class LeaveService {
 
-  private apiUrl = 'http://localhost:5000/api/leaves';
+  private apiUrl = 'https://navigator-pro-backend.onrender.com/api/leaves';
 
   constructor(
     private http: HttpClient

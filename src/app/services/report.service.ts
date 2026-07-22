@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class ReportService {
 
-  private readonly API_URL = 'http://localhost:5000/api/reports';
+  private readonly API_URL = 'https://navigator-pro-backend.onrender.com/api/reports';
 
   constructor(
     private http: HttpClient
