@@ -1,10 +1,22 @@
 <div class="employee-layout">
 
-    <app-employee-sidebar></app-employee-sidebar>
+    <!-- Overlay -->
+    <div
+        class="sidebar-overlay"
+        *ngIf="sidebarOpen"
+        (click)="closeSidebar()">
+    </div>
+
+    <app-employee-sidebar
+        [isOpen]="sidebarOpen"
+        (closeSidebar)="closeSidebar()">
+    </app-employee-sidebar>
 
     <div class="main-content">
 
-        <app-employee-navbar></app-employee-navbar>
+        <app-employee-navbar
+            (menuToggle)="toggleSidebar()">
+        </app-employee-navbar>
 
         <div class="page-content">
             <router-outlet></router-outlet>

@@ -2,15 +2,24 @@
 
   <div class="left">
 
-    <div class="welcome">
+  <button
+    mat-icon-button
+    class="menu-btn"
+    (click)="toggleMenu()">
 
-      <h3>
+    <mat-icon>menu</mat-icon>
 
-        {{ greeting }},
+  </button>
 
-        {{ currentUser?.fullName || 'User' }}
+  <div class="welcome">
 
-      </h3>
+      <h3 class="desktop-greeting">
+  {{ greeting }}, {{ currentUser?.fullName || 'User' }}
+</h3>
+
+<h3 class="mobile-greeting">
+  {{ currentUser?.fullName || 'User' }}
+</h3>
 
       <p>
 

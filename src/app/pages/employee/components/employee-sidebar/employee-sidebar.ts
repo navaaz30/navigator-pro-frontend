@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -13,4 +13,14 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './employee-sidebar.html',
   styleUrl: './employee-sidebar.scss'
 })
-export class EmployeeSidebar {}
+export class EmployeeSidebar {
+
+  @Input() isOpen = false;
+
+  @Output() closeSidebar = new EventEmitter<void>();
+
+  close(): void {
+    this.closeSidebar.emit();
+  }
+
+}

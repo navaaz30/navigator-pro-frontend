@@ -91,3 +91,41 @@
 .icon-btn:hover{
     background:#e8eefc;
 }
+
+/* Mobile Menu Button */
+
+.menu-btn {
+  display: none;
+  margin-right: 12px;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+  .menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+}
+
+.mobile-greeting {
+    display: none;
+}
+
+@media (max-width:768px){
+
+    .desktop-greeting{
+        display:none;
+    }
+
+    .mobile-greeting{
+        display:block;
+        margin:0;
+        font-size:18px;
+        font-weight:600;
+    }
+
+}

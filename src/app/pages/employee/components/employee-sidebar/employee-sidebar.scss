@@ -3,13 +3,14 @@
   background: #1e293b;
   color: white;
   padding: 20px;
+  position: relative;
 }
 
-.logo{
-    font-size:22px;
-    font-weight:700;
-    text-align:center;
-    margin-bottom:45px;
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 45px;
 }
 
 .sidebar ul {
@@ -33,17 +34,17 @@
   color: white;
   text-decoration: none;
 
-  transition: all 0.3s ease;
+  transition: all .3s ease;
 }
 
-.sidebar a:hover{
-    background:rgba(255,255,255,.10);
-    transform:translateX(4px);
+.sidebar a:hover {
+  background: rgba(255,255,255,.10);
+  transform: translateX(4px);
 }
 
-.sidebar a.active{
-    background:#2563eb;
-    box-shadow:0 8px 20px rgba(37,99,235,.35);
+.sidebar a.active {
+  background: #2563eb;
+  box-shadow: 0 8px 20px rgba(37,99,235,.35);
 }
 
 .sidebar mat-icon {
@@ -58,6 +59,97 @@
   font-weight: 500;
 }
 
-.sidebar a{
+.sidebar a {
+  cursor: pointer;
+}
+
+/* Hidden on Desktop */
+
+.close-btn {
+  display: none;
+}
+
+/* ==========================
+   Mobile
+========================== */
+
+@media (max-width:768px) {
+
+  .sidebar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 190px;
+    height: 100vh;
+
+    z-index: 1200;
+
+    transform: translateX(-100%);
+    transition: transform .3s ease;
+
+    overflow-y: auto;
+  }
+
+  .sidebar.mobile-open {
+
+    transform: translateX(0);
+
+  }
+
+  .close-btn{
+
+    display:flex;
+
+    position:absolute;
+
+    top: 10px;
+right: 8px;
+
+    width:36px;
+    height:36px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.08);
+
+    color:white;
+
+    align-items:center;
+    justify-content:center;
+
+    transition:.2s;
+
     cursor:pointer;
 }
+
+.close-btn:hover{
+
+    background:rgba(255,255,255,.16);
+
+}
+
+  .logo {
+
+    margin-top: 45px;
+
+  }
+
+}
+
+.sidebar-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:35px;
+}
+
+.logo{
+    margin:0;
+}
+
+

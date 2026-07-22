@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +21,8 @@ export class EmployeeNavbar implements OnInit {
   currentUser: any = null;
 
   greeting = '';
+
+  @Output() menuToggle = new EventEmitter<void>();
 
   constructor(
     private authService: AuthService
@@ -53,5 +55,9 @@ export class EmployeeNavbar implements OnInit {
     }
 
   }
+
+  toggleMenu(): void {
+  this.menuToggle.emit();
+}
 
 }

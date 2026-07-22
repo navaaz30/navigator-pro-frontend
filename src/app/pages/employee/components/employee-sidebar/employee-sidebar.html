@@ -1,8 +1,27 @@
-<div class="sidebar">
+<div
+  class="sidebar"
+  [class.mobile-open]="isOpen">
 
-  <h2 class="logo">Navigator Pro</h2>
+  <!-- Mobile Close Button -->
+  <div class="sidebar-header">
+
+    <h2 class="logo">
+        Navigator Pro
+    </h2>
+
+    <button
+        mat-icon-button
+        class="close-btn"
+        (click)="close()">
+
+        <mat-icon>close</mat-icon>
+
+    </button>
+
+</div>
 
   <nav>
+
     <ul>
 
       <!-- Dashboard -->
@@ -10,7 +29,8 @@
         <a
           routerLink="/employee/dashboard"
           routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }">
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="close()">
 
           <mat-icon>dashboard</mat-icon>
           <span>Dashboard</span>
@@ -22,7 +42,8 @@
       <li>
         <a
           routerLink="/employee/tasks"
-          routerLinkActive="active">
+          routerLinkActive="active"
+          (click)="close()">
 
           <mat-icon>task_alt</mat-icon>
           <span>My Tasks</span>
@@ -34,7 +55,8 @@
       <li>
         <a
           routerLink="/employee/attendance"
-          routerLinkActive="active">
+          routerLinkActive="active"
+          (click)="close()">
 
           <mat-icon>fact_check</mat-icon>
           <span>Attendance</span>
@@ -46,7 +68,8 @@
       <li>
         <a
           routerLink="/employee/expenses"
-          routerLinkActive="active">
+          routerLinkActive="active"
+          (click)="close()">
 
           <mat-icon>payments</mat-icon>
           <span>Expenses</span>
@@ -58,7 +81,8 @@
       <li>
         <a
           routerLink="/employee/leave"
-          routerLinkActive="active">
+          routerLinkActive="active"
+          (click)="close()">
 
           <mat-icon>event_note</mat-icon>
           <span>Leave</span>
@@ -70,7 +94,8 @@
       <li>
         <a
           routerLink="/employee/profile"
-          routerLinkActive="active">
+          routerLinkActive="active"
+          (click)="close()">
 
           <mat-icon>person</mat-icon>
           <span>Profile</span>
@@ -79,6 +104,7 @@
       </li>
 
     </ul>
+
   </nav>
 
 </div>
