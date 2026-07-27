@@ -11,6 +11,15 @@ h3{
 }
 
 canvas{
-    max-height:300px;
+    width:100% !important;
+    height:300px !important;
+}
+
+@media (max-width:768px){
+
+    canvas{
+        height:240px !important;
+    }
+
 }
 

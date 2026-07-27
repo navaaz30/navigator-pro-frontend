@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +18,8 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './navbar.scss'
 })
 export class Navbar implements OnInit {
+
+  @Output() menuToggle = new EventEmitter<void>();
 
   currentUser: any = null;
 
@@ -53,6 +55,12 @@ export class Navbar implements OnInit {
       this.greeting = 'Good Evening';
 
     }
+
+  }
+
+  toggleMenu(): void {
+
+    this.menuToggle.emit();
 
   }
 

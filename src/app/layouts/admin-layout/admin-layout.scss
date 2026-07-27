@@ -4,9 +4,11 @@
   overflow: hidden;
 }
 
-.sidebar {
+.layout-sidebar {
   width: 190px;
   flex-shrink: 0;
+  transition: transform 0.3s ease;
+  z-index: 1001;
 }
 
 .main-content {
@@ -28,4 +30,44 @@
   overflow-x: hidden;
   padding: 20px;
   background: #f4f6f9;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width: 768px) {
+
+  .layout-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+
+    width: 270px;
+    max-width: 80%;
+
+    transform: translateX(-100%);
+  }
+
+  .layout-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1000;
+  }
+
+  .content {
+    padding: 16px;
+  }
+
 }

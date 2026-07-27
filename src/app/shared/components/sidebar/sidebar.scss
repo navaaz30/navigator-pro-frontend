@@ -3,13 +3,54 @@
   background: #1e293b;
   color: white;
   padding: 20px;
+  box-sizing: border-box;
 }
 
-.logo{
-    font-size:22px;
-    font-weight:700;
-    text-align:center;
+.sidebar-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
     margin-bottom:45px;
+}
+
+.close-btn{
+
+    display:flex;
+
+    position:absolute;
+
+    top: 26px;
+right: 20px;
+
+    width:36px;
+    height:36px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.08);
+
+    color:white;
+
+    align-items:center;
+    justify-content:center;
+
+    transition:.2s;
+
+    cursor:pointer;
+}
+
+.close-btn:hover{
+
+    background:rgba(255,255,255,.16);
+
+}
+
+.close-btn mat-icon{
+    font-size:24px;
+    width:24px;
+    height:24px;
 }
 
 .sidebar ul {
@@ -60,4 +101,18 @@
 
 .sidebar a{
     cursor:pointer;
+}
+
+@media (max-width:768px){
+
+    .close-btn{
+        display:flex;
+    }
+
+    .sidebar{
+        overflow-y:auto;
+        overflow-x:hidden;
+        -webkit-overflow-scrolling:touch;
+    }
+
 }

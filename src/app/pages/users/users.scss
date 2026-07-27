@@ -159,7 +159,8 @@ h1{
 }
 
 .toolbar input{
-    width:400px;
+    width:100%;
+    max-width:400px;
     padding:12px 16px;
     border:1px solid #d1d5db;
     border-radius:8px;
@@ -714,32 +715,56 @@ td:last-child{
    Responsive
 ========================================== */
 
-@media(max-width:768px){
+@media (max-width:768px){
+
+    .toolbar{
+        flex-direction:column;
+        align-items:stretch;
+        gap:14px;
+    }
+
+    .toolbar input{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+    .toolbar-right{
+        display:flex;
+        flex-direction:column;
+        width:100%;
+        gap:12px;
+    }
+
+    .toolbar-right .btn-primary,
+    .toolbar-right .btn-secondary{
+        width:100%;
+        min-width:0;
+        justify-content:center;
+    }
+
+    .table-card{
+        overflow-x:auto;
+    }
+
+    table{
+        min-width:1100px;
+    }
 
     .modal{
-
         width:95%;
-
         max-height:95vh;
-
     }
 
     .time-grid{
-
         grid-template-columns:1fr;
-
     }
 
     .modal-footer{
-
         flex-direction:column;
-
     }
 
     .modal-footer button{
-
         width:100%;
-
     }
 
 }

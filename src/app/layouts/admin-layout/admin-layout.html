@@ -1,17 +1,39 @@
 <div class="layout">
 
-  <aside class="sidebar">
-    <app-sidebar></app-sidebar>
+  <!-- Mobile Overlay -->
+  <div
+    class="sidebar-overlay"
+    *ngIf="sidebarOpen"
+    (click)="closeSidebar()">
+  </div>
+
+  <!-- Sidebar Wrapper -->
+  <aside
+    class="layout-sidebar"
+    [class.mobile-open]="sidebarOpen">
+
+    <app-sidebar
+  [isOpen]="sidebarOpen"
+  (closeSidebar)="closeSidebar()">
+</app-sidebar>
+
   </aside>
 
+  <!-- Main Content -->
   <div class="main-content">
 
     <header class="navbar">
-      <app-navbar></app-navbar>
-    </header>
+
+  <app-navbar
+    (menuToggle)="toggleSidebar()">
+  </app-navbar>
+
+</header>
 
     <main class="content">
+
       <router-outlet></router-outlet>
+
     </main>
 
   </div>

@@ -91,14 +91,25 @@ export class TaskChart implements AfterViewInit, OnChanges {
 
         maintainAspectRatio: false,
 
+        layout: {
+  padding: 10
+},
+
         plugins: {
 
           legend: {
 
-            position: 'right'
+  position: window.innerWidth <= 768 ? 'bottom' : 'right',
 
-          }
+  labels: {
+    boxWidth: 12,
+    padding: 12,
+    font: {
+      size: window.innerWidth <= 768 ? 11 : 13
+    }
+  }
 
+}
         }
 
       }

@@ -1,6 +1,20 @@
 <div class="sidebar">
 
+  <div class="sidebar-header">
+
   <h2 class="logo">Navigator Pro</h2>
+
+  <button
+    class="close-btn"
+    (click)="close()">
+
+    <mat-icon>close</mat-icon>
+
+  </button>
+
+</div>
+
+  
 
   <nav>
     <ul>
@@ -10,7 +24,8 @@
         <a
   routerLink="/dashboard"
   routerLinkActive="active"
-  [routerLinkActiveOptions]="{ exact: true }">
+  [routerLinkActiveOptions]="{ exact: true }"
+  (click)="close()">
           <mat-icon>dashboard</mat-icon>
           <span>Dashboard</span>
         </a>
@@ -18,7 +33,8 @@
 
       <!-- Tasks -->
       <li>
-        <a routerLink="/tasks" routerLinkActive="active">
+        <a routerLink="/tasks" routerLinkActive="active"
+        (click)="close()">
           <mat-icon>task_alt</mat-icon>
           <span>Tasks</span>
         </a>
@@ -26,7 +42,8 @@
 
       <!-- Attendance -->
       <li>
-        <a routerLink="/attendance" routerLinkActive="active">
+        <a routerLink="/attendance" routerLinkActive="active"
+        (click)="close()">
           <mat-icon>fact_check</mat-icon>
           <span>Attendance</span>
         </a>
@@ -34,7 +51,8 @@
 
       <!-- Expenses -->
       <li>
-        <a routerLink="/expenses" routerLinkActive="active">
+        <a routerLink="/expenses" routerLinkActive="active"
+        (click)="close()">
           <mat-icon>payments</mat-icon>
           <span>Expenses</span>
         </a>
@@ -42,7 +60,8 @@
 
       <!-- Inventory -->
       <li>
-        <a routerLink="/inventory" routerLinkActive="active">
+        <a routerLink="/inventory" routerLinkActive="active"
+        (click)="close()">
           <mat-icon>inventory_2</mat-icon>
           <span>Inventory</span>
         </a>
@@ -50,7 +69,8 @@
 
       <!-- Leave -->
       <li>
-        <a routerLink="/leave" routerLinkActive="active">
+        <a routerLink="/leave" routerLinkActive="active"
+        (click)="close()">
           <mat-icon>event_note</mat-icon>
           <span>Leave</span>
         </a>
@@ -58,7 +78,8 @@
 
       <!-- Reports -->
       <li>
-        <a routerLink="/reports" routerLinkActive="active">
+        <a routerLink="/reports" routerLinkActive="active"
+        (click)="close()">
           <mat-icon>description</mat-icon>
           <span>Reports</span>
         </a>
@@ -66,7 +87,8 @@
 
       <!-- Users -->
       <li>
-        <a routerLink="/users" routerLinkActive="active">
+        <a routerLink="/users" routerLinkActive="active"
+        (click)="close()">
           <mat-icon>group</mat-icon>
           <span>Users</span>
         </a>
