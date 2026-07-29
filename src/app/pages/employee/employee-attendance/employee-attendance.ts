@@ -83,6 +83,12 @@ export class EmployeeAttendance implements OnInit {
           this.summary =
             response.data.summary;
 
+            if (this.summary?.totalWorkingHours != null) {
+  this.summary.totalWorkingHours = Number(
+    this.summary.totalWorkingHours.toFixed(2)
+  );
+}
+
           this.attendanceList =
             response.data.attendance || [];
 
